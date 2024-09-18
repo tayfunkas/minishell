@@ -53,6 +53,7 @@ int	main(void)
 			parse_input(input);
 		free(input);
 	}
+	rl_clear_history(); //free all the command history before terminating
 	return (0);
 }
 
