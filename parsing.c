@@ -10,51 +10,119 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <readline/history.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <ctype.h>
 #include <readline/readline.h>
+#include <readline/history.h>
+#include "minishell.h"
 
-char	*get_input(void)
+void	tokenize_input(char *input, char **args, int max_args)
 {
-	char	*input;
+	int		i;
+	int		len;
+	char	*start;
+	char	*end;
 
-	input = readline("\033[1;33mminishell>\033[0m ");
-	if (input && *input)
-		add_history(input);
-	return (input);
+	i = 0;
+	start = input;
+	while (*start && i < max_args)
+	{
+		while (ft_isspace(*start))
+			start++;
+		if (*start == '"')
+		{
+			start++;
+			end = ft_strchr(start, '"');
+		}
+		else if (*start == '\'')
+		{
+			start++;
+			end = ft_strchr(start, '\'');
+		}
+		else
+		{
+			end = start;
+			while (*end && !ft_isspace(*end))
+				end++;
+		}
+		if (end)
+		{
+			len = end - start;
+			args[i] = (char *)malloc(len + 1);
+			ft_strncpy(args[i], start, len);
+			args[i][len] = '\0';
+			i++;
+			if (*end)
+				start = end + 1;
+			else
+				start = end;
+		}
+	}
+	args[i] = NULL;
 }
 
-void	parse_input(char *input)
+void	execute_command(char **args)
 {
-	char	*token;
-	token = strtok(input, " ");
-	while (token != NULL)
+	pid_t	pid;
+	int		status;
+
+	status = 0;
+	pid = fork();
+	if (pid == 0)
 	{
-		printf("Token; %s\n", token);
-		token = strtok(NULL, " ");
+		if (execvp(args[0], args) == -1)
+			perror("minishell");
+		exit(EXIT_FAILURE);
+	}
+	else if (pid < 0)
+		perror("minishell");
+	else
+	{
+		while (waitpid(pid, &status, WUNTRACED) != -1 && !WIFEXITED(status) && !WIFSIGNALED(status));
 	}
 }
 
 int	main(void)
 {
 	char	*input;
+	char	*args[10];
+	int		i;
 
-	while(1)
+	while (1)
 	{
-		input = get_input();
+		input = readline("minishell> ");
 		if (input == NULL)
 		{
 			printf("exit\n");
-			break;
+			break ;
 		}
-		if(*input)
-			parse_input(input);
+		if (input[0])
+		{
+			add_history(input);
+			tokenize_input(input, args, 10);
+			if (args[0] != NULL)
+				execute_command(args);
+		}
+		i = 0;
+		//while (args[i])
+		//{
+		//	printf("Token %d: %s\n", i, args[i]);
+		//	i++;
+		//}
+		i = 0;
+		while (args[i])
+		{
+			free(args[i]);
+			i++;
+		}
 		free(input);
 	}
-	rl_clear_history(); //free all the command history before terminating
+	rl_clear_history();
 	return (0);
 }
+
 
 	
