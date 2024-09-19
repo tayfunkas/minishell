@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
+
 char	*ft_strncpy(char *dest, char *src, unsigned int n)
 {
 	unsigned int	i;
@@ -46,4 +48,17 @@ int	ft_isspace(int c)
 	if (c == ' ')
 		return (1);
 	return (0);
+}
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	int	result; 
+
+	while (*s1 && *s2 && *s1 == *s2)
+	{
+		s1++;
+		s2++;
+	}
+	result = *s1 - *s2;
+	return (result);
 }

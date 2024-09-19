@@ -10,23 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <ctype.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 #include "minishell.h"
 
-void	tokenize_input(char *input, char **args, int max_args)
+void	tokenize_input(char *input, char **args, int max_args, t_token *tokens)
 {
 	int		i;
 	int		len;
 	char	*start;
 	char	*end;
+	int		inside_quotes;
 
 	i = 0;
+	inside_quotes = 0;
 	start = input;
 	while (*start && i < max_args)
 	{
@@ -34,16 +29,19 @@ void	tokenize_input(char *input, char **args, int max_args)
 			start++;
 		if (*start == '"')
 		{
+			inside_quotes = 1;
 			start++;
 			end = ft_strchr(start, '"');
 		}
 		else if (*start == '\'')
 		{
+			inside_quotes = 1;
 			start++;
 			end = ft_strchr(start, '\'');
 		}
 		else
 		{
+			inside_quotes = 0;
 			end = start;
 			while (*end && !ft_isspace(*end))
 				end++;
@@ -54,6 +52,8 @@ void	tokenize_input(char *input, char **args, int max_args)
 			args[i] = (char *)malloc(len + 1);
 			ft_strncpy(args[i], start, len);
 			args[i][len] = '\0';
+			tokens[i].str = args[i];
+			tokens[i].flag = inside_quotes;
 			i++;
 			if (*end)
 				start = end + 1;
@@ -85,6 +85,26 @@ void	execute_command(char **args)
 	}
 }
 
+void	type_arg(t_token *token)
+{
+	if (ft_strcmp(token->str, "") == 0)
+		token->type = EMPTY;
+	else if (ft_strcmp(token->str, ">") == 0 && token->flag == 0)
+		token->type = TRUNC;
+	else if (ft_strcmp(token->str, ">>") == 0 && token->flag == 0)
+		token->type = APPEND;
+	else if (ft_strcmp(token->str, "<") == 0 && token->flag == 0)
+		token->type = INPUT;
+	else if (ft_strcmp(token->str, "|") == 0 && token->flag == 0)
+		token->type = PIPE;
+	else if (ft_strcmp(token->str, ";") == 0 && token->flag == 0)
+		token->type = END;
+	else if (token->prev == NULL || token->prev->type >= TRUNC)
+		token->type = CMD;
+	else
+		token->type= ARG;
+}
+
 int	main(void)
 {
 	char	*input;
@@ -102,7 +122,7 @@ int	main(void)
 		if (input[0])
 		{
 			add_history(input);
-			tokenize_input(input, args, 10);
+			tokenize_input(input, args, 10, tokens);
 			if (args[0] != NULL)
 				execute_command(args);
 		}
