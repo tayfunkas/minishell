@@ -2,6 +2,7 @@ NAME = minishell
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
+LIBS = -lreadline
 INC = 
 
 RM = rm -f
@@ -12,7 +13,7 @@ OBJS = $(SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@

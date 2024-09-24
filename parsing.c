@@ -105,10 +105,33 @@ void	type_arg(t_token *token)
 		token->type= ARG;
 }
 
+void	handle_tokens(t_token *tokens)
+{
+	t_token	*current = tokens;
+	
+	while (current != NULL)
+	{
+		if (current->type == PIPE)
+			handle_pipe(current);
+		else if (current->type == TRUNC)
+			handle_redirection(current);
+		else if (current->type == APPEND)
+			handle_redirection(current);
+		else if (current->type == INPUT)
+			handle_redirection(current);
+		else if (current->type == CMD || current->type == ARG)
+			handle_command(current);
+		else if (current->type == END)
+			execute_pipeline(tokens);
+		current = current->next;
+	}
+}
+
 int	main(void)
 {
 	char	*input;
 	char	*args[10];
+	t_token	tokens[10];
 	int		i;
 
 	while (1)
