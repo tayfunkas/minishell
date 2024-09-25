@@ -1,0 +1,9 @@
+How our progran works:
+1. execute program "minishell"
+2. parse arguments based on token
+3. Assign datas(str, type..) in the struct "t_token"
+4. Check if tokens include 1)pipe(|), 2)redirection(>. >>. <), 3)external command, 4) internal command
+5. Handle tokens according to the result of 4.
+
+Sep 25th
+Kyuwon: I
