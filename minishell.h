@@ -41,9 +41,10 @@ typedef struct s_command
 } t_command;
 
 //parsing.c
-void	tokenize_input(char *input, char **args, int max_args, t_token *tokens);
-void	execute_command(char **args);
+t_token	*tokenize_input(char *input, int max_args);
+void	execute_command(t_token *tokens);
 void	type_arg(t_token *token);
+void assign_token_types(t_token *tokens);
 //libft.c
 char	*ft_strncpy(char *dest, char *src, unsigned int n);
 char	*ft_strchr(const char *s, int c);

@@ -12,48 +12,50 @@
 
 #include "minishell.h"
 
-void	tokenize_input(char *input, char **args, int max_args, t_token *tokens)
+t_token *tokenize_input(char *input, int max_args)
 {
-	int		i;
-	int		len;
-	char	*start;
+	t_token	*head = NULL;
+	t_token	*current = NULL;
+	int 	i;
+	int	inside_quotes;
+	char	*start = input;
 	char	*end;
-	int		inside_quotes;
 
 	i = 0;
 	inside_quotes = 0;
-	start = input;
 	while (*start && i < max_args)
 	{
 		while (ft_isspace(*start))
 			start++;
-		if (*start == '"')
+		if (*start == '"' || *start == '\'')
 		{
 			inside_quotes = 1;
+			char quote = *start;
 			start++;
-			end = ft_strchr(start, '"');
-		}
-		else if (*start == '\'')
-		{
-			inside_quotes = 1;
-			start++;
-			end = ft_strchr(start, '\'');
+			end = ft_strchr(start, quote);
 		}
 		else
 		{
 			inside_quotes = 0;
 			end = start;
 			while (*end && !ft_isspace(*end))
-				end++;
+			end++;
 		}
 		if (end)
 		{
-			len = end - start;
-			args[i] = (char *)malloc(len + 1);
-			ft_strncpy(args[i], start, len);
-			args[i][len] = '\0';
-			tokens[i].str = args[i];
-			tokens[i].flag = inside_quotes;
+			t_token	*new_token = (t_token *)malloc(sizeof(t_token));
+			int	len = end - start;
+			new_token->str = (char *)malloc(len + 1);
+			ft_strncpy(new_token->str, start, len);
+			new_token->str[len] = '\0';
+			new_token->flag = inside_quotes;
+			new_token->next = NULL;
+			new_token->prev = current;
+			if (current)
+				current->next = new_token;
+			else
+				head = new_token;
+			current = new_token;
 			i++;
 			if (*end)
 				start = end + 1;
@@ -61,15 +63,38 @@ void	tokenize_input(char *input, char **args, int max_args, t_token *tokens)
 				start = end;
 		}
 	}
-	args[i] = NULL;
+	return head;
 }
 
-void	execute_command(char **args)
+void	assign_token_types(t_token *tokens)
+{
+	t_token	*current;
+	
+	current = tokens;
+	while (current)
+	{
+		type_arg(current);
+		current = current->next;
+	}
+}
+
+void	execute_command(t_token *tokens)
 {
 	pid_t	pid;
-	int		status;
-
+	int	status;
+	char	*args[10]; // Increased size to handle more arguments
+	int	i;
+    
 	status = 0;
+	i = 0;
+	while (tokens && tokens->str && i < 10 && (tokens->type == CMD || tokens->type == ARG))
+	{
+		args[i++] = tokens->str;
+		tokens = tokens->next;
+	}
+	args[i] = NULL;
+	if (i == 0) 
+		return;
 	pid = fork();
 	if (pid == 0)
 	{
@@ -78,7 +103,7 @@ void	execute_command(char **args)
 		exit(EXIT_FAILURE);
 	}
 	else if (pid < 0)
-		perror("minishell");
+	perror("minishell");
 	else
 	{
 		while (waitpid(pid, &status, WUNTRACED) != -1 && !WIFEXITED(status) && !WIFSIGNALED(status));
@@ -104,7 +129,7 @@ void	type_arg(t_token *token)
 	else
 		token->type= ARG;
 }
-
+/*
 void	handle_tokens(t_token *tokens)
 {
 	t_token	*current = tokens;
@@ -126,13 +151,27 @@ void	handle_tokens(t_token *tokens)
 		current = current->next;
 	}
 }
+*/
+
+void	free_tokens(t_token *tokens)
+{
+	t_token	*current;
+	t_token	*next;
+	
+	current = tokens;
+	while (current)
+	{
+		next = current->next;
+		free(current->str);
+		free(current);
+		current = next;
+	}
+}
 
 int	main(void)
 {
 	char	*input;
-	char	*args[10];
-	t_token	tokens[10];
-	int		i;
+	t_token	*tokens;
 
 	while (1)
 	{
@@ -140,32 +179,19 @@ int	main(void)
 		if (input == NULL)
 		{
 			printf("exit\n");
-			break ;
+			break;
 		}
 		if (input[0])
 		{
 			add_history(input);
-			tokenize_input(input, args, 10, tokens);
-			if (args[0] != NULL)
-				execute_command(args);
-		}
-		i = 0;
-		//while (args[i])
-		//{
-		//	printf("Token %d: %s\n", i, args[i]);
-		//	i++;
-		//}
-		i = 0;
-		while (args[i])
-		{
-			free(args[i]);
-			i++;
+			tokens = tokenize_input(input, 10);
+			assign_token_types(tokens);
+			if (tokens)
+				execute_command(tokens);
+			free_tokens(tokens);
 		}
 		free(input);
 	}
 	rl_clear_history();
 	return (0);
 }
-
-
-	
