@@ -8,6 +8,7 @@ INC =
 RM = rm -f
 
 SRCS = minishell.c parsing.c handling.c execution.c utils.c libft.c
+
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)

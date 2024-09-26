@@ -69,7 +69,7 @@ t_token *tokenize_input(char *input, int max_args)
 void	assign_token_types(t_token *tokens)
 {
 	t_token	*current;
-
+  
 	current = tokens;
 	while (current)
 	{
