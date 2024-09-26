@@ -1,1 +1,16 @@
-Sep 25 
+How our progran works:
+1. execute program "minishell"
+2. parse arguments based on token
+3. Assign datas(str, type..) in the struct "t_token"
+4. Check if tokens include A.pipe(|), B.redirection(>. >>. <), C.external command, D.internal command
+5. Handle tokens according to the result of 4.
+
+Sep 25th
+Kyuwon:
+- splited functions into each '.c' file properly according to each step
+- After parsing arguments, our program go to "handle_tokens" function.
+- In handle_tokens function, I developed
+	1. function "is_external_command" and "is_internal_command"
+	2. function "execute_external_command" and "find_cmd_path"
+		Now it handles external command with only one word, like "pwd" "ls"
+		But it still doesn't work with over a word, like "ls -l". (to be followed-up tomorrow)

@@ -3,11 +3,12 @@ NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 LIBS = -lreadline
-INC = 
+INC =
 
 RM = rm -f
 
-SRCS = parsing.c libft.c
+SRCS = minishell.c parsing.c handling.c execution.c utils.c libft.c
+
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
