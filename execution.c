@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 17:50:18 by kyukang           #+#    #+#             */
-/*   Updated: 2024/09/25 19:03:37 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/09/26 13:47:16 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,26 +22,31 @@ static char	*find_cmd_path(char *cmd)
 	int		i;
 
 	path_env = getenv("PATH");
-	if (!path_env)
+	if (!path_env) //if there is no path, return NULL
 		return (NULL);
-	cmd_path = NULL;
-	paths = ft_split(path_env, ':');
+	cmd_path = NULL; //initiate cmd_path
+	paths = ft_split(path_env, ':'); //split PATH with delimeter ':'
 	i = 0;
 	while (paths[i])
 	{
-		ft_strcpy(full_path, paths[i]);
-		ft_strcat(full_path, "/");
-		ft_strcat(full_path, cmd);
-		if (access(full_path, X_OK) == 0)
+		ft_strcpy(full_path, paths[i]); //Copy current path to 'full_path'
+		ft_strcat(full_path, "/"); //Add "/" at the end of 'full_path'
+		ft_strcat(full_path, cmd); //Add command at the end fo 'full_path'
+		if (access(full_path, X_OK) == 0) //Check if there is a command in the path
 		{
-			cmd_path = ft_strdup(full_path);
-			break ;
+			cmd_path = ft_strdup(full_path); //Copy the full path
+			break ; //If there is a command, we don't need to go through remaining paths. so terminate the loop.
 		}
 		i++;
 	}
 	free_split(paths);
 	return (cmd_path);
 }
+
+/*
+I changed 'cmd_path = find_cmd_path(tokens[0].str)' to 'cmd_path = find_cmd_path(tokens->str)'.
+This make program go through not only the first token but all tokens as linked list and find the right command in the path.
+*/
 
 void	execute_external_command(t_token *tokens, int token_count)
 {
@@ -51,14 +56,17 @@ void	execute_external_command(t_token *tokens, int token_count)
 	char	*args[token_count + 1];
 	char	*envp[] = {NULL};
 	int		i;
+	t_token	*current;
 
-	cmd_path = find_cmd_path(tokens[0].str);
+	cmd_path = find_cmd_path(tokens->str);
 	if (cmd_path == NULL)
 		return ;
 	i = 0;
-	while (i < token_count)
+	current = tokens;
+	while (i < token_count && current)
 	{
-		args[i] = tokens[i].str;
+		args[i] = current->str;
+		current = current->next;
 		i++;
 	}
 	args[token_count] = NULL;
