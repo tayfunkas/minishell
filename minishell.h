@@ -37,6 +37,7 @@ typedef struct s_command
 	int	argc;
 	int	fd_in;
 	int	fd_out;
+	char	**env;
 	struct s_command *next;
 } t_command;
 
@@ -62,11 +63,11 @@ int		count_tokens(t_token *tokens);
 void	ft_cd(char *path);
 void	ft_pwd();
 void	ft_echo(char **args);
-void	ft_export(char *key_value);
-void	ft_unset(char *key);
-void	ft_env(char **envp);
+void	ft_export(t_command *cmd, char *key_value);
+void	ft_unset(t_command *cmd, char *key);
+void	ft_env(t_command *cmd);
 void	ft_exit(char **args);
-void	execute_internal_commands(t_command *cmd, char **envp);
+void	execute_internal_commands(t_command *cmd);
 
 //libft.c
 int		ft_isspace(int c);

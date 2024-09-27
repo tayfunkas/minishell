@@ -63,10 +63,10 @@ static int	is_internal_command(char *cmd)
 void	handle_tokens(t_token *tokens, char **envp)
 {
 	t_token	*current;
-	t_command	*command_list; // New command list to hold commands
+	t_command	*cmd; // New command list to hold commands
 
 	current = tokens;
-	command_list = NULL;
+	cmd = NULL;
 	while (current != NULL)
 	{
 		if (current->type == PIPE)
@@ -84,7 +84,7 @@ void	handle_tokens(t_token *tokens, char **envp)
 	current = tokens;
 	if (current && current->type == CMD)
 	{
-		t_command *cmd = (t_command *)malloc(sizeof(t_command));
+		cmd = (t_command *)malloc(sizeof(t_command));
 		if (!cmd)
 		{
 			perror("malloc failied");
@@ -94,9 +94,10 @@ void	handle_tokens(t_token *tokens, char **envp)
 		cmd->argc = 0;
 		cmd->fd_in = 0;
 		cmd->fd_out = 1;
+		cmd->env = envp;
 		cmd->next = NULL;
-		t_token	*arg_token = current->next;
-		while (arg_token && arg_token->type == ARG)
+		t_token	*arg_token = current;
+		while (arg_token && (arg_token->type == CMD || arg_token->type == ARG))
 		{
 			cmd->argc++;
 			arg_token = arg_token->next;
@@ -108,37 +109,23 @@ void	handle_tokens(t_token *tokens, char **envp)
 			free(cmd);
 			return ;
 		}
-		cmd->argv[cmd->argc] = NULL;
-		
-		int	index = 0;
-		int	i = 0;
-		arg_token = current->next;
-		while (arg_token && arg_token->type == ARG)
+		int index = 0;
+		arg_token = current;
+		while (arg_token && (arg_token->type == CMD || arg_token->type == ARG))
 		{
 			cmd->argv[index] = ft_strdup(arg_token->str);
-			if(!cmd->argv[index])
+			if (!cmd->argv[index])
 			{
-				perror("strdup failied");
-				while (i < index)
-				{
-					free(cmd->argv[i]);
-					i++;
-				}
-				free(cmd->argv);
+				perror("strdup failed");
 				free(cmd);
-				return ;
+				return;
 			}
-			index++;
-			arg_token = arg_token->next;
+		index++;
+		arg_token = arg_token->next;
 		}
-		/*if (is_external_command(current->str))
-			execute_external_command(tokens, token_count);*/
-		 printf("Executing command: %s\n", current->str);
-        for (int j = 0; j < cmd->argc; j++) {
-            printf("Arg[%d]: %s\n", j, cmd->argv[j]);
-        }
-		if (is_internal_command(current->str))
-			execute_internal_commands(cmd, envp);
+		cmd->argv[index] = NULL;
+		if (is_internal_command(cmd->argv[0]))
+        		execute_internal_commands(cmd);
 		int	l = 0;
 		while (l < cmd->argc)
 		{

@@ -14,3 +14,8 @@ Kyuwon:
 	2. function "execute_external_command" and "find_cmd_path"
 		Now it handles external command with only one word, like "pwd" "ls"
 		But it still doesn't work with over a word, like "ls -l". (to be followed-up tomorrow)
+Sep 27th
+- included all internal commands
+- cd, env, exit, pwd works. echo will be checked. 
+- unset and export will be checked.
+- handle_tokens function has been updated. 
