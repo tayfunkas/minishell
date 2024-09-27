@@ -13,7 +13,7 @@
 #include "minishell.h"
 //handle_pipe(), handle_redirection could be added in this file
 
-static int	is_external_command(char *cmd)
+/*static int	is_external_command(char *cmd)
 {
 	char	*path_env;
 	char	**paths;
@@ -39,7 +39,7 @@ static int	is_external_command(char *cmd)
 	}
 	free_split(paths);
 	return (0);
-}
+}*/
 
 static int	is_internal_command(char *cmd)
 {
@@ -60,11 +60,13 @@ static int	is_internal_command(char *cmd)
 	return (0);
 }
 
-void	handle_tokens(t_token *tokens)
+void	handle_tokens(t_token *tokens, char **envp)
 {
 	t_token	*current;
+	t_command	*cmd; // New command list to hold commands
 
 	current = tokens;
+	cmd = NULL;
 	while (current != NULL)
 	{
 		if (current->type == PIPE)
@@ -79,19 +81,59 @@ void	handle_tokens(t_token *tokens)
 		}
 		current = current->next;
 	}
-	if (tokens->type == CMD)
+	current = tokens;
+	if (current && current->type == CMD)
 	{
-		if (is_external_command(tokens->str))
+		cmd = (t_command *)malloc(sizeof(t_command));
+		if (!cmd)
 		{
-			execute_external_command(tokens, count_tokens(tokens));
-		//	printf("You entered external command.\n");
+			perror("malloc failied");
 			return ;
 		}
-		else if (is_internal_command(tokens->str))
+		cmd->argv = NULL;
+		cmd->argc = 0;
+		cmd->fd_in = 0;
+		cmd->fd_out = 1;
+		cmd->env = envp;
+		cmd->next = NULL;
+		t_token	*arg_token = current;
+		while (arg_token && (arg_token->type == CMD || arg_token->type == ARG))
 		{
-		//	execute_internal_command(tokens);
-			printf("You entered internal command.\n");
+			cmd->argc++;
+			arg_token = arg_token->next;
+		}
+		cmd->argv = (char **)malloc((cmd->argc + 1) * sizeof(char *));
+		if (!cmd->argv)
+		{
+			perror("malloc failed");
+			free(cmd);
 			return ;
 		}
+		int index = 0;
+		arg_token = current;
+		while (arg_token && (arg_token->type == CMD || arg_token->type == ARG))
+		{
+			cmd->argv[index] = ft_strdup(arg_token->str);
+			if (!cmd->argv[index])
+			{
+				perror("strdup failed");
+				free(cmd);
+				return;
+			}
+		index++;
+		arg_token = arg_token->next;
+		}
+		cmd->argv[index] = NULL;
+		if (is_internal_command(cmd->argv[0]))
+        		execute_internal_commands(cmd);
+		int	l = 0;
+		while (l < cmd->argc)
+		{
+			free(cmd->argv[l]);
+			l++;
+		}
+		free(cmd->argv);
+		free(cmd);
 	}
 }
+

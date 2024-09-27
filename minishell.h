@@ -37,6 +37,7 @@ typedef struct s_command
 	int	argc;
 	int	fd_in;
 	int	fd_out;
+	char	**env;
 	struct s_command *next;
 } t_command;
 
@@ -46,7 +47,7 @@ void	assign_token_types(t_token *tokens);
 void	type_tokens(t_token *token);
 
 //handling.c
-void	handle_tokens(t_token *tokens);
+void	handle_tokens(t_token *tokens, char **envp);
 //int		is_external_command(char *cmd);
 //int		is_internal_command(char *cmd);
 
@@ -58,6 +59,16 @@ void	free_tokens(t_token *tokens);
 void	free_split(char **paths);
 int		count_tokens(t_token *tokens);
 
+//internal_commands.c
+void	ft_cd(char *path);
+void	ft_pwd();
+void	ft_echo(char **args);
+void	ft_export(t_command *cmd, char *key_value);
+void	ft_unset(t_command *cmd, char *key);
+void	ft_env(t_command *cmd);
+void	ft_exit(char **args);
+void	execute_internal_commands(t_command *cmd);
+
 //libft.c
 int		ft_isspace(int c);
 char	**ft_split(char const *s, char c);
@@ -67,5 +78,6 @@ char	*ft_strncpy(char *dest, char *src, unsigned int n);
 char	*ft_strcat(char *dest, char *src);
 char	*ft_strcpy(char *s1, char *s2);
 char	*ft_strdup(const char *s);
+int	ft_atoi(const char *str);
 
 #endif

@@ -12,8 +12,11 @@
 
 #include "minishell.h"
 
-int	main(void)
+int main(int argc, char **argv, char **envp)
 {
+	(void)argc;
+	(void)argv;
+	
 	char	*input;
 	t_token	*tokens;
 
@@ -31,7 +34,7 @@ int	main(void)
 			tokens = tokenize_input(input, 10);
 			assign_token_types(tokens);
 			if (tokens)
-				handle_tokens(tokens);
+				handle_tokens(tokens, envp);
 			free_tokens(tokens);
 		}
 		free(input);
