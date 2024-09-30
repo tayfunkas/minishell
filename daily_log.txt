@@ -6,7 +6,6 @@ How our progran works:
 5. Handle tokens according to the result of 4.
 
 Sep 25th
-Kyuwon:
 - splited functions into each '.c' file properly according to each step
 - After parsing arguments, our program go to "handle_tokens" function.
 - In handle_tokens function, I developed
@@ -16,6 +15,9 @@ Kyuwon:
 		But it still doesn't work with over a word, like "ls -l". (to be followed-up tomorrow)
 Sep 27th
 - included all internal commands
-- cd, env, exit, pwd works. echo will be checked. 
+- cd, env, exit, pwd works. echo will be checked.
 - unset and export will be checked.
-- handle_tokens function has been updated. 
+- handle_tokens function has been updated.
+
+Sep 30th
+- Implemented 'handle_external_commands'part!!!

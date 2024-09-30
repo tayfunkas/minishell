@@ -6,27 +6,27 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 14:39:13 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/09/25 18:17:47 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/09/30 14:54:25 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-	(void)argc;
-	(void)argv;
-	
 	char	*input;
 	t_token	*tokens;
 
+	(void)argc;
+	(void)argv;
 	while (1)
 	{
 		input = readline("minishell> ");
 		if (input == NULL)
 		{
 			printf("exit\n");
-			break;
+			rl_clear_history();
+			break ;
 		}
 		if (input[0])
 		{

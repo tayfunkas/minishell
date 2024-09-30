@@ -5,15 +5,29 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/25 17:41:07 by kyukang           #+#    #+#             */
-/*   Updated: 2024/09/25 19:07:02 by kyukang          ###   ########.fr       */
+/*   Created: 2024/09/30 14:56:16 by kyukang           #+#    #+#             */
+/*   Updated: 2024/09/30 14:56:18 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-//handle_pipe(), handle_redirection could be added in this file
 
-/*static int	is_external_command(char *cmd)
+static void	is_pipe_redir(t_token *current)
+{
+	if (current->type == PIPE)
+	{
+		//handle_pipe(tokens, current->next);
+		return ;
+	}
+	if (current->type == TRUNC || current->type == APPEND
+		|| current->type == INPUT)
+	{
+		//handle_redirection(tokens, current->next->str, current->type);
+		return ;
+	}
+}
+
+static int	is_external_command(char *cmd)
 {
 	char	*path_env;
 	char	**paths;
@@ -39,7 +53,7 @@
 	}
 	free_split(paths);
 	return (0);
-}*/
+}
 
 static int	is_internal_command(char *cmd)
 {
@@ -62,78 +76,31 @@ static int	is_internal_command(char *cmd)
 
 void	handle_tokens(t_token *tokens, char **envp)
 {
-	t_token	*current;
-	t_command	*cmd; // New command list to hold commands
+	t_token		*current;
+	t_command	*cmd;
 
 	current = tokens;
-	cmd = NULL;
 	while (current != NULL)
 	{
-		if (current->type == PIPE)
-		{
-			//handle_pipe(tokens, current->next);
-			return;
-		}
-		if (current->type == TRUNC || current->type == APPEND || current->type == INPUT)
-		{
-			//handle_redirection(tokens, current->next->str, current->type);
-			return;
-		}
+		is_pipe_redir(current);
 		current = current->next;
 	}
 	current = tokens;
 	if (current && current->type == CMD)
 	{
-		cmd = (t_command *)malloc(sizeof(t_command));
-		if (!cmd)
+		if (is_external_command(current->str))
 		{
-			perror("malloc failied");
-			return ;
+			printf("(external)\n");
+			execute_external_command(current, count_tokens(current));
 		}
-		cmd->argv = NULL;
-		cmd->argc = 0;
-		cmd->fd_in = 0;
-		cmd->fd_out = 1;
-		cmd->env = envp;
-		cmd->next = NULL;
-		t_token	*arg_token = current;
-		while (arg_token && (arg_token->type == CMD || arg_token->type == ARG))
+		else if (is_internal_command(current->str))
 		{
-			cmd->argc++;
-			arg_token = arg_token->next;
+			cmd = init_internal_command(current, envp);
+			if (!cmd)
+				return ;
+			printf("(internal)\n");
+			execute_internal_commands(cmd);
+			free_command(cmd);
 		}
-		cmd->argv = (char **)malloc((cmd->argc + 1) * sizeof(char *));
-		if (!cmd->argv)
-		{
-			perror("malloc failed");
-			free(cmd);
-			return ;
-		}
-		int index = 0;
-		arg_token = current;
-		while (arg_token && (arg_token->type == CMD || arg_token->type == ARG))
-		{
-			cmd->argv[index] = ft_strdup(arg_token->str);
-			if (!cmd->argv[index])
-			{
-				perror("strdup failed");
-				free(cmd);
-				return;
-			}
-		index++;
-		arg_token = arg_token->next;
-		}
-		cmd->argv[index] = NULL;
-		if (is_internal_command(cmd->argv[0]))
-        		execute_internal_commands(cmd);
-		int	l = 0;
-		while (l < cmd->argc)
-		{
-			free(cmd->argv[l]);
-			l++;
-		}
-		free(cmd->argv);
-		free(cmd);
 	}
 }
-

@@ -7,7 +7,7 @@ INC =
 
 RM = rm -f
 
-SRCS = minishell.c parsing.c handling.c execution.c utils.c libft.c internal_commands.c
+SRCS = minishell.c parsing.c handling2.c init_internal_commands.c internal_commands.c path.c external_commands.c utils.c libft.c
 
 OBJS = $(SRCS:.c=.o)
 
