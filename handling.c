@@ -29,42 +29,41 @@ static void	is_pipe_redir(t_token *current)
 
 static int is_external_command(char *cmd, char **our_env)
 {
-    char *path_env = NULL;
-    char **paths;
-    char full_path[1024];
-    int i = 0;
+	char	*path_env = NULL;
+	char	**paths;
+	char	full_path[1024];
+	int	i = 0;
 
 	if (ft_strcmp(cmd, "env") == 0)
-        	return 0;
-    while (our_env[i])
-    {
-        if (ft_strncmp(our_env[i], "PATH=", 5) == 0)
-        {
-            path_env = our_env[i] + 5;
-            break;
-        }
-        i++;
-    }
+		return 0;
+	while (our_env[i])
+	{
+		if (ft_strncmp(our_env[i], "PATH=", 5) == 0)
+		{
+			path_env = our_env[i] + 5;
+			break;
+		}
+		i++;
+	}
 
-    if (!path_env)
-        return (0);
-
-    paths = ft_split(path_env, ':');
-    i = 0;
-    while (paths[i] != NULL)
-    {
-        ft_strcpy(full_path, paths[i]);
-        ft_strcat(full_path, "/");
-        ft_strcat(full_path, cmd);
-        if (access(full_path, X_OK) == 0)
-        {
-            free_split(paths);
-            return (1);
-        }
-        i++;
-    }
-    free_split(paths);
-    return (0);
+	if (!path_env)
+		return (0);
+	paths = ft_split(path_env, ':');
+	i = 0;
+	while (paths[i] != NULL)
+	{
+		ft_strcpy(full_path, paths[i]);
+		ft_strcat(full_path, "/");
+		ft_strcat(full_path, cmd);
+		if (access(full_path, X_OK) == 0)
+		{
+			free_split(paths);
+			return (1);
+		}
+		i++;
+	}
+	free_split(paths);
+	return (0);
 }
 
 static int	is_internal_command(char *cmd)
