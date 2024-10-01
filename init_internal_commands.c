@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static t_command	*init_command(char **envp)
+static t_command	*init_command(char **our_env)
 {
 	t_command	*cmd;
 
@@ -26,7 +26,7 @@ static t_command	*init_command(char **envp)
 	cmd->argc = 0;
 	cmd->fd_in = 0;
 	cmd->fd_out = 1;
-	cmd->env = envp;
+	cmd->env = our_env;
 	cmd->next = NULL;
 	return (cmd);
 }

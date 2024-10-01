@@ -21,3 +21,9 @@ Sep 27th
 
 Sep 30th
 - Implemented 'handle_external_commands'part!!!
+
+Oct 1st 
+- merged the code to handle all internal commands
+- updated relevant functions to handle env command
+- is_external_command function has been updated to use the copied environment
+- some more to handle (multiple arguments for exit and \ for echo"

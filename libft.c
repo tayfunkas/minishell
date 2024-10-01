@@ -134,7 +134,7 @@ char	**ft_split(char const *s, char c)
 	return (result);
 }
 
-char	*ft_strcat(char *dest, char *src)
+char	*ft_strcat(char *dest, const char *src)
 {
 	int	i;
 	int	j;
@@ -154,7 +154,7 @@ char	*ft_strcat(char *dest, char *src)
 	return (dest);
 }
 
-char	*ft_strcpy(char *s1, char *s2)
+char	*ft_strcpy(char *s1, const char *s2)
 {
 	int	i;
 
@@ -217,4 +217,32 @@ int	ft_atoi(const char *str)
 	}
 	return (result * sign);
 }
+
+size_t	ft_strlen(const char *s)
+{
+	int	i;
+
+	if (s == NULL)
+		return (0);
+	i = 0;
+	while (s[i] != '\0')
+	{
+		i++;
+	}
+	return (i);
+}
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	if (n == 0)
+		return (0);
+	n--;
+	while (n-- && *s1 && *s2 && *s1 == *s2)
+	{
+		s1++;
+		s2++;
+	}
+	return ((unsigned char)*s1 - (unsigned char)*s2);
+}
+
 

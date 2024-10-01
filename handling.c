@@ -27,32 +27,44 @@ static void	is_pipe_redir(t_token *current)
 	}
 }
 
-static int	is_external_command(char *cmd)
+static int is_external_command(char *cmd, char **our_env)
 {
-	char	*path_env;
-	char	**paths;
-	char	full_path[1024];
-	int		i;
+    char *path_env = NULL;
+    char **paths;
+    char full_path[1024];
+    int i = 0;
 
-	path_env = getenv("PATH");
-	if (!path_env)
-		return (0);
-	paths = ft_split(path_env, ':');
-	i = 0;
-	while (paths[i] != NULL)
-	{
-		ft_strcpy(full_path, paths[i]);
-		ft_strcat(full_path, "/");
-		ft_strcat(full_path, cmd);
-		if (access(full_path, X_OK) == 0)
-		{
-			free_split(paths);
-			return (1);
-		}
-		i++;
-	}
-	free_split(paths);
-	return (0);
+	if (ft_strcmp(cmd, "env") == 0)
+        	return 0;
+    while (our_env[i])
+    {
+        if (ft_strncmp(our_env[i], "PATH=", 5) == 0)
+        {
+            path_env = our_env[i] + 5;
+            break;
+        }
+        i++;
+    }
+
+    if (!path_env)
+        return (0);
+
+    paths = ft_split(path_env, ':');
+    i = 0;
+    while (paths[i] != NULL)
+    {
+        ft_strcpy(full_path, paths[i]);
+        ft_strcat(full_path, "/");
+        ft_strcat(full_path, cmd);
+        if (access(full_path, X_OK) == 0)
+        {
+            free_split(paths);
+            return (1);
+        }
+        i++;
+    }
+    free_split(paths);
+    return (0);
 }
 
 static int	is_internal_command(char *cmd)
@@ -74,7 +86,7 @@ static int	is_internal_command(char *cmd)
 	return (0);
 }
 
-void	handle_tokens(t_token *tokens, char **envp)
+void	handle_tokens(t_token *tokens, char **our_env)
 {
 	t_token		*current;
 	t_command	*cmd;
@@ -88,18 +100,18 @@ void	handle_tokens(t_token *tokens, char **envp)
 	current = tokens;
 	if (current && current->type == CMD)
 	{
-		if (is_external_command(current->str))
+		if (is_external_command(current->str, our_env))
 		{
 			printf("(external)\n");
 			execute_external_command(current, count_tokens(current));
 		}
 		else if (is_internal_command(current->str))
 		{
-			cmd = init_internal_command(current, envp);
+			cmd = init_internal_command(current, our_env);
 			if (!cmd)
 				return ;
 			printf("(internal)\n");
-			execute_internal_commands(cmd);
+			execute_internal_commands(cmd, &our_env);
 			free_command(cmd);
 		}
 	}

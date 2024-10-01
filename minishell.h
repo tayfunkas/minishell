@@ -59,20 +59,25 @@ void		assign_token_types(t_token *tokens);
 void		type_tokens(t_token *token);
 
 //handling.c
-void		handle_tokens(t_token *tokens, char **envp);
+void		handle_tokens(t_token *tokens, char **our_env);
 
 //initiate_internal_commands.c
 t_command	*init_internal_command(t_token *current, char **envp);
 
 //execute_internal_commands.c
-void		execute_internal_commands(t_command *cmd);
+void		execute_internal_commands(t_command *cmd, char ***env);
 void		ft_cd(char *path);
 void		ft_pwd(void);
 void		ft_echo(char **args);
-void		ft_export(t_command *cmd, char *key_value);
-void		ft_unset(t_command *cmd, char *key);
-void		ft_env(t_command *cmd);
+void		ft_export(t_command *cmd, char ***env);
+void		set_env(char ***env, const char *name, const char *value);
+void		ft_unset(t_command *cmd, char ***env);
+void		ft_env(char **env);
 void		ft_exit(char **args);
+
+//minishell.c
+char	**copy_environment(char **envp);
+void	free_environment(char **env);
 
 //path.c
 char		*find_cmd_path(char *cmd);
@@ -92,9 +97,11 @@ char		**ft_split(char const *s, char c);
 char		*ft_strchr(const char *s, int c);
 int			ft_strcmp(char *s1, char *s2);
 char		*ft_strncpy(char *dest, char *src, unsigned int n);
-char		*ft_strcat(char *dest, char *src);
-char		*ft_strcpy(char *s1, char *s2);
+char		*ft_strcat(char *dest, const char *src);
+char		*ft_strcpy(char *s1, const char *s2);
 char		*ft_strdup(const char *s);
 int			ft_atoi(const char *str);
+size_t	ft_strlen(const char *s);
+int	ft_strncmp(const char *s1, const char *s2, size_t n);
 
 #endif

@@ -103,56 +103,126 @@ void	ft_echo(char **args)
 		printf("\n");
 }
 
-void	ft_export(t_command *cmd, char *key_value)
+void	ft_export(t_command *cmd, char ***env)
 {
-	char	**key_value_pair;
+	char	*key_value;
+	char	*equals_sign;
 	char	*key;
-	char	*value;
-
-	(void)cmd;
-	if (!key_value)
+	char	*value; 
+	
+	key_value = cmd->argv[1];
+	equals_sign = ft_strchr(key_value, '=');
+	
+	if (cmd->argc < 2)
 	{
-		write(2, "export: invalid argument\n", 25);
+		write(2, "export: not enough arguments\n", 29);
 		return ;
 	}
-	key_value_pair = ft_split(key_value, '=');
-	if (!key_value_pair || !key_value_pair[0] || !key_value_pair[1])
+	if (equals_sign)
 	{
-		write(2, "export: invalid argument\n", 25);
-		free(key_value_pair);
-		return ;
+		*equals_sign = '\0';
+		key = key_value;
+		value = equals_sign + 1;
+		set_env(env, key, value);
+		*equals_sign = '=';
 	}
-	key = key_value_pair[0];
-	value = key_value_pair[1];
-	if (setenv(key, value, 1) != 0)
-		perror("export");
-	free(key);
-	free(value);
-	free(key_value_pair);
+	else
+		set_env(env, key_value, "");
 }
 
-void	ft_unset(t_command *cmd, char *key)
+void	set_env(char ***env, const char *name, const char *value)
 {
-	(void)cmd;
-	if (unsetenv(key) != 0)
-		perror("unset");
-}
-
-void	ft_env(t_command *cmd)
-{
-	char	**envp;
-	int		i;
-
-	envp = cmd->env;
+	int	i;
+	int	len;
+	char	*new_var;
+	
 	i = 0;
-	if (envp == NULL)
+	len = ft_strlen(name);
+	while ((*env)[i] != NULL)
+	{
+		if (ft_strncmp((*env)[i], name, len) == 0 && (*env)[i][len] == '=')
+		{
+			free(*env[i]);
+			new_var = malloc(ft_strlen(name) + ft_strlen(value) + 2);
+			if (!new_var)
+			{
+				perror("malloc");
+				return ; 
+			}
+			ft_strcpy(new_var, name);
+			ft_strcat(new_var, "=");
+			ft_strcat(new_var, value);
+			(*env)[i] = new_var;
+			return ;
+		}
+		i++;
+	}
+	*env = realloc(*env, sizeof(char*) * (i + 2));
+	if (!*env)
+	{
+		perror("malloc");
+		return ;
+	}
+	new_var = malloc(ft_strlen(name) + ft_strlen(value) + 2);
+	if (!new_var)
+			{
+				perror("malloc");
+				return ; 
+			}
+	ft_strcpy(new_var, name);
+	ft_strcat(new_var, "=");
+	ft_strcat(new_var, value);
+	(*env)[i] = new_var;
+	(*env)[i + 1] = NULL;
+}
+	
+void	ft_unset(t_command *cmd, char ***env)
+{
+	char	*key;
+	
+	key = cmd->argv[1];
+	if (!key)
+	{
+		write(2, "unset: not enough arguments\n", 28);
+		return;
+	}
+	
+	int	i;
+	int	j;
+	int	len;
+	
+	i = 0;
+	len = ft_strlen(key);
+	while ((*env)[i] != NULL)
+	{
+		if (ft_strncmp((*env)[i], key, len) == 0 && (*env)[i][len] == '=')
+		{
+			free((*env)[i]);
+			j = i;
+			while((*env)[j] != NULL)
+			{
+				(*env)[j] = (*env)[j + 1];
+				j++;
+			}
+			return ;
+		}
+		i++;
+	}
+}
+
+void	ft_env(char **env)
+{
+	int	i;
+	
+	i = 0;
+	if (env == NULL)
 	{
 		write(2, "env: no environment variables\n", 31);
 		return ;
 	}
-	while (cmd->env[i] != NULL)
+	while(env[i] != NULL)
 	{
-		printf("%s\n", cmd->env[i]);
+		printf("%s\n", env[i]);
 		i++;
 	}
 }
@@ -167,31 +237,32 @@ void	ft_exit(char **args)
 	exit(status);
 }
 
-void	execute_internal_commands(t_command *cmd)
+void	execute_internal_commands(t_command *cmd, char ***env)
 {
 	int	i;
-
-	i = 0;
-	if (cmd == NULL || cmd->argv == NULL || cmd->argv[0] == NULL)
+	
+	i = 0;	
+	if (cmd == NULL || cmd->argv == NULL || cmd->argv[0] == NULL) 
 	{
-		write(2, "minishell: command not found\n", 29);
-		return ;
-	}
-	//printf("Internal command: %s\n", cmd->argv[0]);
+        	write(2, "minishell: command not found\n", 29);
+        	return;
+    	}
+    	//printf("Internal command: %s\n", cmd->argv[0]);
 	if (ft_strcmp(cmd->argv[0], "cd") == 0)
 		ft_cd(cmd->argv[1]);
-	//else if (ft_strcmp(cmd->argv[0], "pwd") == 0)
-	//	ft_pwd();
-	//else if (ft_strcmp(cmd->argv[0], "echo") == 0)
-	//	ft_echo(cmd->argv);
-	else if (ft_strcmp(cmd->argv[0], "export") == 0)
-		ft_export(cmd, cmd->argv[1]);
+	/*else if (ft_strcmp(cmd->argv[0], "pwd") == 0)
+		ft_pwd();
+	else if (ft_strcmp(cmd->argv[0], "echo") == 0)
+		ft_echo(cmd->argv);*/
+	else if	(ft_strcmp(cmd->argv[0], "export") == 0)
+		ft_export(cmd, env);
 	else if (ft_strcmp(cmd->argv[0], "unset") == 0)
-		ft_unset(cmd, cmd->argv[1]);
+		ft_unset(cmd, env);
 	else if (ft_strcmp(cmd->argv[0], "env") == 0)
-		ft_env(cmd);
+		ft_env(*env);
 	else if (ft_strcmp(cmd->argv[0], "exit") == 0)
 		ft_exit(cmd->argv);
 	else
 		write(2, "minishell: command not found\n", 29);
 }
+
