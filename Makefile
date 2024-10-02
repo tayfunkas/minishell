@@ -26,6 +26,7 @@ clean:
 	$(RM) $(OBJS)
 
 fclean:
+	make clean 
 	$(RM) $(NAME)
 
 re: fclean all
