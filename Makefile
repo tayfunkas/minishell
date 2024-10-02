@@ -7,7 +7,10 @@ INC =
 
 RM = rm -f
 
-SRCS = minishell.c parsing.c handling.c init_internal_commands.c internal_commands.c path.c external_commands.c utils.c libft.c
+SRCS = minishell.c \
+	${addprefix $(parsing/), parsing.c handling.c} \
+	${addprefix $(command/), execution.c external_command.c init_internal_commands.c internal_commands.c path.c} \
+	${addprefix $(utils/), libft.c utils.c}
 
 OBJS = $(SRCS:.c=.o)
 
