@@ -61,7 +61,7 @@ char	**copy_environment(char **envp)
 	i = 0;
 	while (envp[count] != NULL)
 		count++;
-	new_env = malloc(sizeof(char *) * (count + 1));
+	new_env = malloc(sizeof(char ) * (count + 1));
 	if (!new_env)
 		return (NULL);
 	while (i < count)
