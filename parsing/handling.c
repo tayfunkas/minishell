@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void	is_pipe_redir(t_token *current, char **our_env)
+/*static void	is_pipe_redir(t_token *current, char **our_env)
 {
 	if (current->type == PIPE)
 	{
@@ -25,7 +25,7 @@ static void	is_pipe_redir(t_token *current, char **our_env)
 		//handle_redirection(tokens, current->next->str, current->type);
 		return ;
 	}
-}
+}*/
 
 static int	is_external_command(char *cmd, char **our_env)
 {
@@ -86,33 +86,97 @@ static int	is_internal_command(char *cmd)
 	return (0);
 }
 
-void	handle_tokens(t_token *tokens, char **our_env)
+void handle_tokens(t_token *tokens, char **our_env)
 {
-	t_token		*current;
-	t_command	*cmd;
+    t_token *current = tokens;
+    t_token *pipe_token = NULL;
+    int pipefd[2];
+    pid_t pid1, pid2;
 
-	current = tokens;
-	while (current != NULL)
-	{
-		is_pipe_redir(current, our_env);
-		current = current->next;
-	}
-	current = tokens;
-	if (current && current->type == CMD)
-	{
-		if (is_external_command(current->str, our_env))
-		{
-			printf("(external)\n");
-			execute_external_command(current, count_tokens(current));
-		}
-		else if (is_internal_command(current->str))
-		{
-			cmd = init_internal_command(current, our_env);
-			if (!cmd)
-				return ;
-			printf("(internal)\n");
-			execute_internal_commands(cmd, &our_env);
-			free_command(cmd);
-		}
-	}
+    // Find the pipe token, if it exists
+    while (current != NULL)
+    {
+        if (current->type == PIPE)
+        {
+            pipe_token = current;
+            break;
+        }
+        current = current->next;
+    }
+
+    if (pipe_token)
+    {
+        // We have a pipe, so we need to handle two commands
+        if (pipe(pipefd) == -1)
+        {
+            perror("pipe");
+            return;
+        }
+
+        pid1 = fork();
+        if (pid1 == 0)
+        {
+            // First child process (left side of pipe)
+            close(pipefd[0]);
+            dup2(pipefd[1], STDOUT_FILENO);
+            close(pipefd[1]);
+            execute_command(tokens, pipe_token, our_env);
+            exit(EXIT_SUCCESS);
+        }
+
+        pid2 = fork();
+        if (pid2 == 0)
+        {
+            // Second child process (right side of pipe)
+            close(pipefd[1]);
+            dup2(pipefd[0], STDIN_FILENO);
+            close(pipefd[0]);
+            execute_command(pipe_token->next, NULL, our_env);
+            exit(EXIT_SUCCESS);
+        }
+
+        // Parent process
+        close(pipefd[0]);
+        close(pipefd[1]);
+        waitpid(pid1, NULL, 0);
+        waitpid(pid2, NULL, 0);
+    }
+    else
+    {
+        // No pipe, execute single command
+        execute_command(tokens, NULL, our_env);
+    }
+}
+
+void execute_command(t_token *start, t_token *end, char **our_env)
+{
+    if (start && start->type == CMD)
+    {
+        if (is_external_command(start->str, our_env))
+        {
+            printf("(external)\n");
+            execute_external_command(start, count_tokens_until(start, end));
+        }
+        else if (is_internal_command(start->str))
+        {
+            t_command *cmd = init_internal_command(start, our_env);
+            if (!cmd)
+                return;
+            printf("(internal)\n");
+            execute_internal_commands(cmd, &our_env);
+            free_command(cmd);
+        }
+    }
+}
+
+int count_tokens_until(t_token *start, t_token *end)
+{
+    int count = 0;
+    t_token *current = start;
+    while (current != end && current != NULL)
+    {
+        count++;
+        current = current->next;
+    }
+    return count;
 }

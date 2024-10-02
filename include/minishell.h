@@ -64,6 +64,8 @@ void		type_tokens(t_token *token);
 
 //handling.c
 void		handle_tokens(t_token *tokens, char **our_env);
+int count_tokens_until(t_token *start, t_token *end);
+void execute_command(t_token *start, t_token *end, char **our_env);
 
 //initiate_internal_commands.c
 t_command	*init_internal_command(t_token *current, char **envp);
