@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 14:39:13 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/09/30 14:54:25 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/02 14:21:42 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,15 @@ int	main(int argc, char **argv, char **envp)
 
 char	**copy_environment(char **envp)
 {
-	int	count;
+	int		count;
 	char	**new_env;
-	int	i;
-	
+	int		i;
+
 	count = 0;
 	i = 0;
 	while (envp[count] != NULL)
 		count++;
-	new_env = malloc(sizeof(char*) * (count + 1));
+	new_env = malloc(sizeof(char ) * (count + 1));
 	if (!new_env)
 		return (NULL);
 	while (i < count)
@@ -83,7 +83,7 @@ char	**copy_environment(char **envp)
 void	free_environment(char **env)
 {
 	int	i;
-	
+
 	i = 0;
 	while (env[i] != NULL)
 	{
@@ -92,4 +92,3 @@ void	free_environment(char **env)
 	}
 	free(env);
 }
-	

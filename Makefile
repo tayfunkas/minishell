@@ -3,14 +3,14 @@ NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 LIBS = -lreadline
-INC =
-
+CFLAGS = -Wall -Wextra -Werror -Iinclude
 RM = rm -f
 
-SRCS = minishell.c \
-	${addprefix $(parsing/), parsing.c handling.c} \
-	${addprefix $(command/), execution.c external_command.c init_internal_commands.c internal_commands.c path.c} \
-	${addprefix $(utils/), libft.c utils.c}
+SRCS = $(addprefix parsing/, parsing.c handling.c) \
+	   $(addprefix command/, external_commands.c init_internal_commands.c internal_commands.c path.c) \
+	   $(addprefix pipes/, handle_pipe.c) \
+	   $(addprefix utils/, libft.c utils.c) \
+	   minishell.c
 
 OBJS = $(SRCS:.c=.o)
 
