@@ -29,5 +29,6 @@ Oct 1st
 - some more to handle (multiple arguments for exit and \ for echo"
 
 Oct 4th
-- Added **our_env to external functions to work with global variables.
-- Now we handle echo $USER and also $new_global_variable we created through export. 
+- Added **our_env to external functions to work with global variables
+- Now we handle echo $USER and also $new_global_variable we created through export
+- Multiple pipes are handled
