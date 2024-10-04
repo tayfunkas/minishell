@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/02 14:40:09 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/04 13:29:01 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ void		type_tokens(t_token *token);
 
 //handling.c
 void		handle_tokens(t_token *tokens, char **our_env);
-int count_tokens_until(t_token *start, t_token *end);
-void execute_command(t_token *start, t_token *end, char **our_env);
+int			count_tokens_until(t_token *start, t_token *end);
+void		execute_command(t_token *start, t_token *end, char **our_env);
 
 //initiate_internal_commands.c
 t_command	*init_internal_command(t_token *current, char **envp);
@@ -82,14 +82,14 @@ void		ft_env(char **env);
 void		ft_exit(char **args);
 
 //execute_external_commands.c
-void		execute_external_command(t_token *tokens, int token_count);
-char		*expand_var(char *token);
-void		prepare_args(t_token *tokens, int token_count, char **args);
-void		handle_fork(pid_t pid, char *cmd_path, char **args);
+void		execute_external_command(t_token *tokens, int token_count, char **our_env);
+char		*expand_var(char *token, char **our_env);
+void		prepare_args(t_token *tokens, int token_count, char **args, char **our_env);
+void		handle_fork(pid_t pid, char *cmd_path, char **args, char **our_env);
 void		free_external_commands(char *cmd_path, char **args, int token_count);
 
 //path.c
-char		*find_cmd_path(char *cmd);
+char		*find_cmd_path(char *cmd, char **our_env);
 
 //handle_pipe.c
 void		handle_pipe(t_token *tokens, t_token *next_cmd, char **envp);

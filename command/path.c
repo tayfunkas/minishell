@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:39:22 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/02 14:18:41 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/04 13:58:18 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,25 @@ static char	*build_cmd_path(char *paths, char *cmd)
 	return (NULL);
 }
 
-char	*find_cmd_path(char *cmd)
+
+char	*find_cmd_path(char *cmd, char **our_env)
 {
 	char	*path_env;
 	char	**paths;
 	char	*cmd_path;
 	int		i;
 
-	path_env = getenv("PATH");
+	i = 0;
+	path_env = NULL;
+	while (our_env[i] != NULL)
+	{
+		if (ft_strncmp(our_env[i], "PATH=", 5) == 0)
+		{
+			path_env = our_env[i] + 5;
+			break ;
+		}
+		i++;
+	}
 	if (!path_env)
 	{
 		perror("No PATH found.\n");

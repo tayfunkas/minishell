@@ -155,7 +155,7 @@ void execute_command(t_token *start, t_token *end, char **our_env)
         if (is_external_command(start->str, our_env))
         {
             printf("(external)\n");
-            execute_external_command(start, count_tokens_until(start, end));
+            execute_external_command(start, count_tokens_until(start, end), our_env);
         }
         else if (is_internal_command(start->str))
         {
