@@ -25,7 +25,7 @@ static void	fork_and_exec(pid_t pid, t_token *cmd, int input_fd, int output_fd, 
 		perror("malloc failed.\n");
 		exit(EXIT_FAILURE);
 	}
-	prepare_args(cmd, token_count, args);
+	prepare_args(cmd, token_count, args, envp);
 	if (pid == -1)
 	{
 		perror("fork failed.\n");
@@ -47,7 +47,7 @@ static void	fork_and_exec(pid_t pid, t_token *cmd, int input_fd, int output_fd, 
 			close(output_fd);
 		}
 		printf("Finding path for command: %s\n", cmd->str);
-		cmd_path = find_cmd_path(cmd->str);
+		cmd_path = find_cmd_path(cmd->str, envp);
 		if (!cmd_path)
 		{
 			printf("Command path not found for %s\n", cmd->str);
