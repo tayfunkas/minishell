@@ -99,3 +99,20 @@ void	handle_pipe(t_token *tokens, t_token *next_cmd, char **envp)
 	waitpid(pid1, NULL, 0);
 	waitpid(pid2, NULL, 0);
 }
+
+int	count_pipes(t_token *tokens)
+{
+	int	pipe_count;
+	t_token	*current;
+	
+	pipe_count = 0;
+	current = tokens;
+	
+	while (current != NULL)
+	{
+		if (current->type == PIPE)
+			pipe_count++;
+		current = current->next;
+	}
+	return (pipe_count);
+}

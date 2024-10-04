@@ -93,7 +93,7 @@ char		*find_cmd_path(char *cmd, char **our_env);
 
 //handle_pipe.c
 void		handle_pipe(t_token *tokens, t_token *next_cmd, char **envp);
-
+int			count_pipes(t_token *tokens);
 //utils.c
 void		free_tokens(t_token *tokens);
 void		free_command(t_command *cmd);;

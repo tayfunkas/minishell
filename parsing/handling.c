@@ -86,97 +86,125 @@ static int	is_internal_command(char *cmd)
 	return (0);
 }
 
-void handle_tokens(t_token *tokens, char **our_env)
+void	handle_tokens(t_token *tokens, char **our_env)
 {
-    t_token *current = tokens;
-    t_token *pipe_token = NULL;
-    int pipefd[2];
-    pid_t pid1, pid2;
-
-    // Find the pipe token, if it exists
-    while (current != NULL)
-    {
-        if (current->type == PIPE)
-        {
-            pipe_token = current;
-            break;
-        }
-        current = current->next;
-    }
-
-    if (pipe_token)
-    {
-        // We have a pipe, so we need to handle two commands
-        if (pipe(pipefd) == -1)
-        {
-            perror("pipe");
-            return;
-        }
-
-        pid1 = fork();
-        if (pid1 == 0)
-        {
-            // First child process (left side of pipe)
-            close(pipefd[0]);
-            dup2(pipefd[1], STDOUT_FILENO);
-            close(pipefd[1]);
-            execute_command(tokens, pipe_token, our_env);
-            exit(EXIT_SUCCESS);
-        }
-
-        pid2 = fork();
-        if (pid2 == 0)
-        {
-            // Second child process (right side of pipe)
-            close(pipefd[1]);
-            dup2(pipefd[0], STDIN_FILENO);
-            close(pipefd[0]);
-            execute_command(pipe_token->next, NULL, our_env);
-            exit(EXIT_SUCCESS);
-        }
-
-        // Parent process
-        close(pipefd[0]);
-        close(pipefd[1]);
-        waitpid(pid1, NULL, 0);
-        waitpid(pid2, NULL, 0);
-    }
-    else
-    {
-        // No pipe, execute single command
-        execute_command(tokens, NULL, our_env);
-    }
+	int	pipe_count;
+	int	**pipe_fds;
+	pid_t	*pids;
+	t_token	*current;
+	int	i;
+	
+	pipe_count = count_pipes(tokens);
+	pipe_fds = malloc(sizeof(int *) * pipe_count);
+	pids = malloc(sizeof(pid_t) * (pipe_count + 1));
+	current = tokens;
+	i = 0;
+	while (i < pipe_count)
+	{
+		pipe_fds[i] = malloc(sizeof(int) * 2);
+		if (pipe(pipe_fds[i]) == -1)
+		{
+			perror("pipe");
+			//free allocated memory
+			return ;
+		}
+		i++;
+	}
+	i = 0;
+	while (i <= pipe_count)
+	{
+		t_token *cmd_end = current;
+		while (cmd_end && cmd_end->type != PIPE)
+			cmd_end = cmd_end->next;
+		if (is_internal_command(current->str) && pipe_count == 0)
+			execute_command(current, cmd_end, our_env);
+		else	
+		{
+			pids[i] = fork();
+			if (pids[i] == -1)
+			{
+				perror("fork");
+				//free allocated memory
+				return ;
+			}
+			else if (pids[i] == 0)
+			{
+				if (i > 0)
+					dup2(pipe_fds[i-1][0], STDIN_FILENO);
+				if (i < pipe_count)
+					dup2(pipe_fds[i][1], STDOUT_FILENO);
+		
+				int j = 0;
+				while (j < pipe_count)
+				{
+					close(pipe_fds[j][0]);
+					close(pipe_fds[j][1]);
+					j++;
+				}
+				execute_command(current, cmd_end, our_env);
+				exit(EXIT_SUCCESS);
+			}
+		}
+		if (cmd_end)
+			current = cmd_end->next;
+		else
+			current = NULL;
+		i++;
+	}
+	i = 0;
+	while (i < pipe_count)
+	{
+		close(pipe_fds[i][0]);
+		close(pipe_fds[i][1]);
+		free(pipe_fds[i]);
+		i++;
+	}
+	free(pipe_fds);
+	i = 0;
+	while (i <= pipe_count)
+	{
+		waitpid(pids[i], NULL, 0);
+		i++;
+	}
+	free(pids);
+}
+			
+void	execute_command(t_token *start, t_token *end, char **our_env)
+{
+	int	arg_count;
+	
+	if (start && start->type == CMD)
+	{
+		if (is_external_command(start->str, our_env))
+		{
+			if (end)
+				arg_count = count_tokens_until(start, end);
+			else
+				arg_count = count_tokens_until(start, NULL);
+			execute_external_command(start, arg_count, our_env);
+		}
+		else if (is_internal_command(start->str))
+		{
+			t_command *cmd = init_internal_command(start, our_env);
+			if (!cmd)
+				return;
+			execute_internal_commands(cmd, &our_env);
+			free_command(cmd);
+		}
+	}
 }
 
-void execute_command(t_token *start, t_token *end, char **our_env)
+int	count_tokens_until(t_token *start, t_token *end)
 {
-    if (start && start->type == CMD)
-    {
-        if (is_external_command(start->str, our_env))
-        {
-            printf("(external)\n");
-            execute_external_command(start, count_tokens_until(start, end), our_env);
-        }
-        else if (is_internal_command(start->str))
-        {
-            t_command *cmd = init_internal_command(start, our_env);
-            if (!cmd)
-                return;
-            printf("(internal)\n");
-            execute_internal_commands(cmd, &our_env);
-            free_command(cmd);
-        }
-    }
-}
-
-int count_tokens_until(t_token *start, t_token *end)
-{
-    int count = 0;
-    t_token *current = start;
-    while (current != end && current != NULL)
-    {
-        count++;
-        current = current->next;
-    }
-    return count;
+	int	count;
+    	t_token	*current;
+    		
+	count = 0;
+    	current = start;
+	while (current != end && current != NULL)
+	{
+		count++;
+		current = current->next;
+	}
+	return (count);
 }
