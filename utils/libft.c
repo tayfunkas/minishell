@@ -245,4 +245,18 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	return ((unsigned char)*s1 - (unsigned char)*s2);
 }
 
+int	ft_isdigit_str(char *c)
+{
+	int	i;
+	
+	i = 0;
+	while (c[i] != '\0')
+	{
+		if ((c[i] >= '0' && c[i] <= '9') || (c[i] == '-' || c[i] == '+'))
+			i++;
+		else
+			return (0);
+	}
+	return (1);		
+}
 
