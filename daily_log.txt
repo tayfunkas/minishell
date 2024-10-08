@@ -35,3 +35,8 @@ Oct 4th
 
 Oct 7th
 - Exit function updated, handles all cases
+
+Oct 8th
+- Handling redirections (>, >>, <)
+- Certain characters within  quotes result in seg fault - needs to be fixed
+- Mixing directions with pipes still needs to be handled (cat < input.txt | grep "test")

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   internal_commands.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:29:58 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/09/30 14:41:44 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/08 15:12:55 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,22 +255,27 @@ void	ft_exit(char **args)
 
 void	execute_internal_commands(t_command *cmd, char ***env)
 {
-	int	i;
-	
-	i = 0;	
+	int	original_stdin = dup(STDIN_FILENO);
+	int	original_stdout = dup(STDOUT_FILENO);
+
 	if (cmd == NULL || cmd->argv == NULL || cmd->argv[0] == NULL) 
 	{
-        	write(2, "minishell: command not found\n", 29);
-        	return;
-    	}
-    	//printf("Internal command: %s\n", cmd->argv[0]);
+		write(2, "minishell: command not found\n", 29);
+		return;
+	}
+	if (cmd->fd_in != STDIN_FILENO)
+	{
+		dup2(cmd->fd_in, STDIN_FILENO);
+		close(cmd->fd_in);
+	}
+	if (cmd->fd_out != STDOUT_FILENO)
+	{
+		dup2(cmd->fd_out, STDOUT_FILENO);
+		close(cmd->fd_out);
+	}
 	if (ft_strcmp(cmd->argv[0], "cd") == 0)
 		ft_cd(cmd->argv[1]);
-	/*else if (ft_strcmp(cmd->argv[0], "pwd") == 0)
-		ft_pwd();
-	else if (ft_strcmp(cmd->argv[0], "echo") == 0)
-		ft_echo(cmd->argv);*/
-	else if	(ft_strcmp(cmd->argv[0], "export") == 0)
+	else if (ft_strcmp(cmd->argv[0], "export") == 0)
 		ft_export(cmd, env);
 	else if (ft_strcmp(cmd->argv[0], "unset") == 0)
 		ft_unset(cmd, env);
@@ -280,5 +285,9 @@ void	execute_internal_commands(t_command *cmd, char ***env)
 		ft_exit(cmd->argv);
 	else
 		write(2, "minishell: command not found\n", 29);
+	dup2(original_stdin, STDIN_FILENO);
+	dup2(original_stdout, STDOUT_FILENO);
+	close(original_stdin);
+	close(original_stdout);
 }
 

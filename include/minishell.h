@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/04 13:29:01 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/08 15:14:09 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <ctype.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <fcntl.h>
 
 typedef enum e_token_type
 {
@@ -82,7 +83,8 @@ void		ft_env(char **env);
 void		ft_exit(char **args);
 
 //execute_external_commands.c
-void		execute_external_command(t_token *tokens, int token_count, char **our_env);
+//void		execute_external_command(t_token *tokens, int token_count, char **our_env);
+void execute_external_command(t_token *tokens, int token_count, char **our_env, int fd_in, int fd_out);
 char		*expand_var(char *token, char **our_env);
 void		prepare_args(t_token *tokens, int token_count, char **args, char **our_env);
 void		handle_fork(pid_t pid, char *cmd_path, char **args, char **our_env);
@@ -94,6 +96,8 @@ char		*find_cmd_path(char *cmd, char **our_env);
 //handle_pipe.c
 void		handle_pipe(t_token *tokens, t_token *next_cmd, char **envp);
 int			count_pipes(t_token *tokens);
+//redicrectios.c
+void	setup_redirect(t_token *start, t_token *end, int *fd_in, int *fd_out);
 //utils.c
 void		free_tokens(t_token *tokens);
 void		free_command(t_command *cmd);;
