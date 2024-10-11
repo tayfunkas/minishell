@@ -12,60 +12,6 @@
 
 #include "minishell.h"
 
-/*void	ft_cd(char *path, char ***env)
-{
-	char	*home;
-	char	current_dir[1024];
-	char	new_dir[1024];
-	char	*oldpwd;
-
-	if (path == NULL)
-		printf("ft_cd received path: (null)\n");
-	else
-		printf("ft_cd received path: %s\n", path);
-	if (getcwd(current_dir, sizeof(current_dir)) == NULL)
-	{
-		perror("getcwd");
-		return ;
-	}
-	home = getenv("HOME");
-	if (path == NULL || path[0] == '\0')
-	{
-		home = getenv("HOME");
-		if (home == NULL)
-		{
-			write(2, "cd: HOME not set\n", 17);
-			return ;
-		}
-	}
-	if (path == NULL || path[0] == '\0' || ft_strcmp(path, "~") == 0)
-		path = home;
-	else if (path[0] == '-')
-	{
-		oldpwd = getenv("OLDPWD");
-		path = oldpwd;
-		printf("%s\n", path);
-	}
-	else if (path[0] == '~')
-	{
-		ft_strcpy(new_dir, home);
-		ft_strcat(new_dir, path + 1);
-		path = new_dir;
-	}
-	if (chdir(path) != 0)
-	{
-		perror("cd");
-		return ;
-	}
-	if (getcwd(new_dir, sizeof(new_dir)) == NULL)
-	{
-		perror("getcwd");
-		return ;
-	}
-	setenv("OLDPWD", current_dir, 1);
-	setenv("PWD", new_dir, 1);
-}*/
-
 void	ft_cd(char *path, char ***env)
 {
 	char	current_dir[1024];
@@ -190,52 +136,6 @@ void	ft_export(t_command *cmd, char ***env)
 	else
 		set_env(env, key_value, "");
 }
-
-/*void	set_env(char ***env, const char *name, const char *value)
-{
-	int	i;
-	int	len;
-	char	*new_var;
-	
-	i = 0;
-	len = ft_strlen(name);
-	while ((*env)[i] != NULL)
-	{
-		if (ft_strncmp((*env)[i], name, len) == 0 && (*env)[i][len] == '=')
-		{
-			free(*env[i]);
-			new_var = malloc(ft_strlen(name) + ft_strlen(value) + 2);
-			if (!new_var)
-			{
-				perror("malloc");
-				return ; 
-			}
-			ft_strcpy(new_var, name);
-			ft_strcat(new_var, "=");
-			ft_strcat(new_var, value);
-			(*env)[i] = new_var;
-			return ;
-		}
-		i++;
-	}
-	*env = realloc(*env, sizeof(char*) * (i + 2));
-	if (!*env)
-	{
-		perror("malloc");
-		return ;
-	}
-	new_var = malloc(ft_strlen(name) + ft_strlen(value) + 2);
-	if (!new_var)
-			{
-				perror("malloc");
-				return ; 
-			}
-	ft_strcpy(new_var, name);
-	ft_strcat(new_var, "=");
-	ft_strcat(new_var, value);
-	(*env)[i] = new_var;
-	(*env)[i + 1] = NULL;
-}*/
 
 void	set_env(char ***env, const char *name, const char *value)
 {
@@ -404,18 +304,19 @@ void	execute_internal_commands(t_command *cmd, char ***env)
 
 char *get_env_value(char **env, const char *name)
 {
-    int i;
-    size_t len;
+	int	i;
+	size_t	len;
 
-    if (!env || !name)
-        return NULL;
-
-    len = ft_strlen(name);
-    for (i = 0; env[i] != NULL; i++)
-    {
-        if (ft_strncmp(env[i], name, len) == 0 && env[i][len] == '=')
-            return &env[i][len + 1];
-    }
-    return NULL;
+	i = 0;
+	if (!env || !name)
+		return NULL;
+	len = ft_strlen(name);
+	while ( env[i] != NULL)
+	{
+		if (ft_strncmp(env[i], name, len) == 0 && env[i][len] == '=')
+			return &env[i][len + 1];
+		i++;
+	}
+	return (NULL);
 }
 

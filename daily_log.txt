@@ -40,3 +40,6 @@ Oct 8th
 - Handling redirections (>, >>, <)
 - Certain characters within  quotes result in seg fault - needs to be fixed
 - Mixing directions with pipes still needs to be handled (cat < input.txt | grep "test")
+
+Oct 11
+- Updated cd function to get OLDPWD in environment 
