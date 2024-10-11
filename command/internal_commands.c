@@ -6,13 +6,13 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:29:58 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/08 15:12:55 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/11 15:13:34 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_cd(char *path)
+/*void	ft_cd(char *path, char ***env)
 {
 	char	*home;
 	char	current_dir[1024];
@@ -28,7 +28,6 @@ void	ft_cd(char *path)
 		perror("getcwd");
 		return ;
 	}
-	printf("Current directory before change: %s\n", current_dir);
 	home = getenv("HOME");
 	if (path == NULL || path[0] == '\0')
 	{
@@ -63,9 +62,71 @@ void	ft_cd(char *path)
 		perror("getcwd");
 		return ;
 	}
-	printf("New directory after change: %s\n", new_dir);
 	setenv("OLDPWD", current_dir, 1);
 	setenv("PWD", new_dir, 1);
+}*/
+
+void	ft_cd(char *path, char ***env)
+{
+	char	current_dir[1024];
+	char	new_dir[1024];
+	char	*home;
+	char	*oldpwd;
+
+	if (env == NULL || *env == NULL) 
+	{
+		printf("Error: env is NULL\n");
+		return ;
+	}
+	if (getcwd(current_dir, sizeof(current_dir)) == NULL)
+	{
+		perror("getcwd");
+		return ;
+	}
+	home = get_env_value(*env, "HOME");
+	if (path == NULL || path[0] == '\0' || ft_strcmp(path, "~") == 0)
+	{
+		path = home;
+		if (path == NULL)
+		{
+			printf("Error: HOME not set\n");
+			return ;
+		}
+	}
+	else if (ft_strcmp(path, "-") == 0)
+	{
+		oldpwd = get_env_value(*env, "OLDPWD");
+		if (oldpwd == NULL)
+		{
+			write(2, "cd: OLDPWD not set\n", 19);
+			return ;
+		}
+		path = oldpwd;
+		printf("%s\n", path);
+	}
+	else if (path[0] == '~' && path[1] == '/')
+	{
+		if (home == NULL)
+		{
+			printf("Error: HOME not set\n");
+			return ;
+		}
+		ft_strcpy(new_dir, home);
+		ft_strcat(new_dir, path + 1);
+		path = new_dir;
+	}
+	if (chdir(path) != 0)
+	{
+		perror("cd");
+		return ;
+	}
+	if (getcwd(new_dir, sizeof(new_dir)) == NULL)
+	{
+		perror("getcwd");
+		return ;
+	}
+	set_env(env, "OLDPWD", current_dir);
+	set_env(env, "PWD", new_dir);
 }
 
 void	ft_pwd(void)
@@ -130,7 +191,7 @@ void	ft_export(t_command *cmd, char ***env)
 		set_env(env, key_value, "");
 }
 
-void	set_env(char ***env, const char *name, const char *value)
+/*void	set_env(char ***env, const char *name, const char *value)
 {
 	int	i;
 	int	len;
@@ -174,6 +235,56 @@ void	set_env(char ***env, const char *name, const char *value)
 	ft_strcat(new_var, value);
 	(*env)[i] = new_var;
 	(*env)[i + 1] = NULL;
+}*/
+
+void	set_env(char ***env, const char *name, const char *value)
+{
+	int	i;
+	int	len;
+	char	*new_var;
+    
+	if (!env || !*env || !name || !value)
+	{
+		fprintf(stderr, "set_env: Invalid arguments\n");
+		return;
+	}
+	i = 0;
+	len = ft_strlen(name);
+	while ((*env)[i] != NULL)
+	{
+		if (ft_strncmp((*env)[i], name, len) == 0 && (*env)[i][len] == '=')
+		{
+			free((*env)[i]);
+			break;
+		}
+		i++;
+	}
+    
+    new_var = malloc(ft_strlen(name) + ft_strlen(value) + 2);
+    if (!new_var)
+    {
+        perror("malloc");
+        return;
+    }
+    
+    ft_strcpy(new_var, name);
+    ft_strcat(new_var, "=");
+    ft_strcat(new_var, value);
+    
+    if ((*env)[i] == NULL)
+    {
+        char **new_env = realloc(*env, sizeof(char*) * (i + 2));
+        if (!new_env)
+        {
+            free(new_var);
+            perror("realloc");
+            return;
+        }
+        *env = new_env;
+        (*env)[i + 1] = NULL;
+    }
+    
+    (*env)[i] = new_var;
 }
 	
 void	ft_unset(t_command *cmd, char ***env)
@@ -274,7 +385,7 @@ void	execute_internal_commands(t_command *cmd, char ***env)
 		close(cmd->fd_out);
 	}
 	if (ft_strcmp(cmd->argv[0], "cd") == 0)
-		ft_cd(cmd->argv[1]);
+		ft_cd(cmd->argv[1], env);
 	else if (ft_strcmp(cmd->argv[0], "export") == 0)
 		ft_export(cmd, env);
 	else if (ft_strcmp(cmd->argv[0], "unset") == 0)
@@ -289,5 +400,22 @@ void	execute_internal_commands(t_command *cmd, char ***env)
 	dup2(original_stdout, STDOUT_FILENO);
 	close(original_stdin);
 	close(original_stdout);
+}
+
+char *get_env_value(char **env, const char *name)
+{
+    int i;
+    size_t len;
+
+    if (!env || !name)
+        return NULL;
+
+    len = ft_strlen(name);
+    for (i = 0; env[i] != NULL; i++)
+    {
+        if (ft_strncmp(env[i], name, len) == 0 && env[i][len] == '=')
+            return &env[i][len + 1];
+    }
+    return NULL;
 }
 

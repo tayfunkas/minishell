@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/08 15:14:09 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/11 15:00:43 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ t_command	*init_internal_command(t_token *current, char **envp);
 
 //execute_internal_commands.c
 void		execute_internal_commands(t_command *cmd, char ***env);
-void		ft_cd(char *path);
+void		ft_cd(char *path, char ***env);
 void		ft_pwd(void);
 void		ft_echo(char **args);
 void		ft_export(t_command *cmd, char ***env);
@@ -81,6 +81,7 @@ void		set_env(char ***env, const char *name, const char *value);
 void		ft_unset(t_command *cmd, char ***env);
 void		ft_env(char **env);
 void		ft_exit(char **args);
+char		*get_env_value(char **env, const char *name);
 
 //execute_external_commands.c
 //void		execute_external_command(t_token *tokens, int token_count, char **our_env);
