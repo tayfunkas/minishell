@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 17:37:11 by kyukang           #+#    #+#             */
-/*   Updated: 2024/09/30 13:57:40 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/14 21:23:47 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,17 @@ int	count_tokens(t_token *tokens)
 
 	count = 0;
 	current = tokens;
-
 	while (current)
 	{
 		count++;
 		current = current->next;
 	}
 	return (count);
+}
+
+char	*skip_whitespace(char *start)
+{
+	while (ft_isspace(*start))
+		start++;
+	return (start);
 }

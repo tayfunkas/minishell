@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/11 15:00:43 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/14 21:19:03 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,20 @@ char		**copy_environment(char **envp);
 void		free_environment(char **env);
 
 //parsing.c
-t_token		*tokenize_input(char *input, int max_args);
+//t_token		*tokenize_input(char *input, int max_args);
+t_token		*add_token_to_list(char *start, char *end, int in_quo, t_token *c);
+t_token	*process_token(char **start, int *i, t_token *current);
+char *handle_quoted_string(char *start, char quote);
+char *skip_whitespace(char *start);
 void		assign_token_types(t_token *tokens);
 void		type_tokens(t_token *token);
+//token_creation.c
+t_token *create_new_token(char *start, int len, int inside_quotes, t_token *current);
+char *get_token_end(char *start, int *inside_quotes, char *quote);
+char	*handle_regular_token(char *start);
+char *move_to_next_token(char *end, int inside_quotes, char quote);
+t_token *tokenize_input(char *input, int max_args);
+
 
 //handling.c
 void		handle_tokens(t_token *tokens, char **our_env);

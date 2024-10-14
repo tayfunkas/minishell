@@ -12,21 +12,6 @@
 
 #include "minishell.h"
 
-/*static void	is_pipe_redir(t_token *current, char **our_env)
-{
-	if (current->type == PIPE)
-	{
-		handle_pipe(current, current->next, our_env);
-		return ;
-	}
-	if (current->type == TRUNC || current->type == APPEND
-		|| current->type == INPUT)
-	{
-		//handle_redirection(tokens, current->next->str, current->type);
-		return ;
-	}
-}*/
-
 static int	is_external_command(char *cmd, char **our_env)
 {
 	char	*path_env;
@@ -213,48 +198,4 @@ int	count_tokens_until(t_token *start, t_token *end)
 	}
 	return (count);
 }
-
-
-/*void	execute_command(t_token *start, t_token *end, char **our_env)
-{
-	int	fd_in;
-	int	fd_out;
-	int	arg_count;
-
-	fd_in = STDIN_FILENO;
-	fd_out = STDOUT_FILENO;
-
-	setup_redirect(start, end, &fd_in, &fd_out);
-	if (start && start->type == CMD)
-	{
-		if (is_external_command(start->str, our_env))
-		{
-			if (end)
-				arg_count = count_tokens_until(start, end);
-			else
-				arg_count = count_tokens_until(start, NULL);
-			if (fd_in != STDIN_FILENO)
-			{
-				dup2(fd_in, STDIN_FILENO);
-				close(fd_in);
-			}
-			if (fd_out != STDOUT_FILENO)
-			{
-				dup2(fd_out, STDOUT_FILENO);
-				close(fd_out);
-			}
-			execute_external_command(start, arg_count, our_env, fd_in, fd_out);
-		}
-		else if (is_internal_command(start->str))
-		{
-			t_command *cmd = init_internal_command(start, our_env);
-			if (!cmd)
-				return;
-			cmd->fd_in = fd_in;
-			cmd->fd_out = fd_out;
-			execute_internal_commands(cmd, &our_env);
-			free_command(cmd);
-		}
-	}
-}*/
 
