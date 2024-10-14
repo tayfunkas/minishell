@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 17:28:58 by kyukang           #+#    #+#             */
-/*   Updated: 2024/09/25 19:03:34 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/14 15:59:52 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,7 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 int	ft_isdigit_str(char *c)
 {
 	int	i;
-	
+
 	i = 0;
 	while (c[i] != '\0')
 	{
@@ -257,6 +257,27 @@ int	ft_isdigit_str(char *c)
 		else
 			return (0);
 	}
-	return (1);		
+	return (1);
 }
 
+char	*ft_strstr(char *str, char *to_find)
+{
+	unsigned int	i;
+	unsigned int	j;
+
+	i = 0;
+	j = 0;
+	if (to_find[0] == '\0')
+		return (str);
+	while (str[i] != '\0')
+	{
+		while (to_find[j] == str[i + j])
+		{
+			if (to_find[j + 1] == '\0')
+				return (str + i);
+			j++;
+		}
+		i++;
+	}
+	return (0);
+}

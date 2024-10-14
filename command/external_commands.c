@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   external_commands.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 17:50:18 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/08 15:46:35 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/14 18:33:13 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	prepare_args(t_token *tokens, int token_count, char **args, char **our_env)
 			args[i] = expand_var(current->str, our_env);
 			i++;
 		}
-		else if (current->type == TRUNC || current->type == APPEND || current->type == INPUT)
+		else if (current->type == TRUNC || current->type == APPEND || current->type == INPUT || current->type == HEREDOC)
 			current = current->next;
 		current = current->next;
 	}
@@ -103,6 +103,8 @@ void	execute_external_command(t_token *tokens, int token_count, char **our_env, 
 		return;
 	}
 	prepare_args(tokens, token_count, args, our_env);
+	int	parent_in = dup(STDIN_FILENO);
+	int	parent_out = dup(STDOUT_FILENO);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -123,7 +125,15 @@ void	execute_external_command(t_token *tokens, int token_count, char **our_env, 
 	else if (pid > 0)
 	{
 		int status;
-    	waitpid(pid, &status, 0);
+		if (fd_in != STDIN_FILENO)
+			close(parent_in);
+		if (fd_out != STDOUT_FILENO)
+			close(parent_out);
+		waitpid(pid, &status, 0);
+		dup2(parent_in, STDIN_FILENO);
+		dup2(parent_out, STDOUT_FILENO);
+		close(parent_in);
+		close(parent_out);
 	}
 	else
 	{

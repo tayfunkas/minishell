@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handling.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:56:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/08 15:39:58 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/14 17:21:19 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void	handle_tokens(t_token *tokens, char **our_env)
 	pid_t	*pids;
 	t_token	*current;
 	int	i;
-	
+
 	pipe_count = count_pipes(tokens);
 	pipe_fds = malloc(sizeof(int *) * pipe_count);
 	pids = malloc(sizeof(pid_t) * (pipe_count + 1));
@@ -118,7 +118,7 @@ void	handle_tokens(t_token *tokens, char **our_env)
 			cmd_end = cmd_end->next;
 		if (is_internal_command(current->str) && pipe_count == 0)
 			execute_command(current, cmd_end, our_env);
-		else	
+		else
 		{
 			pids[i] = fork();
 			if (pids[i] == -1)
@@ -133,7 +133,7 @@ void	handle_tokens(t_token *tokens, char **our_env)
 					dup2(pipe_fds[i-1][0], STDIN_FILENO);
 				if (i < pipe_count)
 					dup2(pipe_fds[i][1], STDOUT_FILENO);
-		
+
 				int j = 0;
 				while (j < pipe_count)
 				{
@@ -142,7 +142,7 @@ void	handle_tokens(t_token *tokens, char **our_env)
 					j++;
 				}
 				execute_command(current, cmd_end, our_env);
-				exit(EXIT_SUCCESS);
+				//exit(EXIT_SUCCESS);
 			}
 		}
 		if (cmd_end)
@@ -168,49 +168,6 @@ void	handle_tokens(t_token *tokens, char **our_env)
 	}
 	free(pids);
 }
-			
-/*void	execute_command(t_token *start, t_token *end, char **our_env)
-{
-	int	fd_in;
-	int	fd_out;
-	int	arg_count;
-	
-	fd_in = STDIN_FILENO;
-	fd_out = STDOUT_FILENO;
-	
-	setup_redirect(start, end, &fd_in, &fd_out);
-	if (start && start->type == CMD)
-	{
-		if (is_external_command(start->str, our_env))
-		{
-			if (end)
-				arg_count = count_tokens_until(start, end);
-			else
-				arg_count = count_tokens_until(start, NULL);
-			if (fd_in != STDIN_FILENO)
-			{
-				dup2(fd_in, STDIN_FILENO);
-				close(fd_in);
-			}
-			if (fd_out != STDOUT_FILENO)
-			{
-				dup2(fd_out, STDOUT_FILENO);
-				close(fd_out);
-			}			
-			execute_external_command(start, arg_count, our_env, fd_in, fd_out);
-		}
-		else if (is_internal_command(start->str))
-		{
-			t_command *cmd = init_internal_command(start, our_env);
-			if (!cmd)
-				return;
-			cmd->fd_in = fd_in;
-			cmd->fd_out = fd_out;
-			execute_internal_commands(cmd, &our_env);
-			free_command(cmd);
-		}
-	}
-}*/
 
 void	execute_command(t_token *start, t_token *end, char **our_env)
 {
@@ -247,7 +204,7 @@ int	count_tokens_until(t_token *start, t_token *end)
 {
 	int	count;
     	t_token	*current;
-    		
+
 	count = 0;
     	current = start;
 	while (current != end && current != NULL)
@@ -257,3 +214,47 @@ int	count_tokens_until(t_token *start, t_token *end)
 	}
 	return (count);
 }
+
+
+/*void	execute_command(t_token *start, t_token *end, char **our_env)
+{
+	int	fd_in;
+	int	fd_out;
+	int	arg_count;
+
+	fd_in = STDIN_FILENO;
+	fd_out = STDOUT_FILENO;
+
+	setup_redirect(start, end, &fd_in, &fd_out);
+	if (start && start->type == CMD)
+	{
+		if (is_external_command(start->str, our_env))
+		{
+			if (end)
+				arg_count = count_tokens_until(start, end);
+			else
+				arg_count = count_tokens_until(start, NULL);
+			if (fd_in != STDIN_FILENO)
+			{
+				dup2(fd_in, STDIN_FILENO);
+				close(fd_in);
+			}
+			if (fd_out != STDOUT_FILENO)
+			{
+				dup2(fd_out, STDOUT_FILENO);
+				close(fd_out);
+			}
+			execute_external_command(start, arg_count, our_env, fd_in, fd_out);
+		}
+		else if (is_internal_command(start->str))
+		{
+			t_command *cmd = init_internal_command(start, our_env);
+			if (!cmd)
+				return;
+			cmd->fd_in = fd_in;
+			cmd->fd_out = fd_out;
+			execute_internal_commands(cmd, &our_env);
+			free_command(cmd);
+		}
+	}
+}*/

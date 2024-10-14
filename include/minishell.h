@@ -6,18 +6,20 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/14 15:29:10 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/14 16:46:34 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <stdio.h>
 # include <stddef.h>
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <ctype.h>
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -118,6 +120,7 @@ char		*ft_strdup(const char *s);
 int			ft_atoi(const char *str);
 size_t		ft_strlen(const char *s);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
-int	ft_isdigit_str(char *c);
+int		ft_isdigit_str(char *c);
+char	*ft_strstr(char *str, char *to_find);
 
 #endif
