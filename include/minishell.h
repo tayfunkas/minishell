@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/14 16:46:34 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/11 15:00:43 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,5 +122,6 @@ size_t		ft_strlen(const char *s);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_isdigit_str(char *c);
 char	*ft_strstr(char *str, char *to_find);
+int	ft_isdigit_str(char *c);
 
 #endif

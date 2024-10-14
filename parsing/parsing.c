@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 17:34:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/14 15:29:20 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/02 14:41:50 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ t_token *tokenize_input(char *input, int max_args)
 			end = ft_strchr(start, quote);
 			if (!end)
 				end = start + ft_strlen(start);
-
 		}
 		else if (*start == '|' && !inside_quotes)
 		{

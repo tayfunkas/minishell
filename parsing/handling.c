@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handling.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:56:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/14 17:21:19 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/08 15:39:58 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,6 @@ void	handle_tokens(t_token *tokens, char **our_env)
 					j++;
 				}
 				execute_command(current, cmd_end, our_env);
-				//exit(EXIT_SUCCESS);
 			}
 		}
 		if (cmd_end)
@@ -204,7 +203,6 @@ int	count_tokens_until(t_token *start, t_token *end)
 {
 	int	count;
     	t_token	*current;
-
 	count = 0;
     	current = start;
 	while (current != end && current != NULL)
@@ -258,3 +256,4 @@ int	count_tokens_until(t_token *start, t_token *end)
 		}
 	}
 }*/
+

@@ -1,8 +1,8 @@
 NAME = minishell
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -Iinclude -I/opt/homebrew/opt/readline/include
-LIBS = -L/opt/homebrew/opt/readline/lib -lreadline
+CFLAGS = -Wall -Wextra -Werror -Iinclude
+LIBS = -lreadline
 RM = rm -f
 
 SRCS = $(addprefix parsing/, parsing.c handling.c) \
@@ -26,7 +26,8 @@ clean:
 	$(RM) $(OBJS)
 
 fclean:
-	make clean
+	make clean 
+
 	$(RM) $(NAME)
 
 re: fclean all
