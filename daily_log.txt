@@ -6,7 +6,6 @@ How our progran works:
 5. Handle tokens according to the result of 4.
 
 Sep 25th
-Kyuwon:
 - splited functions into each '.c' file properly according to each step
 - After parsing arguments, our program go to "handle_tokens" function.
 - In handle_tokens function, I developed
@@ -14,3 +13,33 @@ Kyuwon:
 	2. function "execute_external_command" and "find_cmd_path"
 		Now it handles external command with only one word, like "pwd" "ls"
 		But it still doesn't work with over a word, like "ls -l". (to be followed-up tomorrow)
+Sep 27th
+- included all internal commands
+- cd, env, exit, pwd works. echo will be checked.
+- unset and export will be checked.
+- handle_tokens function has been updated.
+
+Sep 30th
+- Implemented 'handle_external_commands'part!!!
+
+Oct 1st 
+- merged the code to handle all internal commands
+- updated relevant functions to handle env command
+- is_external_command function has been updated to use the copied environment
+- some more to handle (multiple arguments for exit and \ for echo"
+
+Oct 4th
+- Added **our_env to external functions to work with global variables
+- Now we handle echo $USER and also $new_global_variable we created through export
+- Multiple pipes are handled
+
+Oct 7th
+- Exit function updated, handles all cases
+
+Oct 8th
+- Handling redirections (>, >>, <)
+- Certain characters within  quotes result in seg fault - needs to be fixed
+- Mixing directions with pipes still needs to be handled (cat < input.txt | grep "test")
+
+Oct 11
+- Updated cd function to get OLDPWD in environment 
