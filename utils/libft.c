@@ -248,7 +248,7 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 int	ft_isdigit_str(char *c)
 {
 	int	i;
-	
+
 	i = 0;
 	while (c[i] != '\0')
 	{
@@ -257,6 +257,29 @@ int	ft_isdigit_str(char *c)
 		else
 			return (0);
 	}
-	return (1);		
+	return (1);
 }
+
+char	*ft_strstr(char *str, char *to_find)
+{
+	unsigned int	i;
+	unsigned int	j;
+
+	i = 0;
+	j = 0;
+	if (to_find[0] == '\0')
+		return (str);
+	while (str[i] != '\0')
+	{
+		while (to_find[j] == str[i + j])
+		{
+			if (to_find[j + 1] == '\0')
+				return (str + i);
+			j++;
+		}
+		i++;
+	}
+	return (0);
+}
+
 

@@ -1,9 +1,8 @@
 NAME = minishell
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
-LIBS = -lreadline
 CFLAGS = -Wall -Wextra -Werror -Iinclude
+LIBS = -lreadline
 RM = rm -f
 
 SRCS = $(addprefix parsing/, parsing.c handling.c) \
@@ -28,6 +27,7 @@ clean:
 
 fclean:
 	make clean 
+
 	$(RM) $(NAME)
 
 re: fclean all

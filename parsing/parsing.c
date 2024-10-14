@@ -38,7 +38,6 @@ t_token *tokenize_input(char *input, int max_args)
 			end = ft_strchr(start, quote);
 			if (!end)
 				end = start + ft_strlen(start);
-		
 		}
 		else if (*start == '|' && !inside_quotes)
 		{
@@ -100,6 +99,8 @@ void	type_tokens(t_token *token)
 		token->type = APPEND;
 	else if (ft_strcmp(token->str, "<") == 0 && token->flag == 0)
 		token->type = INPUT;
+	else if (ft_strcmp(token->str, "<<") == 0 && token->flag == 0)
+		token->type = HEREDOC;
 	else if (ft_strcmp(token->str, "|") == 0 && token->flag == 0)
 		token->type = PIPE;
 	else if (ft_strcmp(token->str, ";") == 0 && token->flag == 0)

@@ -13,11 +13,13 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <stdio.h>
 # include <stddef.h>
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <ctype.h>
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -29,6 +31,7 @@ typedef enum e_token_type
 	TRUNC,
 	APPEND,
 	INPUT,
+	HEREDOC,
 	PIPE,
 	END,
 	CMD,
@@ -117,6 +120,8 @@ char		*ft_strdup(const char *s);
 int			ft_atoi(const char *str);
 size_t		ft_strlen(const char *s);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
+int		ft_isdigit_str(char *c);
+char	*ft_strstr(char *str, char *to_find);
 int	ft_isdigit_str(char *c);
 
 #endif
