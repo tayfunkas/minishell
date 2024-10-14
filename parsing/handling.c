@@ -142,6 +142,7 @@ void	handle_tokens(t_token *tokens, char **our_env)
 					j++;
 				}
 				execute_command(current, cmd_end, our_env);
+				exit(EXIT_SUCCESS);
 			}
 		}
 		if (cmd_end)
