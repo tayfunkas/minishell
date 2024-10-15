@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/14 21:19:03 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/15 17:47:10 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,18 +64,18 @@ void		free_environment(char **env);
 //parsing.c
 //t_token		*tokenize_input(char *input, int max_args);
 t_token		*add_token_to_list(char *start, char *end, int in_quo, t_token *c);
-t_token	*process_token(char **start, int *i, t_token *current);
-char *handle_quoted_string(char *start, char quote);
-char *skip_whitespace(char *start);
+t_token		*process_token(char **start, int *i, t_token *current);
+char		*handle_quoted_string(char *start, char quote);
+char		*skip_whitespace(char *start);
 void		assign_token_types(t_token *tokens);
 void		type_tokens(t_token *token);
-//token_creation.c
-t_token *create_new_token(char *start, int len, int inside_quotes, t_token *current);
-char *get_token_end(char *start, int *inside_quotes, char *quote);
-char	*handle_regular_token(char *start);
-char *move_to_next_token(char *end, int inside_quotes, char quote);
-t_token *tokenize_input(char *input, int max_args);
 
+//token_creation.c
+t_token		*create_new_token(char *start, int len, int inside_quotes, t_token *current);
+char		*get_token_end(char *start, int *inside_quotes, char *quote);
+char		*handle_regular_token(char *start);
+char		*move_to_next_token(char *end, int inside_quotes, char quote);
+t_token		*tokenize_input(char *input, int max_args);
 
 //handling.c
 void		handle_tokens(t_token *tokens, char **our_env);
@@ -99,7 +99,7 @@ char		*get_env_value(char **env, const char *name);
 
 //execute_external_commands.c
 //void		execute_external_command(t_token *tokens, int token_count, char **our_env);
-void execute_external_command(t_token *tokens, int token_count, char **our_env, int fd_in, int fd_out);
+void 		execute_external_command(t_token *tokens, int token_count, char **our_env, int fd_in, int fd_out);
 char		*expand_var(char *token, char **our_env);
 void		prepare_args(t_token *tokens, int token_count, char **args, char **our_env);
 void		handle_fork(pid_t pid, char *cmd_path, char **args, char **our_env);
@@ -111,8 +111,11 @@ char		*find_cmd_path(char *cmd, char **our_env);
 //handle_pipe.c
 void		handle_pipe(t_token *tokens, t_token *next_cmd, char **envp);
 int			count_pipes(t_token *tokens);
+
 //redicrectios.c
-void	setup_redirect(t_token *start, t_token *end, int *fd_in, int *fd_out);
+void		setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out);
+void		execute_redir_heredoc(t_token *current, int *fd_in);
+
 //utils.c
 void		free_tokens(t_token *tokens);
 void		free_command(t_command *cmd);;

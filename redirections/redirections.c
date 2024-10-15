@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 14:16:22 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/08 15:53:07 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/15 17:47:17 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,59 +48,7 @@ static void	execute_redir_append(t_token *current, int *fd_out)
 	}
 }
 
-static void	execute_redir_heredoc(t_token *current, int *fd_in)
-{
-	char	*line;
-	int		pipe_fd[2];
-	char	*delimiter = current->next->str;
-
-	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
-		exit(EXIT_FAILURE);
-	}
-	pid_t	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		exit(EXIT_FAILURE);
-	}
-	if (pid == 0)
-	{
-		close(pipe_fd[0]);
-		while (1)
-		{
-			line = readline("> ");
-			if (!line || ft_strcmp(line, delimiter) == 0)
-			{
-				free(line);
-				break ;
-			}
-			if (write(pipe_fd[1], line, ft_strlen(line)) == -1 || write(pipe_fd[1], "\n", 1) == -1)
-			{
-				perror("write to pipe");
-				free(line);
-				exit(EXIT_FAILURE);
-			}
-			free(line);
-		}
-		close(pipe_fd[1]);
-		exit(EXIT_SUCCESS);
-	}
-	else
-	{
-		int	status;
-		close(pipe_fd[1]);
-		waitpid(pid, &status, 0);
-		if (*fd_in != STDIN_FILENO)
-			close(*fd_in);
-		*fd_in = pipe_fd[0];
-	}
-}
-
-void	setup_redirect(t_token *start, t_token *end, int *fd_in, int *fd_out)
+void	setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out)
 {
 	t_token	*current;
 

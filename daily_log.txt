@@ -22,7 +22,7 @@ Sep 27th
 Sep 30th
 - Implemented 'handle_external_commands'part!!!
 
-Oct 1st 
+Oct 1st
 - merged the code to handle all internal commands
 - updated relevant functions to handle env command
 - is_external_command function has been updated to use the copied environment
@@ -42,4 +42,23 @@ Oct 8th
 - Mixing directions with pipes still needs to be handled (cat < input.txt | grep "test")
 
 Oct 11
-- Updated cd function to get OLDPWD in environment 
+- Updated cd function to get OLDPWD in environment
+
+Oct 15th
+- Created 'readline.supp' file for readline suppression on valgrind
+HOW TO USE
+- Valgrind command: valgrind --suppressions=./readline.supp --show-leak-kinds=all --leak-check=full ./minishell
+- When a new memory leak from readline appears:
+  1. valgrind --leak-check=full --show-reachable=yes --error-limit=no --gen-suppressions=all --log-file=minishellraw.log ./minishell
+  2. Create 'parse_valgrind_suppressions.sh' file (https://wiki.wxwidgets.org/Parse_valgrind_suppressions.sh)
+  3. cat ./minishellraw.log | ./parse_valgrind_suppressions.sh > readline.supp
+  4. Open 'readline.supp' file and remain only readline-relevant ones.
+  5. Repeat 1-4 to make sure.
+
+After getting rid of readline memory leak, we have:
+- uninitialized bytes from wait4() - handle_tokens()
+- still reachable from malloc() - handle_tokens()
+- still reachable from malloc() - add_token_to_list() - process_token() - tokenize_input()
+- still reachable from malloc() - copy_environment()
+- still reachable from malloc() - ft_strdup() - copy_environment()
+- conditional jump or move depends on uninitialized value from free() - free_external_command()
