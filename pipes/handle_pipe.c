@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_pipe.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 13:22:39 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/02 15:17:54 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/16 14:43:08 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	fork_and_exec(pid_t pid, t_token *cmd, int input_fd, int output_fd, 
 		perror("malloc failed.\n");
 		exit(EXIT_FAILURE);
 	}
-	prepare_args(cmd, token_count, args, envp);
+	prep_args(cmd, token_count, args, envp);
 	if (pid == -1)
 	{
 		perror("fork failed.\n");

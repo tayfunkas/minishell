@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/15 17:47:10 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/16 14:53:06 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,16 +71,21 @@ void		assign_token_types(t_token *tokens);
 void		type_tokens(t_token *token);
 
 //token_creation.c
-t_token		*create_new_token(char *start, int len, int inside_quotes, t_token *current);
-char		*get_token_end(char *start, int *inside_quotes, char *quote);
+t_token		*create_new_tok(char *start, int len, int in_quo, t_token *current);
+char		*get_token_end(char *start, int *in_quo, char *quote);
 char		*handle_regular_token(char *start);
-char		*move_to_next_token(char *end, int inside_quotes, char quote);
+char		*move_to_next_token(char *end, int in_quo, char quote);
 t_token		*tokenize_input(char *input, int max_args);
 
 //handling.c
 void		handle_tokens(t_token *tokens, char **our_env);
 int			count_tokens_until(t_token *start, t_token *end);
+int			is_external_command(char *cmd, char **our_env);
+int			is_internal_command(char *cmd);
+
+//execute_command.c
 void		execute_command(t_token *start, t_token *end, char **our_env);
+int			count_tokens_until(t_token *start, t_token *end);
 
 //initiate_internal_commands.c
 t_command	*init_internal_command(t_token *current, char **envp);
@@ -98,12 +103,17 @@ void		ft_exit(char **args);
 char		*get_env_value(char **env, const char *name);
 
 //execute_external_commands.c
-//void		execute_external_command(t_token *tokens, int token_count, char **our_env);
-void 		execute_external_command(t_token *tokens, int token_count, char **our_env, int fd_in, int fd_out);
+void		execute_external_c(t_token *tokens, int token_count, t_command *cmd);
 char		*expand_var(char *token, char **our_env);
-void		prepare_args(t_token *tokens, int token_count, char **args, char **our_env);
-void		handle_fork(pid_t pid, char *cmd_path, char **args, char **our_env);
+void		prep_args(t_token *tokens, int token_count, char **args, char **our_env);
 void		free_external_commands(char *cmd_path, char **args, int token_count);
+
+//external_command_helpers.c
+char	**allocate_args(int token_count);
+void	duplicate_fds(int fd_in, int fd_out);
+void	restore_fds(int parent_in, int parent_out);
+void	handle_child_process(char *cmd_path, char **args);
+void	fork_and_execute(t_command *cmd, char *cmd_path, char **args);
 
 //path.c
 char		*find_cmd_path(char *cmd, char **our_env);

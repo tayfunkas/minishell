@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:39:22 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/04 13:58:18 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/16 14:50:44 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ static char	*build_cmd_path(char *paths, char *cmd)
 		return (ft_strdup(full_path));
 	return (NULL);
 }
-
 
 char	*find_cmd_path(char *cmd, char **our_env)
 {

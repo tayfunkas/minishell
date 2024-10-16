@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 17:34:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/14 21:23:26 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/16 14:51:23 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 	t_token	*head = NULL;
 	t_token	*current = NULL;
 	int	i = 0;
-	int	inside_quotes = 0;
+	int	in_quo = 0;
 	char	*start = input;
 	char	*end;
 	char	quote;
@@ -32,14 +32,14 @@
 		if (*start == '"' || *start == '\'')
         	{
             // Handle quoted strings
-			inside_quotes = 1;
+			in_quo = 1;
 			quote = *start;
 			start++;
 			end = ft_strchr(start, quote);
 			if (!end)
 				end = start + ft_strlen(start);
 		}
-		else if (*start == '|' && !inside_quotes)
+		else if (*start == '|' && !in_quo)
 		{
 		// Handle pipe as a separate token
 			end = start + 1;
@@ -47,7 +47,7 @@
 		else
 		{
 		// Handle regular tokens
-			inside_quotes = 0;
+			in_quo = 0;
 			end = start;
 			while (*end && !ft_isspace(*end) && *end != '|')
 				end++;
@@ -58,7 +58,7 @@
 		new_token->str = (char *)malloc(len + 1);
 		ft_strncpy(new_token->str, start, len);
 		new_token->str[len] = '\0';
-		new_token->flag = inside_quotes;
+		new_token->flag = in_quo;
 		new_token->next = NULL;
 		new_token->prev = current;
 		if (current)
@@ -68,11 +68,11 @@
 		current = new_token;
 		i++;
 		// Move to next token
-		if (*end == quote && inside_quotes)
+		if (*end == quote && in_quo)
 			start = end + 1;
 		else
 			start = end;
-		inside_quotes = 0;
+		in_quo = 0;
 	}
 	return head;
 }*/

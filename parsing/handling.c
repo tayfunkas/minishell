@@ -6,13 +6,13 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:56:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/08 15:39:58 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/16 14:57:11 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_external_command(char *cmd, char **our_env)
+/*static int	is_external_command(char *cmd, char **our_env)
 {
 	char	*path_env;
 	char	**paths;
@@ -50,9 +50,65 @@ static int	is_external_command(char *cmd, char **our_env)
 	}
 	free_split(paths);
 	return (0);
+}*/
+
+static char	*get_path_env(char **our_env)
+{
+	int		i;
+	char	*path_env;
+
+	i = 0;
+	path_env = NULL;
+	while (our_env[i])
+	{
+		if (ft_strncmp(our_env[i], "PATH=", 5) == 0)
+		{
+			path_env = our_env[i] + 5;
+			break ;
+		}
+		i++;
+	}
+	return (path_env);
 }
 
-static int	is_internal_command(char *cmd)
+static int	check_command_in_paths(char *cmd, char **paths)
+{
+	int		i;
+	char	full_path[1024];
+
+	i = 0;
+	while (paths[i] != NULL)
+	{
+		ft_strcpy(full_path, paths[i]);
+		ft_strcat(full_path, "/");
+		ft_strcat(full_path, cmd);
+		if (access(full_path, X_OK) == 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int	is_external_command(char *cmd, char **our_env)
+{
+	char	*path_env;
+	char	**paths;
+	int		result;
+
+	if (ft_strcmp(cmd, "env") == 0)
+		return (0);
+	path_env = get_path_env(our_env);
+	if (!path_env)
+		return (0);
+	paths = ft_split(path_env, ':');
+	if (!paths)
+		return (0);
+	result = check_command_in_paths(cmd, paths);
+	free_split(paths);
+	return (result);
+}
+
+int	is_internal_command(char *cmd)
 {
 	if (ft_strcmp(cmd, "cd") == 0)
 		return (1);
@@ -73,11 +129,11 @@ static int	is_internal_command(char *cmd)
 
 void	handle_tokens(t_token *tokens, char **our_env)
 {
-	int	pipe_count;
-	int	**pipe_fds;
+	int		pipe_count;
+	int		**pipe_fds;
 	pid_t	*pids;
 	t_token	*current;
-	int	i;
+	int		i;
 
 	pipe_count = count_pipes(tokens);
 	pipe_fds = malloc(sizeof(int *) * pipe_count);
@@ -154,48 +210,4 @@ void	handle_tokens(t_token *tokens, char **our_env)
 	free(pids);
 }
 
-void	execute_command(t_token *start, t_token *end, char **our_env)
-{
-	int	fd_in = STDIN_FILENO;
-	int	fd_out = STDOUT_FILENO;
-	int	arg_count;
-
-	setup_redir(start, end, &fd_in, &fd_out);
-	if (start && start->type == CMD)
-	{
-		if (is_external_command(start->str, our_env))
-		{
-			arg_count = count_tokens_until(start, end);
-			execute_external_command(start, arg_count, our_env, fd_in, fd_out);
-		}
-		else if (is_internal_command(start->str))
-		{
-			t_command *cmd = init_internal_command(start, our_env);
-			if (!cmd)
-				return;
-			cmd->fd_in = fd_in;
-			cmd->fd_out = fd_out;
-			execute_internal_commands(cmd, &our_env);
-			free_command(cmd);
-		}
-	}
-	if (fd_in != STDIN_FILENO)
-		close(fd_in);
-	if (fd_out != STDOUT_FILENO)
-		close(fd_out);
-}
-
-int	count_tokens_until(t_token *start, t_token *end)
-{
-	int	count;
-    	t_token	*current;
-	count = 0;
-    	current = start;
-	while (current != end && current != NULL)
-	{
-		count++;
-		current = current->next;
-	}
-	return (count);
-}
 

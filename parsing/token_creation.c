@@ -6,13 +6,13 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 21:10:03 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/14 21:23:07 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/16 14:52:04 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token	*create_new_token(char *start, int len, int in_quo, t_token *current)
+t_token	*create_new_tok(char *start, int len, int in_quo, t_token *current)
 {
 	t_token	*new_token;
 
@@ -28,11 +28,11 @@ t_token	*create_new_token(char *start, int len, int in_quo, t_token *current)
 	return (new_token);
 }
 
-char	*get_token_end(char *start, int *inside_quotes, char *quote)
+char	*get_token_end(char *start, int *in_quo, char *quote)
 {
 	char	*end;
 
-	if (*inside_quotes && quote)
+	if (*in_quo && quote)
 	{
 		end = ft_strchr(start, *quote);
 		if (!end)
@@ -57,9 +57,9 @@ char	*handle_regular_token(char *start)
 	return (end);
 }
 
-char	*move_to_next_token(char *end, int inside_quotes, char quote)
+char	*move_to_next_token(char *end, int in_quo, char quote)
 {
-	if (*end == quote && inside_quotes)
+	if (*end == quote && in_quo)
 		return (end + 1);
 	return (end);
 }

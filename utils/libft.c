@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 17:28:58 by kyukang           #+#    #+#             */
-/*   Updated: 2024/09/25 19:03:34 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/16 14:54:06 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ int	ft_isspace(int c)
 int	ft_strcmp(char *s1, char *s2)
 {
 	int	result;
-
 
 	while (*s1 && *s2 && *s1 == *s2)
 	{
