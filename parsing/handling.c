@@ -160,7 +160,7 @@ void	execute_command(t_token *start, t_token *end, char **our_env)
 	int	fd_out = STDOUT_FILENO;
 	int	arg_count;
 
-	setup_redirect(start, end, &fd_in, &fd_out);
+	setup_redir(start, end, &fd_in, &fd_out);
 	if (start && start->type == CMD)
 	{
 		if (is_external_command(start->str, our_env))

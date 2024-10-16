@@ -9,7 +9,7 @@ SRCS = $(addprefix parsing/, parsing.c handling.c token_creation.c) \
 	   $(addprefix command/, external_commands.c init_internal_commands.c internal_commands.c path.c) \
 	   $(addprefix pipes/, handle_pipe.c) \
 	   $(addprefix utils/, libft.c utils.c) \
-	   $(addprefix redirections/, redirections.c) \
+	   $(addprefix redirections/, redirections.c redir_heredoc.c) \
 	   minishell.c
 
 OBJS = $(SRCS:.c=.o)

@@ -51,7 +51,6 @@ static void	heredoc_wait(int *pipe_fd, int *fd_in, pid_t pid)
 
 void	execute_redir_heredoc(t_token *current, int *fd_in)
 {
-	char	*line;
 	int		pipe_fd[2];
 	char	*delimiter;
 	pid_t	pid;
