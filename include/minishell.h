@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/16 14:53:06 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/16 16:34:50 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,13 @@ void		ft_unset(t_command *cmd, char ***env);
 void		ft_env(char **env);
 void		ft_exit(char **args);
 char		*get_env_value(char **env, const char *name);
+
+//ft_cd_helpers.c
+void		home_directory(char **path, char *home);
+void		handle_oldpwd(char **path, char ***env);
+void		expand_tilde(char **path, char *home);
+void		update_env(char ***env, char *current_dir, char *new_dir);
+int			validate_env_and_getcwd(char ***env, char *dir);
 
 //execute_external_commands.c
 void		execute_external_c(t_token *tokens, int token_count, t_command *cmd);
