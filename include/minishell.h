@@ -101,6 +101,7 @@ void		ft_unset(t_command *cmd, char ***env);
 void		ft_env(char **env);
 void		ft_exit(char **args);
 char		*get_env_value(char **env, const char *name);
+void		check_internal_c(t_command *cmd, char ***env);
 
 //ft_cd_helpers.c
 void		home_directory(char **path, char *home);

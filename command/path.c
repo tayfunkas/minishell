@@ -24,6 +24,21 @@ static char	*build_cmd_path(char *paths, char *cmd)
 	return (NULL);
 }
 
+static char	*get_path_env(char **our_env)
+{
+	int	i;
+
+	i = 0;
+	while (our_env[i] != NULL)
+	{
+		if (ft_strncmp(our_env[i], "PATH=", 5) == 0)
+			return (our_env[i] + 5);
+		i++;
+	}
+	perror("No PATH found.\n");
+	return (NULL);
+}
+
 char	*find_cmd_path(char *cmd, char **our_env)
 {
 	char	*path_env;
@@ -32,21 +47,9 @@ char	*find_cmd_path(char *cmd, char **our_env)
 	int		i;
 
 	i = 0;
-	path_env = NULL;
-	while (our_env[i] != NULL)
-	{
-		if (ft_strncmp(our_env[i], "PATH=", 5) == 0)
-		{
-			path_env = our_env[i] + 5;
-			break ;
-		}
-		i++;
-	}
+	path_env = get_path_env(our_env);
 	if (!path_env)
-	{
-		perror("No PATH found.\n");
 		return (NULL);
-	}
 	cmd_path = NULL;
 	paths = ft_split(path_env, ':');
 	i = 0;
