@@ -1,0 +1,4 @@
+hi
+bye
+-rw-r--r-- 1 kyukang 2024_berlin  2894 Oct 17 14:15 daily_log.txt
+-rw-r--r-- 1 kyukang 2024_berlin     7 Oct 17 18:20 hi.txt
