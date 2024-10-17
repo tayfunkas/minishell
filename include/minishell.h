@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/16 16:34:50 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/17 13:47:03 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_token
 	char			*str;
 	int				type;
 	int				flag;
+	char			quote;
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;
@@ -57,13 +58,21 @@ typedef struct s_command
 	struct s_command	*next;
 }	t_command;
 
+typedef struct s_exec_context
+{
+    int     **pipe_fds;
+    int     pipe_count;
+    int     current_index;
+    char    **our_env;
+}   t_exec_context;
+
 //minishell.c
 char		**copy_environment(char **envp);
 void		free_environment(char **env);
 
 //parsing.c
 //t_token		*tokenize_input(char *input, int max_args);
-t_token		*add_token_to_list(char *start, char *end, int in_quo, t_token *c);
+t_token		*add_token_to_list(char *start, char *end, int in_quo, char quote, t_token *c);
 t_token		*process_token(char **start, int *i, t_token *current);
 char		*handle_quoted_string(char *start, char quote);
 char		*skip_whitespace(char *start);
@@ -112,23 +121,31 @@ int			validate_env_and_getcwd(char ***env, char *dir);
 
 //execute_external_commands.c
 void		execute_external_c(t_token *tokens, int token_count, t_command *cmd);
-char		*expand_var(char *token, char **our_env);
+char		*expand_var(char *token, char **our_env, char quote);
 void		prep_args(t_token *tokens, int token_count, char **args, char **our_env);
-void		free_external_commands(char *cmd_path, char **args, int token_count);
+void		free_external_c(char *cmd_path, char **args, int token_count);
 
 //external_command_helpers.c
-char	**allocate_args(int token_count);
-void	duplicate_fds(int fd_in, int fd_out);
-void	restore_fds(int parent_in, int parent_out);
-void	handle_child_process(char *cmd_path, char **args);
-void	fork_and_execute(t_command *cmd, char *cmd_path, char **args);
+char		**allocate_args(int token_count);
+void		duplicate_fds(int fd_in, int fd_out);
+void		restore_fds(int parent_in, int parent_out);
+//void		handle_child_process(char *cmd_path, char **args);
+void		fork_and_execute(t_command *cmd, char *cmd_path, char **args);
 
 //path.c
 char		*find_cmd_path(char *cmd, char **our_env);
+char		*get_path_env(char **our_env);
 
 //handle_pipe.c
 void		handle_pipe(t_token *tokens, t_token *next_cmd, char **envp);
 int			count_pipes(t_token *tokens);
+
+//handle_token_pipes.c
+void		free_pipe_fds(int **pipe_fds, int pipe_count);
+int			create_pipes(int **pipe_fds, int pipe_count);
+void		close_pipes(int **pipe_fds, int pipe_count);
+void		setup_child_pipes(t_exec_context *ctx);
+t_token 	*find_cmd_end(t_token *current);
 
 //redicrectios.c
 void		setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out);
@@ -152,8 +169,8 @@ char		*ft_strdup(const char *s);
 int			ft_atoi(const char *str);
 size_t		ft_strlen(const char *s);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
-int		ft_isdigit_str(char *c);
-char	*ft_strstr(char *str, char *to_find);
-int	ft_isdigit_str(char *c);
+int			ft_isdigit_str(char *c);
+char		*ft_strstr(char *str, char *to_find);
+int			ft_isdigit_str(char *c);
 
 #endif

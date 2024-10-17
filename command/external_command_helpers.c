@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:44:48 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/16 14:47:49 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/17 12:04:28 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	restore_fds(int parent_in, int parent_out)
 	close(parent_out);
 }
 
-void	handle_child_process(char *cmd_path, char **args)
+static void	handle_child_process(char *cmd_path, char **args)
 {
 	int	exec_result;
 

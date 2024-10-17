@@ -6,19 +6,19 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 15:46:35 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/16 14:50:28 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/17 14:01:00 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h" 
 
-char	*expand_var(char *token, char **our_env)
+char	*expand_var(char *token, char **our_env, char quote)
 {
 	char	*env_var;
 	int		i;
 
 	i = 0;
-	if (token[0] == '$')
+	if (token[0] == '$' && quote != '\'')
 	{
 		env_var = token + 1;
 		while (our_env[i])
@@ -44,7 +44,7 @@ void	prep_args(t_token *tokens, int token_count, char **args, char **our_env)
 	{
 		if (current->type == CMD || current->type == ARG)
 		{
-			args[i] = expand_var(current->str, our_env);
+			args[i] = expand_var(current->str, our_env, current->quote);
 			i++;
 		}
 		else if (current->type == TRUNC || current->type == APPEND 
@@ -55,7 +55,7 @@ void	prep_args(t_token *tokens, int token_count, char **args, char **our_env)
 	args[i] = NULL;
 }
 
-void	free_external_commands(char *cmd_path, char **args, int token_count)
+void	free_external_c(char *cmd_path, char **args, int token_count)
 {
 	int	i;
 
@@ -68,66 +68,6 @@ void	free_external_commands(char *cmd_path, char **args, int token_count)
 	}
 	free(args);
 }
-
-/*void	execute_external_command(t_token *tokens, int token_count, 
-char **our_env, int fd_in, int fd_out)
-{
-	pid_t	pid;
-	char	*cmd_path;
-	char	**args;
-
-	cmd_path = find_cmd_path(tokens->str, our_env);
-	if (cmd_path == NULL)
-	{
-		fprintf(stderr, "Command not found: %s\n", tokens->str);
-		return;
-	}
-	args = (char **)malloc(sizeof(char *) * (token_count + 1));
-	if (args == NULL)
-	{
-		perror("malloc failed");
-		free(cmd_path);
-		return;
-	}
-	prepare_args(tokens, token_count, args, our_env);
-	int	parent_in = dup(STDIN_FILENO);
-	int	parent_out = dup(STDOUT_FILENO);
-	pid = fork();
-	if (pid == 0)
-	{
-		if (fd_in != STDIN_FILENO)
-		{
-			dup2(fd_in, STDIN_FILENO);
-			close(fd_in);
-		}
-		if (fd_out != STDOUT_FILENO)
-		{
-			dup2(fd_out, STDOUT_FILENO);
-			close(fd_out);
-		}
-		execve(cmd_path, args, our_env);
-		perror("execve");
-		exit(EXIT_FAILURE);
-	}
-	else if (pid > 0)
-	{
-		int status;
-		if (fd_in != STDIN_FILENO)
-			close(parent_in);
-		if (fd_out != STDOUT_FILENO)
-			close(parent_out);
-		waitpid(pid, &status, 0);
-		dup2(parent_in, STDIN_FILENO);
-		dup2(parent_out, STDOUT_FILENO);
-		close(parent_in);
-		close(parent_out);
-	}
-	else
-	{
-    	perror("fork");
-	}
-	free_external_commands(cmd_path, args, token_count);
-}*/
 
 void	execute_external_c(t_token *tokens, int token_count, t_command *cmd)
 {
@@ -152,5 +92,5 @@ void	execute_external_c(t_token *tokens, int token_count, t_command *cmd)
 	}
 	prep_args(tokens, token_count, args, cmd->env);
 	fork_and_execute(cmd, cmd_path, args);
-	free_external_commands(cmd_path, args, token_count);
+	free_external_c(cmd_path, args, token_count);
 }

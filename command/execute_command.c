@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 12:44:33 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/16 14:49:12 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/17 14:02:26 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,34 +71,3 @@ int	count_tokens_until(t_token *start, t_token *end)
 	}
 	return (count);
 }
-
-/*void	execute_command(t_token *start, t_token *end, char **our_env)
-{
-	int	fd_in = STDIN_FILENO;
-	int	fd_out = STDOUT_FILENO;
-	int	arg_count;
-
-	setup_redir(start, end, &fd_in, &fd_out);
-	if (start && start->type == CMD)
-	{
-		if (is_external_command(start->str, our_env))
-		{
-			arg_count = count_tokens_until(start, end);
-			execute_external_command(start, arg_count, our_env, fd_in, fd_out);
-		}
-		else if (is_internal_command(start->str))
-		{
-			t_command *cmd = init_internal_command(start, our_env);
-			if (!cmd)
-				return;
-			cmd->fd_in = fd_in;
-			cmd->fd_out = fd_out;
-			execute_internal_commands(cmd, &our_env);
-			free_command(cmd);
-		}
-	}
-	if (fd_in != STDIN_FILENO)
-		close(fd_in);
-	if (fd_out != STDOUT_FILENO)
-		close(fd_out);
-}*/

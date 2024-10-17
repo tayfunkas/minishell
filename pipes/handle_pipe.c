@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void	fork_and_exec(pid_t pid, t_token *cmd, int input_fd, int output_fd, char **envp)
+/*static void	fork_and_exec(pid_t pid, t_token *cmd, int input_fd, int output_fd, char **envp)
 {
 	char	**args;
 	int		token_count;
@@ -98,7 +98,7 @@ void	handle_pipe(t_token *tokens, t_token *next_cmd, char **envp)
 	close(pipe_fd[1]);
 	waitpid(pid1, NULL, 0);
 	waitpid(pid2, NULL, 0);
-}
+}*/
 
 int	count_pipes(t_token *tokens)
 {
