@@ -46,6 +46,11 @@ Oct 11
 
 Oct 15th
 - Created 'readline.supp' file for readline suppression on valgrind
+
+Oct 18th
+-$? is handled but a lot of fixes are still required
+-Majority of the functions are turned into int for exit_status
+
 HOW TO USE
 - Valgrind command: valgrind --suppressions=./readline.supp --show-leak-kinds=all --leak-check=full ./minishell
 - When a new memory leak from readline appears:
