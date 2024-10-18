@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 14:39:13 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/17 17:40:39 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/18 15:46:48 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int	main(int argc, char **argv, char **envp)
 		write(2, "Failied to copy environment\n", 28);
 		return (1);
 	}
+	setup_signal();
 	minishell(our_env);
 	rl_clear_history();
 	return (0);

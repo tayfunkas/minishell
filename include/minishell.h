@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 17:21:29 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/18 16:00:04 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,10 @@ void		execute_redir_append(t_token *current, int *fd_out);
 void		execute_redir_heredoc(t_token *current, int *fd_in);
 
 //----------------------------------utils----------------------------------
+//signal.c
+void		setup_signal(void);
+void		signal_handler(int sig);
+
 //utils.c
 void		free_tokens(t_token *tokens);
 void		free_command(t_command *cmd);
