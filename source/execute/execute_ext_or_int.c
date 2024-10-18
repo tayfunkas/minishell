@@ -83,24 +83,29 @@ static int	count_tokens_until(t_token *start, t_token *end)
 	return (count);
 }
 
-void	execute_ext_or_int(t_token *start, t_token *end, t_command *cmd)
+int	execute_ext_or_int(t_token *start, t_token *end, t_command *cmd)
 {
 	int			arg_count;
 	t_command	*internal_cmd;
+	int			status;
 
 	if (is_external_command(start->str, cmd->env))
 	{
 		arg_count = count_tokens_until(start, end);
-		execute_external_commands(start, arg_count, cmd);
+		status = execute_external_commands(start, arg_count, cmd);
+		return (status);
 	}
 	else if (is_internal_command(start->str))
 	{
 		internal_cmd = init_internal_command(start, cmd->env);
 		if (!internal_cmd)
-			return ;
+			return (1);
 		internal_cmd->fd_in = cmd->fd_in;
 		internal_cmd->fd_out = cmd ->fd_out;
-		execute_internal_commands(internal_cmd, &cmd->env);
+		status = execute_internal_commands(internal_cmd, &cmd->env);
 		free_command(internal_cmd);
+		return (status);
 	}
+	write(2, "minishell: command not found\n", 29);
+	return (127); 
 }

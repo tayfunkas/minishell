@@ -12,28 +12,24 @@
 
 #include "minishell.h"
 
-void	ft_exit(char **args)
+int	ft_exit(char **args)
 {
 	int	status;
 
 	status = 0;
+	printf("exit\n");
 	if (args[1] == NULL)
-	{
-		printf("exit\n");
 		exit(0);
-	}
 	if (!ft_isdigit_str(args[1]))
 	{
-		printf("exit\n");
 		printf("minishell: exit: %s: numeric argument required\n", args[1]);
 		exit(2);
 	}
 	if (args[2] != NULL)
 	{
 		write(1, "minishell: exit: too many arguments\n", 36);
-		return ;
+		return (1);
 	}
 	status = ft_atoi(args[1]);
-	printf("exit\n");
 	exit(status);
 }

@@ -12,11 +12,61 @@
 
 #include "minishell.h"
 
-void	minishell(char **our_env)
+static void	update_last_status(t_exec_context *ctx, int status) 
+{
+	char	*new_status;
+	int	i = 0;
+	int	status_length;
+	int	temp_status;
+	
+	status_length = 3; 
+	if (status == 0)
+		status_length += 1;
+	else 
+	{
+		temp_status = status;
+		while (temp_status > 0) 
+		{
+			temp_status /= 10;
+			status_length++;
+		}
+	}
+	new_status = (char *)malloc(status_length * sizeof(char)); 
+	if (new_status == NULL) 
+	{
+		perror("malloc");
+		return;
+	}
+	sprintf(new_status, "?=%d", status); 
+	while (ctx->our_env[i]) 
+	{
+		if (strncmp(ctx->our_env[i], "?", 1) == 0)
+		{
+			free(ctx->our_env[i]); 
+			ctx->our_env[i] = new_status; 
+			return;
+		}
+		i++;
+	}
+	ctx->our_env = realloc(ctx->our_env, sizeof(char *) * (i + 2)); 
+	if (ctx->our_env == NULL) 
+	{
+		perror("realloc");
+		free(new_status); 
+		return; 
+	}
+	ctx->our_env[i] = new_status; 
+	ctx->our_env[i + 1] = NULL; 
+}
+
+
+void	minishell(t_exec_context *ctx)
 {
 	char	*input;
 	t_token	*tokens;
-
+	int status;
+	
+	status = 0;
 	while (1)
 	{
 		input = readline("minishell> ");
@@ -32,7 +82,10 @@ void	minishell(char **our_env)
 			tokens = tokenize_inputs(input, 10);
 			assign_token_types(tokens);
 			if (tokens)
-				handle_tokens(tokens, our_env);
+			{
+				status = handle_tokens(tokens, ctx->our_env);
+				update_last_status(ctx, status);
+			}
 			free_tokens(tokens);
 		}
 		free(input);
@@ -42,17 +95,24 @@ void	minishell(char **our_env)
 int	main(int argc, char **argv, char **envp)
 {
 	char	**our_env;
-
+	t_exec_context	ctx;
 	(void)argc;
 	(void)argv;
+	
+	ctx.pipe_fds = NULL;
+	ctx.pipe_count = 0;
+	ctx.current_index = 0;
+	ctx.our_env = NULL;
+	ctx.last_status = 0; 
 	our_env = copy_environment(envp);
 	if (!our_env)
 	{
 		write(2, "Failied to copy environment\n", 28);
 		return (1);
 	}
+	ctx.our_env = our_env;
 	setup_signal();
-	minishell(our_env);
+	minishell(&ctx);
 	rl_clear_history();
 	return (0);
 }
@@ -97,3 +157,5 @@ void	free_environment(char **env)
 	}
 	free(env);
 }
+
+

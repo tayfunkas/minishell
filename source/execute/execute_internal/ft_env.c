@@ -12,19 +12,20 @@
 
 #include "minishell.h"
 
-void	ft_env(char **env)
+int	ft_env(char **env)
 {
 	int	i;
 
 	i = 0;
 	if (env == NULL)
 	{
-		write(2, "env: no environment variables\n", 31);
-		return ;
+		write(2, "env: no environment variables\n", 30);
+		return (1);
 	}
 	while (env[i] != NULL)
 	{
 		printf("%s\n", env[i]);
 		i++;
 	}
+	return(0);
 }

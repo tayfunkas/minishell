@@ -37,7 +37,7 @@ static void	remove_env_key(char ***env, const char *key)
 	}
 }
 
-void	ft_unset(t_command *cmd, char ***env)
+int	ft_unset(t_command *cmd, char ***env)
 {
 	char	*key;
 
@@ -45,7 +45,8 @@ void	ft_unset(t_command *cmd, char ***env)
 	if (!key)
 	{
 		write(2, "unset: not enough arguments\n", 28);
-		return ;
+		return (1);
 	}
 	remove_env_key(env, key);
+	return (0);
 }

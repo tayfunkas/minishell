@@ -34,7 +34,7 @@ void	restore_fds(int parent_in, int parent_out)
 	close(parent_out);
 }
 
-void	handle_child_process(char *cmd_path, char **args)
+int	handle_child_process(char *cmd_path, char **args)
 {
 	int	exec_result;
 
@@ -44,9 +44,10 @@ void	handle_child_process(char *cmd_path, char **args)
 		perror("execve");
 		exit(EXIT_FAILURE);
 	}
+	return (0);
 }
 
-void	fork_and_execute(t_command *cmd, char *cmd_path, char **args)
+int	fork_and_execute(t_command *cmd, char *cmd_path, char **args)
 {
 	pid_t	pid;
 	int		parent_in;
@@ -69,7 +70,15 @@ void	fork_and_execute(t_command *cmd, char *cmd_path, char **args)
 			close(cmd->fd_out);
 		waitpid(pid, &status, 0);
 		restore_fds(parent_in, parent_out);
+		if (WIFEXITED(status))
+			return (WEXITSTATUS(status));
+		else
+			return (1);
 	}
 	else
+	{
 		perror("fork");
+		return (1);
+	}
+	return (1);
 }
