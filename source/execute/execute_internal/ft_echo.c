@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:09:54 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 16:10:04 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/19 18:43:09 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,33 @@
 
 int	ft_echo(char **args)
 {
-	int	newline;
-	int	i;
+	bool	newline; 
+	bool	first;
+	int		i;
+	char	*arg;
 
 	newline = 1;
-	i = 1;
-	if (args[1] != NULL && ft_strcmp(args[1], "-n") == 0)
+	i = 1; 
+	while (args[i] != NULL && strncmp(args[i], "-n", 2) == 0)
 	{
-		newline = 0;
-		i = 2;
+		arg = args[i] + 1;
+		while (*arg == 'n')
+			arg++;
+		if (*arg == '\0')
+		{
+			newline = 0;
+			i++;
+		}
+		else
+			break ;
 	}
+	first = 1;
 	while (args[i] != NULL)
 	{
-		printf("%s", args[i]);
-		if (args[i + 1] != NULL)
-		{
+		if (!first)
 			printf(" ");
-		}
+		printf("%s", args[i]);
+		first = 0;
 		i++;
 	}
 	if (newline)

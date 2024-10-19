@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   prepare_args.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:17:17 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 16:18:04 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/19 19:53:53 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*expand_var(char *token, char **our_env, char quote)
+/*char	*expand_var(char *token, char **our_env, char quote)
 {
 	char	*env_var;
 	int		i;
@@ -31,9 +31,25 @@ static char	*expand_var(char *token, char **our_env, char quote)
 		return (ft_strdup(""));
 	}
 	return (ft_strdup(token));
+}*/
+
+char *expand_var(char *token, char **our_env)
+{
+    if (token[0] != '$' || token[1] == '\0')
+        return ft_strdup(token);
+
+    char *env_var = token + 1;
+    for (int i = 0; our_env[i]; i++)
+    {
+        char *equals = strchr(our_env[i], '=');
+        if (equals && strncmp(our_env[i], env_var, equals - our_env[i]) == 0)
+            return ft_strdup(equals + 1);
+    }
+
+    return ft_strdup("");
 }
 
-void	prep_args(t_token *tokens, int token_count, char **args, char **our_env)
+/*void	prep_args(t_token *tokens, int token_count, char **args, char **our_env)
 {
 	t_token	*current;
 	int		i;
@@ -53,6 +69,33 @@ void	prep_args(t_token *tokens, int token_count, char **args, char **our_env)
 		current = current->next;
 	}
 	args[i] = NULL;
+}*/
+
+void prep_args(t_token *tokens, int token_count, char **args, char **our_env)
+{
+    t_token *current = tokens;
+    int i = 0;
+
+    while (current && i < token_count)
+    {
+        if (current->type == CMD || current->type == ARG)
+        {
+            args[i] = expand_var(current->str, our_env);
+            i++;
+        }
+        else if (current->type == TRUNC || current->type == APPEND
+            || current->type == INPUT || current->type == HEREDOC)
+        {
+            current = current->next;
+            if (current)
+            {
+                args[i] = ft_strdup(current->str);
+                i++;
+            }
+        }
+        current = current->next;
+    }
+    args[i] = NULL;
 }
 
 char	**allocate_args(int token_count)

@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 10:37:55 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/19 15:46:49 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/19 19:40:04 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ static int	check_internal_c(t_command *cmd, char ***env)
 		return (ft_env(*env));
 	else if (ft_strcmp(cmd->argv[0], "exit") == 0)
 		return (ft_exit(cmd->argv));
+	/*else if (ft_strcmp(cmd->argv[0], "echo") == 0)
+		return (ft_echo(cmd->argv));*/
 	else
 	{
 		write(2, "minishell: command not found 2\n", 31);

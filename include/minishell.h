@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/19 17:18:28 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/19 19:54:17 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <fcntl.h>
+# include <stdbool.h>
 
 typedef enum e_token_type
 {
@@ -44,6 +45,7 @@ typedef struct s_token
 	int				type;
 	int				flag;
 	char			quote;
+	int			in_quotes;
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;
@@ -153,6 +155,7 @@ char		*get_path_env(char **our_env);
 char		**allocate_args(int token_count);
 void		prep_args(t_token *tokens, int token_count, char **args,
 				char **our_env);
+char		*expand_var(char *token, char **our_env);
 
 //fork_and_execute_external_command.c
 int		fork_and_execute(t_command *cmd, char *cmd_path, char **args);

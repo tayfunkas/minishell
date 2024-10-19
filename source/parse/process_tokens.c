@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_tokens.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 15:27:28 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 17:32:34 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/19 19:53:14 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ t_token	*add_token_to_list(char *start, int len, int quo_info, t_token *c)
 	return (new_token);
 }
 
-t_token	*process_token(char **start, int *i, t_token *current)
+/*t_token	*process_token(char **start, int *i, t_token *current)
 {
 	int		quo_info;
 	char	*end;
@@ -87,4 +87,71 @@ t_token	*process_token(char **start, int *i, t_token *current)
 	*start = move_to_next_token(end, quo_info & 0xFF, quo_info >> 8 & 0xFF);
 	(*i)++;
 	return (new_token);
+}*/
+
+t_token *process_token(char **start, int *i, t_token *current)
+{
+    char *token_start = *start;
+    char *token_end = *start;
+    int in_quotes = 0;
+    char quote_char = 0;
+    char *result = NULL;
+    int result_len = 0;
+
+    while (**start)
+    {
+        if ((**start == '"' || **start == '\'') && !in_quotes)
+        {
+            in_quotes = 1;
+            quote_char = **start;
+            (*start)++;
+        }
+        else if (**start == quote_char && in_quotes)
+        {
+            in_quotes = 0;
+            quote_char = 0;
+            (*start)++;
+        }
+        else if (**start == '|' && !in_quotes)
+        {
+            if (token_start == *start)
+            {
+                token_end = *start + 1;
+                (*start)++;
+            }
+            break;
+        }
+        else
+        {
+            if (!result)
+                result = malloc(strlen(*start) + 1);
+            result[result_len++] = **start;
+            (*start)++;
+        }
+
+        if (!in_quotes && (ft_isspace(**start) || **start == '\0'))
+            break;
+    }
+
+    if (result)
+    {
+        result[result_len] = '\0';
+        t_token *new_token = add_token_to_list(result, result_len, 0, current);
+        free(result);
+        if (!new_token)
+            return NULL;
+        (*i)++;
+        return new_token;
+    }
+    else if (token_end > token_start)
+    {
+        int len = token_end - token_start;
+        t_token *new_token = add_token_to_list(token_start, len, 0, current);
+        if (!new_token)
+            return NULL;
+        (*i)++;
+        return new_token;
+    }
+
+    return NULL;
 }
