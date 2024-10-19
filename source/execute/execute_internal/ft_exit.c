@@ -22,14 +22,17 @@ int	ft_exit(char **args)
 		exit(0);
 	if (!ft_isdigit_str(args[1]))
 	{
-		printf("minishell: exit: %s: numeric argument required\n", args[1]);
+		write(2, "minishell: exit: ", 17);
+		write(2, args[1], ft_strlen(args[1]));
+		write (2, ": numeric argument required\n", 28);
 		exit(2);
 	}
 	if (args[2] != NULL)
 	{
-		write(1, "minishell: exit: too many arguments\n", 36);
+		write(2, "minishell: exit: too many arguments\n", 36);
 		return (1);
 	}
 	status = ft_atoi(args[1]);
+	status = status % 256;
 	exit(status);
 }

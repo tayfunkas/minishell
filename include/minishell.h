@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/18 17:03:29 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/19 17:18:28 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,10 @@ void		type_tokens(t_token *token);
 
 //-------------------------------handle-------------------------------
 //handling.c
-int		handle_tokens(t_token *tokens, char **our_env);
+int		handle_tokens(t_token *tokens, t_exec_context *ctx);
 int		handle_tokens_loop(t_token *tokens, t_exec_context *ctxt,
 				pid_t *pids);
-void		wait_for_children(pid_t *pids, int pipe_count);
+int		wait_for_children(pid_t *pids, int pipe_count);
 t_token		*find_cmd_end(t_token *current);
 
 //handle_pipe.c

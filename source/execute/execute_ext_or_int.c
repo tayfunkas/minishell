@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ext_or_int.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:43:31 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 16:49:56 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/19 18:01:30 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,10 @@ int	is_internal_command(char *cmd)
 {
 	if (ft_strcmp(cmd, "cd") == 0)
 		return (1);
-	if (ft_strcmp(cmd, "pwd") == 0)
+	/*if (ft_strcmp(cmd, "pwd") == 0)
 		return (1);
 	if (ft_strcmp(cmd, "echo") == 0)
-		return (1);
+		return (1);*/
 	if (ft_strcmp(cmd, "export") == 0)
 		return (1);
 	if (ft_strcmp(cmd, "unset") == 0)
@@ -85,27 +85,43 @@ static int	count_tokens_until(t_token *start, t_token *end)
 
 int	execute_ext_or_int(t_token *start, t_token *end, t_command *cmd)
 {
-	int			arg_count;
+	int	arg_count;
 	t_command	*internal_cmd;
-	int			status;
+	int		status;
+	char		*cmd_path;
+	struct stat	st;
 
-	if (is_external_command(start->str, cmd->env))
-	{
-		arg_count = count_tokens_until(start, end);
-		status = execute_external_commands(start, arg_count, cmd);
-		return (status);
-	}
-	else if (is_internal_command(start->str))
+	if (is_internal_command(start->str))
 	{
 		internal_cmd = init_internal_command(start, cmd->env);
 		if (!internal_cmd)
 			return (1);
 		internal_cmd->fd_in = cmd->fd_in;
-		internal_cmd->fd_out = cmd ->fd_out;
+		internal_cmd->fd_out = cmd->fd_out;
 		status = execute_internal_commands(internal_cmd, &cmd->env);
 		free_command(internal_cmd);
 		return (status);
 	}
-	write(2, "minishell: command not found\n", 29);
-	return (127); 
+	cmd_path = find_cmd_path(start->str, cmd->env);
+	if (cmd_path == NULL && stat(start->str, &st) == -1)
+	{
+		write(2, "minishell: command not found: ", 30);
+		write(2, start->str, ft_strlen(start->str));
+		write(2, "\n", 1);
+		return (127);
+	}
+	if (cmd_path == NULL)
+		cmd_path = ft_strdup(start->str);
+	if (access(cmd_path, X_OK) == -1)
+	{
+		write(2, "minishell: permission denied: ", 30);
+		write(2, start->str, ft_strlen(start->str));
+		write(2, "\n", 1);
+		free(cmd_path);
+		return (126);
+	}
+	arg_count = count_tokens_until(start, end);
+	status = execute_external_commands(start, arg_count, cmd);
+	free(cmd_path);
+	return (status);
 }

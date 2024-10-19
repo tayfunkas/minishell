@@ -83,7 +83,7 @@ void	minishell(t_exec_context *ctx)
 			assign_token_types(tokens);
 			if (tokens)
 			{
-				status = handle_tokens(tokens, ctx->our_env);
+				status = handle_tokens(tokens, ctx);
 				update_last_status(ctx, status);
 			}
 			free_tokens(tokens);
@@ -94,7 +94,6 @@ void	minishell(t_exec_context *ctx)
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	**our_env;
 	t_exec_context	ctx;
 	(void)argc;
 	(void)argv;
@@ -102,18 +101,18 @@ int	main(int argc, char **argv, char **envp)
 	ctx.pipe_fds = NULL;
 	ctx.pipe_count = 0;
 	ctx.current_index = 0;
-	ctx.our_env = NULL;
 	ctx.last_status = 0; 
-	our_env = copy_environment(envp);
-	if (!our_env)
+	ctx.our_env = NULL;
+	ctx.our_env = copy_environment(envp);
+	if (!ctx.our_env)
 	{
 		write(2, "Failied to copy environment\n", 28);
 		return (1);
 	}
-	ctx.our_env = our_env;
 	setup_signal();
 	minishell(&ctx);
 	rl_clear_history();
+	free_environment(ctx.our_env);
 	return (0);
 }
 

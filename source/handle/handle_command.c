@@ -35,6 +35,7 @@ int	handle_command(t_token *current, t_token *cmd_end, t_exec_context *ctx,
 			pid_t *pids)
 {
 	int	status;
+
 	
 	status = 0;
 	if (is_internal_command(current->str) && ctx->pipe_count == 0)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_internal_cmd.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 10:37:55 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/17 16:11:01 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/19 15:46:49 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,18 @@
 static int	check_internal_c(t_command *cmd, char ***env)
 {
 	if (ft_strcmp(cmd->argv[0], "cd") == 0)
-		return(ft_cd(cmd->argv[1], env));
+		return (ft_cd(cmd->argv[1], env));
 	else if (ft_strcmp(cmd->argv[0], "export") == 0)
-		return(ft_export(cmd, env));
+		return (ft_export(cmd, env));
 	else if (ft_strcmp(cmd->argv[0], "unset") == 0)
-		return(ft_unset(cmd, env));
+		return (ft_unset(cmd, env));
 	else if (ft_strcmp(cmd->argv[0], "env") == 0)
-		return(ft_env(*env));
+		return (ft_env(*env));
 	else if (ft_strcmp(cmd->argv[0], "exit") == 0)
-		return(ft_exit(cmd->argv));
+		return (ft_exit(cmd->argv));
 	else
 	{
-		write(2, "minishell: command not found\n", 29);
+		write(2, "minishell: command not found 2\n", 31);
 		return (127);
 	}
 }
@@ -35,13 +35,13 @@ int	execute_internal_commands(t_command *cmd, char ***env)
 {
 	int	original_stdin;
 	int	original_stdout;
-	int 	status;
-	
+	int	status;
+
 	original_stdin = dup(STDIN_FILENO);
 	original_stdout = dup(STDOUT_FILENO);
 	if (cmd == NULL || cmd->argv == NULL || cmd->argv[0] == NULL)
 	{
-		write(2, "minishell: command not found\n", 29);
+		write(2, "minishell: command not found 3\n", 31);
 		return (127);
 	}
 	if (cmd->fd_in != STDIN_FILENO)
