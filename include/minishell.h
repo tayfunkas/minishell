@@ -6,24 +6,26 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/18 16:00:04 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/21 17:42:15 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdio.h>
+# include <ctype.h>
+# include <fcntl.h>
 # include <stddef.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
-# include <sys/wait.h>
+
 # include <sys/stat.h>
-# include <ctype.h>
+# include <sys/wait.h>
+
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <fcntl.h>
 
 typedef enum e_token_type
 {
@@ -63,11 +65,12 @@ typedef struct s_exec_context
 	int		**pipe_fds;
 	int		pipe_count;
 	int		current_index;
+	int		last_status;
 	char	**our_env;
 }	t_exec_context;
 
 //minishell.c
-void		minishell(char **our_env);
+void		minishell(t_exec_context *ctx);
 char		**copy_environment(char **envp);
 void		free_environment(char **env);
 
@@ -88,11 +91,7 @@ void		type_tokens(t_token *token);
 
 //-------------------------------handle-------------------------------
 //handling.c
-void		handle_tokens(t_token *tokens, char **our_env);
-void		handle_tokens_loop(t_token *tokens, t_exec_context *ctxt,
-				pid_t *pids);
-void		wait_for_children(pid_t *pids, int pipe_count);
-t_token		*find_cmd_end(t_token *current);
+int			handle_tokens(t_token *tokens, t_exec_context *ctx);
 
 //handle_pipe.c
 int			count_pipes(t_token *tokens);
@@ -101,35 +100,39 @@ void		free_pipe_fds(int **pipe_fds, int pipe_count);
 void		close_pipes(int **pipe_fds, int pipe_count);
 
 //handle_command.c
-void		handle_command(t_token *current, t_token *cmd_end,
+int			handle_command(t_token *current, t_token *cmd_end,
 				t_exec_context *ctx, pid_t *pids);
-void		setup_child_pipes(t_exec_context *ctx);
 
 //--------------------------execute command--------------------------
 //execute_command.c
-void		execute_command(t_token *start, t_token *end, char **our_env);
+int			execute_command(t_token *start, t_token *end, char **our_env);
 
 //execute_ext_or_int.c
-void		execute_ext_or_int(t_token *start, t_token *end, t_command *cmd);
-int			is_internal_command(char *cmd);
+int			execute_ext_or_int(t_token *start, t_token *end, t_command *cmd);
+
+//check_ext_or_int.c
+int			check_cmd_path(char *cmd_path, t_command *cmd, t_token *start);
+				//struct stat st);
+int			check_command_in_paths(char *cmd, char **paths);
 int			is_external_command(char *cmd, char **our_env);
+int			is_internal_command(char *cmd);
 
 //-----------------------execute internal command-----------------------
 //init_internal_cmd.c
 t_command	*init_internal_command(t_token *current, char **envp);
 
 //execute_internal_cmd.c
-void		execute_internal_commands(t_command *cmd, char ***env);
+int			execute_internal_commands(t_command *cmd, char ***env);
 
 //ft_cd.c, ft_echo.c, ft_env.c, ft_exit.c, ft_export.c, ft_pwd.c, ft_unset.c
-void		ft_cd(char *path, char ***env);
-void		ft_echo(char **args);
-void		ft_env(char **env);
-void		ft_exit(char **args);
-void		ft_export(t_command *cmd, char ***env);
-void		set_env(char ***env, const char *name, const char *value);
-void		ft_pwd(void);
-void		ft_unset(t_command *cmd, char ***env);
+int			ft_cd(char *path, char ***env);
+int			ft_echo(char **args);
+int			ft_env(char **env);
+int			ft_exit(char **args);
+int			ft_export(t_command *cmd, char ***env);
+int			set_env(char ***env, const char *name, const char *value);
+int			ft_pwd(void);
+int			ft_unset(t_command *cmd, char ***env);
 
 //ft_cd_helpers.c
 char		*get_env_value(char **env, const char *name);
@@ -140,9 +143,8 @@ void		update_env(char ***env, char *current_dir, char *new_dir);
 
 //-----------------------execute external command-----------------------
 //execute_external_commands.c
-void		execute_external_commands(t_token *tokens, int token_count,
+int			execute_external_commands(t_token *tokens, int token_count,
 				t_command *cmd);
-void		free_external_c(char *cmd_path, char **args, int token_count);
 
 //find_path.c
 char		*find_cmd_path(char *cmd, char **our_env);
@@ -154,7 +156,7 @@ void		prep_args(t_token *tokens, int token_count, char **args,
 				char **our_env);
 
 //fork_and_execute_external_command.c
-void		fork_and_execute(t_command *cmd, char *cmd_path, char **args);
+int			fork_and_execute(t_command *cmd, char *cmd_path, char **args);
 
 //-------------------------------redirection-------------------------------
 //execute_redir.c + execute_redir_heredoc.c
@@ -168,6 +170,9 @@ void		execute_redir_heredoc(t_token *current, int *fd_in);
 //signal.c
 void		setup_signal(void);
 void		signal_handler(int sig);
+
+//status.c
+void		update_last_status(t_exec_context *ctx, int status);
 
 //utils.c
 void		free_tokens(t_token *tokens);
@@ -190,13 +195,6 @@ int			ft_strncmp(const char *s1, const char *s2, size_t n);
 int			ft_isdigit_str(char *c);
 char		*ft_strstr(char *str, char *to_find);
 int			ft_isdigit_str(char *c);
+char		*ft_itoa(int num);
 
 #endif
-
-//t_token		*tokenize_input(char *input, int max_args);
-//char		*handle_quoted_string(char *start, char quote);
-
-//token_creation.c
-//t_token		*create_new_tok(char *start, int len,
-//int in_quo, t_token *current);
-//char		*handle_regular_token(char *start);

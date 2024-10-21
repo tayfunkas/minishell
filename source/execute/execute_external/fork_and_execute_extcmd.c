@@ -6,13 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:44:48 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/17 16:46:50 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/21 17:50:55 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	duplicate_fds(int fd_in, int fd_out)
+static void	duplicate_fds(int fd_in, int fd_out)
 {
 	if (fd_in != STDIN_FILENO)
 	{
@@ -26,7 +26,7 @@ void	duplicate_fds(int fd_in, int fd_out)
 	}
 }
 
-void	restore_fds(int parent_in, int parent_out)
+static void	restore_fds(int parent_in, int parent_out)
 {
 	dup2(parent_in, STDIN_FILENO);
 	dup2(parent_out, STDOUT_FILENO);
@@ -34,7 +34,7 @@ void	restore_fds(int parent_in, int parent_out)
 	close(parent_out);
 }
 
-void	handle_child_process(char *cmd_path, char **args)
+static int	handle_child_process(char *cmd_path, char **args)
 {
 	int	exec_result;
 
@@ -44,9 +44,18 @@ void	handle_child_process(char *cmd_path, char **args)
 		perror("execve");
 		exit(EXIT_FAILURE);
 	}
+	return (0);
 }
 
-void	fork_and_execute(t_command *cmd, char *cmd_path, char **args)
+static void	check_fds(t_command *cmd)
+{
+	if (cmd->fd_in != STDIN_FILENO)
+		close(cmd->fd_in);
+	if (cmd->fd_out != STDOUT_FILENO)
+		close(cmd->fd_out);
+}
+
+int	fork_and_execute(t_command *cmd, char *cmd_path, char **args)
 {
 	pid_t	pid;
 	int		parent_in;
@@ -63,13 +72,13 @@ void	fork_and_execute(t_command *cmd, char *cmd_path, char **args)
 	}
 	else if (pid > 0)
 	{
-		if (cmd->fd_in != STDIN_FILENO)
-			close(cmd->fd_in);
-		if (cmd->fd_out != STDOUT_FILENO)
-			close(cmd->fd_out);
+		check_fds(cmd);
 		waitpid(pid, &status, 0);
 		restore_fds(parent_in, parent_out);
+		if (WIFEXITED(status))
+			return (WEXITSTATUS(status));
 	}
 	else
 		perror("fork");
+	return (1);
 }

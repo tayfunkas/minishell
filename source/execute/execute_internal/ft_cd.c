@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:05:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 16:09:12 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/21 17:44:23 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ static int	validate_env_and_getcwd(char ***env, char *dir)
 	return (0);
 }
 
-void	ft_cd(char *path, char ***env)
+int	ft_cd(char *path, char ***env)
 {
 	char	current_dir[1024];
 	char	new_dir[1024];
 	char	*home;
 
 	if (validate_env_and_getcwd(env, current_dir) == -1)
-		return ;
+		return (1);
 	home = get_env_value(*env, "HOME");
 	home_directory(&path, home);
 	if (path && ft_strcmp(path, "-") == 0)
@@ -44,12 +44,13 @@ void	ft_cd(char *path, char ***env)
 	if (chdir(path) != 0)
 	{
 		perror("cd");
-		return ;
+		return (1);
 	}
 	if (getcwd(new_dir, sizeof(new_dir)) == NULL)
 	{
 		perror("getcwd");
-		return ;
+		return (1);
 	}
 	update_env(env, current_dir, new_dir);
+	return (0);
 }

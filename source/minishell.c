@@ -6,16 +6,54 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 14:39:13 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/18 15:46:48 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/21 17:46:08 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	minishell(char **our_env)
+int	main(int argc, char **argv, char **envp)
+{
+	t_exec_context	ctx;
+
+	(void)argc;
+	(void)argv;
+	ctx.pipe_fds = NULL;
+	ctx.pipe_count = 0;
+	ctx.current_index = 0;
+	ctx.last_status = 0;
+	ctx.our_env = NULL;
+	ctx.our_env = copy_environment(envp);
+	if (!ctx.our_env)
+	{
+		write(2, "Failied to copy environment\n", 28);
+		return (1);
+	}
+	setup_signal();
+	minishell(&ctx);
+	rl_clear_history();
+	free_environment(ctx.our_env);
+	return (0);
+}
+
+static void	run_minishell(char *input, t_exec_context *ctx)
+{
+	t_token	*tokens;
+	int		status;
+
+	tokens = tokenize_inputs(input, 10);
+	assign_token_types(tokens);
+	if (tokens)
+	{
+		status = handle_tokens(tokens, ctx);
+		update_last_status(ctx, status);
+	}
+	free_tokens(tokens);
+}
+
+void	minishell(t_exec_context *ctx)
 {
 	char	*input;
-	t_token	*tokens;
 
 	while (1)
 	{
@@ -29,32 +67,10 @@ void	minishell(char **our_env)
 		if (input[0])
 		{
 			add_history(input);
-			tokens = tokenize_inputs(input, 10);
-			assign_token_types(tokens);
-			if (tokens)
-				handle_tokens(tokens, our_env);
-			free_tokens(tokens);
+			run_minishell(input, ctx);
 		}
 		free(input);
 	}
-}
-
-int	main(int argc, char **argv, char **envp)
-{
-	char	**our_env;
-
-	(void)argc;
-	(void)argv;
-	our_env = copy_environment(envp);
-	if (!our_env)
-	{
-		write(2, "Failied to copy environment\n", 28);
-		return (1);
-	}
-	setup_signal();
-	minishell(our_env);
-	rl_clear_history();
-	return (0);
 }
 
 char	**copy_environment(char **envp)

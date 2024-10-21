@@ -6,13 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:03:47 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 16:03:53 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/21 17:45:07 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_env(char **env)
+int	ft_env(char **env)
 {
 	int	i;
 
@@ -20,11 +20,12 @@ void	ft_env(char **env)
 	if (env == NULL)
 	{
 		write(2, "env: no environment variables\n", 31);
-		return ;
+		return (1);
 	}
 	while (env[i] != NULL)
 	{
 		printf("%s\n", env[i]);
 		i++;
 	}
+	return (0);
 }

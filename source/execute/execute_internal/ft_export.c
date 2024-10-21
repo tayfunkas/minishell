@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:02:40 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 16:45:55 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/21 17:29:28 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static int	extend_env(char ***env, int i, char *new_var)
 	return (0);
 }
 
-void	set_env(char ***env, const char *name, const char *value)
+int	set_env(char ***env, const char *name, const char *value)
 {
 	int		i;
 	int		len;
@@ -74,31 +74,35 @@ void	set_env(char ***env, const char *name, const char *value)
 	if (!env || !*env || !name || !value)
 	{
 		printf("set_env: Invalid arguments\n");
-		return ;
+		return (-1);
 	}
 	len = ft_strlen(name);
 	i = find_new_var(env, name, len);
 	new_var = create_env_var(name, value);
 	if (!new_var)
-		return ;
+		return (-1);
 	if (extend_env(env, i, new_var) == -1)
-		return ;
+	{
+		free(new_var);
+		return (-1);
+	}
+	return (0);
 }
 
-void	ft_export(t_command *cmd, char ***env)
+int	ft_export(t_command *cmd, char ***env)
 {
 	char	*key_value;
 	char	*equals_sign;
 	char	*key;
 	char	*value;
 
-	key_value = cmd->argv[1];
-	equals_sign = ft_strchr(key_value, '=');
 	if (cmd->argc < 2)
 	{
 		write(2, "export: not enough arguments\n", 29);
-		return ;
+		return (1);
 	}
+	key_value = cmd->argv[1];
+	equals_sign = ft_strchr(key_value, '=');
 	if (equals_sign)
 	{
 		*equals_sign = '\0';
@@ -109,4 +113,5 @@ void	ft_export(t_command *cmd, char ***env)
 	}
 	else
 		set_env(env, key_value, "");
+	return (0);
 }

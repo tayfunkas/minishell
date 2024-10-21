@@ -6,11 +6,38 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 17:28:58 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 17:21:18 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/21 16:01:16 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*ft_itoa(int num)
+{
+	int		len;
+	int		tmp;
+	char	*str;
+
+	len = 0;
+	tmp = num;
+	if (num == 0)
+		return (strdup("0"));
+	while (tmp)
+	{
+		tmp /= 10;
+		len++;
+	}
+	str = (char *)malloc(sizeof(char) * (len + 1));
+	if (str == NULL)
+		return (NULL);
+	str[len] = '\0';
+	while (num)
+	{
+		str[--len] = (num % 10) + '0';
+		num /= 10;
+	}
+	return (str);
+}
 
 char	*ft_strncpy(char *dest, char *src, unsigned int n)
 {
