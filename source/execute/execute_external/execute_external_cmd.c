@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_external_cmd.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 15:46:35 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/21 17:38:54 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/21 21:29:54 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 static void	free_external_c(char *cmd_path, char **args, int token_count)
 {
 	int	i;
-
+	(void)token_count;
 	free(cmd_path);
 	i = 0;
-	while (i < token_count)
+	/*while (i < token_count)
 	{
 		free(args[i]);
 		i++;
-	}
+	}*/
 	free(args);
 }
 

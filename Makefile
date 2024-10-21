@@ -24,7 +24,7 @@ $(NAME): $(OBJS)
 		@echo "$(NAME) is successfully compiled!"
 
 %.o: %.c
-		$(CC) $(CFLAGS) $(INC) -c $< -o $@
+		$(CC) -g $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
 		$(RM) $(OBJS)

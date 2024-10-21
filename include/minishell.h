@@ -46,6 +46,7 @@ typedef struct s_token
 	int				type;
 	int				flag;
 	char			quote;
+	int			quo_info;
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;
@@ -81,7 +82,7 @@ char		*skip_whitespace(char *start);
 
 //process_tokens.c
 t_token		*process_token(char **start, int *i, t_token *current);
-t_token		*add_token_to_list(char *start, int len, int quo_info, t_token *c);
+t_token		*add_token_to_list(char *start, int len, char quote, t_token *c);
 char		*move_to_next_token(char *end, int in_quo, char quote);
 char		*get_token_end(char *start, int *in_quo, char *quote);
 
