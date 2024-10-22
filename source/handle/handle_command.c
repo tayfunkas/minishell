@@ -27,7 +27,7 @@ static void	handle_child_process(t_token *current, t_token *cmd_end,
 	int	status;
 
 	setup_child_pipes(ctx);
-	status = execute_command(current, cmd_end, ctx->our_env);
+	status = execute_command(current, cmd_end, ctx);
 	exit(status);
 }
 
@@ -38,7 +38,7 @@ int	handle_command(t_token *current, t_token *cmd_end, t_exec_context *ctx,
 
 	status = 0;
 	if (is_internal_command(current->str) && ctx->pipe_count == 0)
-		status = execute_command(current, cmd_end, ctx->our_env);
+		status = execute_command(current, cmd_end, ctx);
 	else
 	{
 		pids[ctx->current_index] = fork();

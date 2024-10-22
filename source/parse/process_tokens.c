@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_tokens.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 15:27:28 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 17:32:34 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/22 13:44:47 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,61 @@ char	*move_to_next_token(char *end, int in_quo, char quote)
     return new_token;
 }*/
 
+/*t_token *add_token_to_list(char *start, int len, char quote, t_token *current)
+{
+    t_token *new_token = (t_token *)malloc(sizeof(t_token));
+    if (!new_token)
+        return NULL;
+
+    char *cleaned_str = malloc(len + 1);
+    if (!cleaned_str)
+    {
+        free(new_token);
+        return NULL;
+    }
+
+    int j = 0;
+    char outer_quote = 0;
+    char inner_quote = 0;
+
+    for (int i = 0; i < len; i++)
+    {
+        if (!outer_quote && (start[i] == '"' || start[i] == '\''))
+        {
+            outer_quote = start[i];
+        }
+        else if (outer_quote && start[i] == outer_quote)
+        {
+            outer_quote = 0;
+        }
+        else if (outer_quote && !inner_quote && start[i] != outer_quote && (start[i] == '"' || start[i] == '\''))
+        {
+            inner_quote = start[i];
+            cleaned_str[j++] = start[i];
+        }
+        else if (inner_quote && start[i] == inner_quote)
+        {
+            inner_quote = 0;
+        }
+        else
+        {
+            cleaned_str[j++] = start[i];
+        }
+    }
+    cleaned_str[j] = '\0';
+
+    new_token->str = cleaned_str;
+    new_token->flag = quote ? 1 : 0;
+    new_token->quote = quote;
+    new_token->next = NULL;
+    new_token->prev = current;
+
+    if (current)
+        current->next = new_token;
+
+    return new_token;
+}*/
+
 t_token *add_token_to_list(char *start, int len, char quote, t_token *current)
 {
     t_token *new_token = (t_token *)malloc(sizeof(t_token));
@@ -148,6 +203,7 @@ t_token *add_token_to_list(char *start, int len, char quote, t_token *current)
     new_token->str = cleaned_str;
     new_token->flag = quote ? 1 : 0;
     new_token->quote = quote;
+    new_token->in_single_quotes = 0;  // This will be set in process_token
     new_token->next = NULL;
     new_token->prev = current;
 
@@ -272,7 +328,7 @@ t_token *add_token_to_list(char *start, int len, char quote, t_token *current)
     return new_token;
 }*/
 
-t_token *process_token(char **start, int *i, t_token *current)
+/*t_token *process_token(char **start, int *i, t_token *current)
 {
     char *end = *start;
     char outer_quote = 0;
@@ -340,4 +396,95 @@ t_token *process_token(char **start, int *i, t_token *current)
     *start = end;
     (*i)++;
     return new_token;
+}*/
+
+t_token *process_token(char **start, int *i, t_token *current)
+{
+    char *end = *start;
+    char outer_quote = 0;
+    char inner_quote = 0;
+    char *token_start = *start;
+    int len = 0;
+    int entirely_in_single_quotes = 0;
+
+    // Check for special characters first
+    if (*end == '|' || *end == '<' || *end == '>')
+    {
+        if ((*end == '<' && *(end + 1) == '<') || (*end == '>' && *(end + 1) == '>'))
+        {
+            len = 2;
+        }
+        else
+        {
+            len = 1;
+        }
+        t_token *new_token = add_token_to_list(token_start, len, 0, current);
+        if (!new_token)
+            return NULL;
+        *start = end + len;
+        (*i)++;
+        return new_token;
+    }
+
+    // Process regular tokens and quoted strings
+    entirely_in_single_quotes = (*end == '\'');
+    while (*end)
+    {
+        if (!outer_quote && (*end == '"' || *end == '\''))
+        {
+            outer_quote = *end;
+            end++;
+        }
+        else if (outer_quote && *end == outer_quote)
+        {
+            outer_quote = 0;
+            end++;
+        }
+        else if (outer_quote && !inner_quote && *end != outer_quote && (*end == '"' || *end == '\''))
+        {
+            inner_quote = *end;
+            end++;
+        }
+        else if (inner_quote && *end == inner_quote)
+        {
+            inner_quote = 0;
+            end++;
+        }
+        else if (!outer_quote && (ft_isspace(*end) || *end == '|' || *end == '<' || *end == '>'))
+        {
+            break;
+        }
+        else
+        {
+            end++;
+        }
+    }
+
+    len = end - token_start;
+    t_token *new_token = add_token_to_list(token_start, len, outer_quote, current);
+    if (!new_token)
+        return NULL;
+    new_token->in_single_quotes = entirely_in_single_quotes;
+
+    *start = end;
+    (*i)++;
+    return new_token;
+}
+
+void expand_tokens(t_token *head, t_exec_context *ctx)
+{
+    t_token *current = head;
+    while (current)
+    {
+        if (!current->in_single_quotes)
+        {
+            char *expanded = expand_var(current->str, ctx);
+            if (expanded)
+            {
+                free(current->str);
+                current->str = expanded;
+            }
+        }
+        current = current->next;
+    }
 }

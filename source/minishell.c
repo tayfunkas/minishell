@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 14:39:13 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/21 17:46:08 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/22 13:55:26 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ static void	run_minishell(char *input, t_exec_context *ctx)
 	int		status;
 
 	tokens = tokenize_inputs(input, 10);
-	assign_token_types(tokens);
 	if (tokens)
 	{
+		expand_tokens(tokens, ctx);
+		assign_token_types(tokens);
 		status = handle_tokens(tokens, ctx);
 		update_last_status(ctx, status);
 	}
