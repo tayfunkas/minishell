@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/21 17:42:15 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/22 18:57:33 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ typedef struct s_token
 	int				type;
 	int				flag;
 	char			quote;
-	int			quo_info;
+	int				quo_info;
+	int				in_single_quotes;
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;
@@ -70,6 +71,29 @@ typedef struct s_exec_context
 	char	**our_env;
 }	t_exec_context;
 
+typedef struct s_expand
+{
+	char	*result;
+	size_t	result_size;
+	int		result_idx;
+	char	*new_result;
+	char	*env_var;
+	int		env_index;
+	char	*env_value;
+	int		in_single_quote;
+	int		in_double_quote;
+	int		token_idx;
+}	t_expand;
+
+typedef struct s_parser
+{
+	char	*start;
+	char	*end;
+	char	outer_quote;
+	char	inner_quote;
+	int		len;
+}	t_parser;
+
 //minishell.c
 void		minishell(t_exec_context *ctx);
 char		**copy_environment(char **envp);
@@ -81,10 +105,17 @@ t_token		*tokenize_inputs(char *input, int max_args);
 char		*skip_whitespace(char *start);
 
 //process_tokens.c
-t_token		*process_token(char **start, int *i, t_token *current);
-t_token		*add_token_to_list(char *start, int len, char quote, t_token *c);
-char		*move_to_next_token(char *end, int in_quo, char quote);
-char		*get_token_end(char *start, int *in_quo, char *quote);
+t_token		*process_token(t_parser *parser, int *i, t_token *current);
+
+//expand.c + expand_utils.c
+void		expand_tokens(t_token *head, t_exec_context *ctx);
+char		*expand_var(char *token, t_exec_context *ctx);
+int			handle_quotes(char *token, t_expand *exp);
+int			handle_env_var_exp(char *token, t_expand *exp, t_exec_context *ctx);
+
+//add_token_to_list.c
+t_token		*add_token_to_list(char *start, int len, char quote,
+				t_token *current);
 
 //parsing.c
 void		assign_token_types(t_token *tokens);
@@ -106,14 +137,14 @@ int			handle_command(t_token *current, t_token *cmd_end,
 
 //--------------------------execute command--------------------------
 //execute_command.c
-int			execute_command(t_token *start, t_token *end, char **our_env);
+int			execute_command(t_token *start, t_token *end, t_exec_context *ctx);
 
 //execute_ext_or_int.c
-int			execute_ext_or_int(t_token *start, t_token *end, t_command *cmd);
+int			execute_ext_or_int(t_token *start, t_token *end, t_command *cmd,
+				t_exec_context *ctx);
 
 //check_ext_or_int.c
 int			check_cmd_path(char *cmd_path, t_command *cmd, t_token *start);
-				//struct stat st);
 int			check_command_in_paths(char *cmd, char **paths);
 int			is_external_command(char *cmd, char **our_env);
 int			is_internal_command(char *cmd);
@@ -145,16 +176,16 @@ void		update_env(char ***env, char *current_dir, char *new_dir);
 //-----------------------execute external command-----------------------
 //execute_external_commands.c
 int			execute_external_commands(t_token *tokens, int token_count,
-				t_command *cmd);
+				t_command *cmd, t_exec_context *ctx);
+
+//prepare_args.c
+void		prep_args(t_token *tokens, int token_count, char **args,
+				t_exec_context *ctx);
+char		**allocate_args(int token_count);
 
 //find_path.c
 char		*find_cmd_path(char *cmd, char **our_env);
 char		*get_path_env(char **our_env);
-
-//prepare_args.c
-char		**allocate_args(int token_count);
-void		prep_args(t_token *tokens, int token_count, char **args,
-				char **our_env);
 
 //fork_and_execute_external_command.c
 int			fork_and_execute(t_command *cmd, char *cmd_path, char **args);
@@ -197,5 +228,8 @@ int			ft_isdigit_str(char *c);
 char		*ft_strstr(char *str, char *to_find);
 int			ft_isdigit_str(char *c);
 char		*ft_itoa(int num);
+int			ft_isalnum(int c);
+void		*ft_memcpy(void *dst, const void *src, size_t n);
+char		*ft_strndup(const char *s1, size_t n);
 
 #endif

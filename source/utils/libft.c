@@ -6,11 +6,57 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 17:28:58 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/21 16:01:16 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/22 18:05:03 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*ft_strndup(const char *s1, size_t n)
+{
+	char	*copy;
+	size_t	len;
+	size_t	i;
+
+	len = 0;
+	while (s1[len] && len < n)
+		len++;
+	copy = (char *)malloc(len + 1);
+	if (!copy)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		copy[i] = s1[i];
+		i++;
+	}
+	copy[len] = '\0';
+	return (copy);
+}
+
+int	ft_isalnum(int c)
+{
+	if ((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122))
+		return (1);
+	return (0);
+}
+
+void	*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	size_t			i;
+	unsigned char	*p;
+	unsigned char	*q;
+
+	i = 0;
+	p = (unsigned char *)dst;
+	q = (unsigned char *)src;
+	while (i < n)
+	{
+		p[i] = q[i];
+		i++;
+	}
+	return (dst);
+}
 
 char	*ft_itoa(int num)
 {

@@ -5,35 +5,15 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/17 16:17:17 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 16:18:04 by kyukang          ###   ########.fr       */
+/*   Created: 2024/10/22 17:02:22 by kyukang           #+#    #+#             */
+/*   Updated: 2024/10/22 18:22:51 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*expand_var(char *token, char **our_env, char quote)
-{
-	char	*env_var;
-	int		i;
-
-	i = 0;
-	if (token[0] == '$' && quote != '\'')
-	{
-		env_var = token + 1;
-		while (our_env[i])
-		{
-			if (ft_strncmp(our_env[i], env_var, ft_strlen(env_var)) == 0
-				&& our_env[i][ft_strlen(env_var)] == '=')
-				return (ft_strdup(our_env[i] + ft_strlen(env_var) + 1));
-			i++;
-		}
-		return (ft_strdup(""));
-	}
-	return (ft_strdup(token));
-}
-
-void	prep_args(t_token *tokens, int token_count, char **args, char **our_env)
+void	prep_args(t_token *tokens, int token_count, char **args,
+			t_exec_context *ctx)
 {
 	t_token	*current;
 	int		i;
@@ -44,7 +24,10 @@ void	prep_args(t_token *tokens, int token_count, char **args, char **our_env)
 	{
 		if (current->type == CMD || current->type == ARG)
 		{
-			args[i] = expand_var(current->str, our_env, current->quote);
+			if (current->in_single_quotes)
+				args[i] = strdup(current->str);
+			else
+				args[i] = expand_var(current->str, ctx);
 			i++;
 		}
 		else if (current->type == TRUNC || current->type == APPEND
