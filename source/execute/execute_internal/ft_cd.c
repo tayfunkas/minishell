@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:05:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/21 17:44:23 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/23 14:30:20 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	validate_env_and_getcwd(char ***env, char *dir)
 	return (0);
 }
 
-int	ft_cd(char *path, char ***env)
+int	ft_cd(char *path, char ***env, t_exec_context *ctx)
 {
 	char	current_dir[1024];
 	char	new_dir[1024];
@@ -51,6 +51,6 @@ int	ft_cd(char *path, char ***env)
 		perror("getcwd");
 		return (1);
 	}
-	update_env(env, current_dir, new_dir);
+	update_env(env, current_dir, new_dir, ctx);
 	return (0);
 }

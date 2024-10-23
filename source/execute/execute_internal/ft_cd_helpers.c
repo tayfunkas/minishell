@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 15:59:43 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/17 16:09:00 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/23 14:55:41 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,9 @@ void	expand_tilde(char **path, char *home)
 	*path = new_dir;
 }
 
-void	update_env(char ***env, char *current_dir, char *new_dir)
+void	update_env(char ***env, char *current_dir, char *new_dir,
+	t_exec_context *ctx)
 {
-	set_env(env, "OLDPWD", current_dir);
-	set_env(env, "PWD", new_dir);
+	set_env(env, "OLDPWD", current_dir, ctx);
+	set_env(env, "PWD", new_dir, ctx);
 }

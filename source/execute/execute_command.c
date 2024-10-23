@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 12:44:33 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/21 17:39:27 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/23 14:55:49 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int	execute_command(t_token *start, t_token *end, t_exec_context *ctx)
 	int			status;
 
 	status = 0;
-	cmd.env = ctx->our_env;
 	if (start && start->type == CMD)
 	{
 		setup_command_fds(&cmd, start, end);

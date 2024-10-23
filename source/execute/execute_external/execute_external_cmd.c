@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 15:46:35 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/22 18:57:57 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/23 14:44:59 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	execute_external_commands(t_token *tokens, int token_count,
 	int			status;
 
 	status = 0;
-	cmd_path = find_cmd_path(tokens->str, cmd->env);
+	cmd_path = find_cmd_path(tokens->str, ctx->our_env);
 	if (cmd_path == NULL)
 	{
 		error_message = "Command not found: ";

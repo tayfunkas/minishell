@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:02:40 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/21 17:29:28 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/23 15:00:50 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,31 +45,43 @@ static char	*create_env_var(const char *name, const char *value)
 	return (new_var);
 }
 
-static int	extend_env(char ***env, int i, char *new_var)
+static int	extend_env(char ***env, char *new_var, t_exec_context *ctx)
 {
 	char	**new_env;
+	int		env_size;
+	int		i;
 
-	if ((*env)[i] == NULL)
+	env_size = 0;
+	while ((*env)[env_size])
+		env_size++;
+	new_env = malloc(sizeof(char *) * (env_size + 2));
+	if (!new_env)
 	{
-		new_env = realloc(*env, sizeof(char *) * (i + 2));
-		if (!new_env)
-		{
-			free(new_var);
-			perror("realloc");
-			return (-1);
-		}
-		*env = new_env;
-		(*env)[i + 1] = NULL;
+		free(new_var);
+		perror("malloc failed");
+		return (-1);
 	}
-	(*env)[i] = new_var;
+	i = 0;
+	while (i < env_size)
+	{
+		new_env[i] = (*env)[i];
+		i++;
+	}
+	new_env[env_size] = new_var;
+	new_env[env_size + 1] = NULL;
+	if (*env != NULL)
+		free(*env);
+	ctx->our_env = new_env;
 	return (0);
 }
 
-int	set_env(char ***env, const char *name, const char *value)
+int	set_env(char ***env, const char *name, const char *value,
+	t_exec_context *ctx)
 {
 	int		i;
 	int		len;
 	char	*new_var;
+	int		j;
 
 	if (!env || !*env || !name || !value)
 	{
@@ -81,15 +93,16 @@ int	set_env(char ***env, const char *name, const char *value)
 	new_var = create_env_var(name, value);
 	if (!new_var)
 		return (-1);
-	if (extend_env(env, i, new_var) == -1)
+	if (extend_env(env, new_var, ctx) == -1)
 	{
 		free(new_var);
 		return (-1);
 	}
+	j = 0;
 	return (0);
 }
 
-int	ft_export(t_command *cmd, char ***env)
+int	ft_export(t_command *cmd, char ***env, t_exec_context *ctx)
 {
 	char	*key_value;
 	char	*equals_sign;
@@ -108,10 +121,18 @@ int	ft_export(t_command *cmd, char ***env)
 		*equals_sign = '\0';
 		key = key_value;
 		value = equals_sign + 1;
-		set_env(env, key, value);
+		set_env(env, key, value, ctx);
 		*equals_sign = '=';
 	}
 	else
-		set_env(env, key_value, "");
+		set_env(env, key_value, "", ctx);
 	return (0);
 }
+
+/*
+if (set_env(env, key, value, ctx) == -1)
+			write(2, "export: failed to set env var\n", 31);
+{
+		if (set_env(env, key_value, "", ctx) == -1)
+			write(2, "export: failed to set env var\n", 31);
+	}*/

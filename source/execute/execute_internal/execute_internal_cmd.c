@@ -6,18 +6,18 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 10:37:55 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/21 17:32:03 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/23 14:30:50 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	check_internal_c(t_command *cmd, char ***env)
+static int	check_internal_c(t_command *cmd, char ***env, t_exec_context *ctx)
 {
 	if (ft_strcmp(cmd->argv[0], "cd") == 0)
-		return (ft_cd(cmd->argv[1], env));
+		return (ft_cd(cmd->argv[1], env, ctx));
 	else if (ft_strcmp(cmd->argv[0], "export") == 0)
-		return (ft_export(cmd, env));
+		return (ft_export(cmd, env, ctx));
 	else if (ft_strcmp(cmd->argv[0], "unset") == 0)
 		return (ft_unset(cmd, env));
 	else if (ft_strcmp(cmd->argv[0], "env") == 0)
@@ -41,7 +41,7 @@ static void	dup_and_close(int original_stdin, int original_stdout)
 	close(original_stdout);
 }
 
-int	execute_internal_commands(t_command *cmd, char ***env)
+int	execute_internal_commands(t_command *cmd, char ***env, t_exec_context *ctx)
 {
 	int	original_stdin;
 	int	original_stdout;
@@ -64,7 +64,7 @@ int	execute_internal_commands(t_command *cmd, char ***env)
 		dup2(cmd->fd_out, STDOUT_FILENO);
 		close(cmd->fd_out);
 	}
-	status = check_internal_c(cmd, env);
+	status = check_internal_c(cmd, env, ctx);
 	dup_and_close(original_stdin, original_stdout);
 	return (status);
 }

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/22 18:57:33 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/23 15:01:24 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ typedef struct s_command
 	int					argc;
 	int					fd_in;
 	int					fd_out;
-	char				**env;
 	struct s_command	*next;
 }	t_command;
 
@@ -144,25 +143,27 @@ int			execute_ext_or_int(t_token *start, t_token *end, t_command *cmd,
 				t_exec_context *ctx);
 
 //check_ext_or_int.c
-int			check_cmd_path(char *cmd_path, t_command *cmd, t_token *start);
+int			check_cmd_path(char *cmd_path, t_token *start, t_exec_context *ctx);
 int			check_command_in_paths(char *cmd, char **paths);
 int			is_external_command(char *cmd, char **our_env);
 int			is_internal_command(char *cmd);
 
 //-----------------------execute internal command-----------------------
 //init_internal_cmd.c
-t_command	*init_internal_command(t_token *current, char **envp);
+t_command	*init_internal_command(t_token *current);
 
 //execute_internal_cmd.c
-int			execute_internal_commands(t_command *cmd, char ***env);
+int			execute_internal_commands(t_command *cmd, char ***env,
+				t_exec_context *ctx);
 
 //ft_cd.c, ft_echo.c, ft_env.c, ft_exit.c, ft_export.c, ft_pwd.c, ft_unset.c
-int			ft_cd(char *path, char ***env);
+int			ft_cd(char *path, char ***env, t_exec_context *ctx);
 int			ft_echo(char **args);
 int			ft_env(char **env);
 int			ft_exit(char **args);
-int			ft_export(t_command *cmd, char ***env);
-int			set_env(char ***env, const char *name, const char *value);
+int			ft_export(t_command *cmd, char ***env, t_exec_context *ctx);
+int			set_env(char ***env, const char *name, const char *value,
+				t_exec_context *ctx);
 int			ft_pwd(void);
 int			ft_unset(t_command *cmd, char ***env);
 
@@ -171,7 +172,8 @@ char		*get_env_value(char **env, const char *name);
 void		home_directory(char **path, char *home);
 void		handle_oldpwd(char **path, char ***env);
 void		expand_tilde(char **path, char *home);
-void		update_env(char ***env, char *current_dir, char *new_dir);
+void		update_env(char ***env, char *current_dir, char *new_dir,
+				t_exec_context *ctx);
 
 //-----------------------execute external command-----------------------
 //execute_external_commands.c
@@ -205,6 +207,7 @@ void		signal_handler(int sig);
 
 //status.c
 void		update_last_status(t_exec_context *ctx, int status);
+int			initialize_exit_status(t_exec_context *ctx);
 
 //utils.c
 void		free_tokens(t_token *tokens);

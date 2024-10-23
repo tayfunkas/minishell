@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 15:36:41 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/21 16:15:47 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/23 13:59:55 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,4 +100,24 @@ void	update_last_status(t_exec_context *ctx, int status)
 			free(new_status);
 		}
 	}
+}
+
+int	initialize_exit_status(t_exec_context *ctx)
+{
+	char	*initial_status;
+
+	initial_status = ft_strdup("?=0");
+	if (initial_status == NULL)
+	{
+		write(2, "malloc\n", 7);
+		return (0);
+	}
+	ft_strcpy(initial_status, "?=0");
+	if (!add_new_status(ctx, initial_status))
+	{
+		write(2, "Failed to add initial status\n", 29);
+		free(initial_status);
+		return (0);
+	}
+	return (1);
 }

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_internal_commands.c                           :+:      :+:    :+:   */
+/*   init_internal_cmd.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:31:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/09/30 14:36:36 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/23 14:58:52 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_command	*init_command(char **our_env)
+static t_command	*init_command(void)
 {
 	t_command	*cmd;
 
@@ -26,7 +26,6 @@ static t_command	*init_command(char **our_env)
 	cmd->argc = 0;
 	cmd->fd_in = 0;
 	cmd->fd_out = 1;
-	cmd->env = our_env;
 	cmd->next = NULL;
 	return (cmd);
 }
@@ -64,11 +63,11 @@ static int	allocate_command_argv(t_command *cmd, t_token *current)
 	return (1);
 }
 
-t_command	*init_internal_command(t_token *current, char **envp)
+t_command	*init_internal_command(t_token *current)
 {
 	t_command	*cmd;
 
-	cmd = init_command(envp);
+	cmd = init_command();
 	if (!cmd)
 		return (NULL);
 	cmd->argc = count_command_args(current);

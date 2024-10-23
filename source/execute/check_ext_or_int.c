@@ -6,17 +6,17 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 16:57:31 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/21 17:43:59 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/23 14:57:11 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	check_cmd_path(char *cmd_path, t_command *cmd, t_token *start)
+int	check_cmd_path(char *cmd_path, t_token *start, t_exec_context *ctx)
 {
 	struct stat	st;
 
-	cmd_path = find_cmd_path(start->str, cmd->env);
+	cmd_path = find_cmd_path(start->str, ctx->our_env);
 	if (cmd_path == NULL && stat(start->str, &st) == -1)
 	{
 		write(2, "minishell: command not found: ", 30);
