@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/24 14:58:48 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/24 15:10:04 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-typedef struct s_signal
-{
-	int		sig_num;
-}	t_signal;
-
-extern t_signal	g_signal;
+extern int	g_signal;
 
 typedef enum e_token_type
 {
