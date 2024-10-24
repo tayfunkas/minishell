@@ -90,7 +90,8 @@ int	handle_tokens(t_token *tokens, t_exec_context *ctx)
 	pid_t	*pids;
 	int		i;
 	int		status;
-
+	int		child_status;
+	
 	if (!reset_context_for_command(ctx, tokens))
 		return (-1);
 	pids = malloc(sizeof(pid_t) * (ctx->pipe_count + 1));
@@ -105,7 +106,9 @@ int	handle_tokens(t_token *tokens, t_exec_context *ctx)
 	status = handle_tokens_loop(tokens, ctx, pids);
 	close_pipes(ctx->pipe_fds, ctx->pipe_count);
 	free_pipe_fds(ctx->pipe_fds, ctx->pipe_count);
-	status = wait_for_children(pids, ctx->pipe_count);
+	child_status = wait_for_children(pids, ctx->pipe_count);
+	if (child_status != 0)
+		status = child_status;
 	free(pids);
 	return (status);
 }

@@ -102,37 +102,75 @@ int	set_env(char ***env, const char *name, const char *value,
 	return (0);
 }
 
-int	ft_export(t_command *cmd, char ***env, t_exec_context *ctx)
+static int	is_valid_env_var_name(const char *name)
+{
+	int	i;
+	
+	i = 0;
+	if (name == NULL || name[0] == '\0')
+		return (0); 
+	if (!isalpha(name[0]) && name[0] != '_')
+		return (0);
+	while (name[i] != '\0')
+	{
+		if (!isalnum(name[i]) && name[i] != '_')
+			return (0);
+		i++; 
+	}
+	return (1); 
+}
+
+int ft_export(t_command *cmd, char ***env, t_exec_context *ctx)
 {
 	char	*key_value;
 	char	*equals_sign;
 	char	*key;
 	char	*value;
-
+	int	i;
+	
+	i = 1;
 	if (cmd->argc < 2)
 	{
 		write(2, "export: not enough arguments\n", 29);
 		return (1);
 	}
-	key_value = cmd->argv[1];
-	equals_sign = ft_strchr(key_value, '=');
-	if (equals_sign)
+	while (i < cmd->argc)
 	{
+		key_value = cmd->argv[i];
+		equals_sign = ft_strchr(key_value, '=');
+		if (equals_sign == NULL)
+		{
+			if (!is_valid_env_var_name(key_value))
+			{
+				write(2, "export: not a valid identifier\n", 31);
+				return (1);
+			}
+			set_env(env, key_value, "", ctx);
+			i++;
+			continue;
+		}
+		if (equals_sign == key_value)
+		{
+			write(2, "export: not a valid identifier\n", 31);
+			return (1);
+		}
 		*equals_sign = '\0';
 		key = key_value;
-		value = equals_sign + 1;
+        	value = equals_sign + 1;
+		if (!is_valid_env_var_name(key))
+		{
+			write(2, "export: not a valid identifier\n", 31);
+			*equals_sign = '=';
+			return (1);
+		}
 		set_env(env, key, value, ctx);
 		*equals_sign = '=';
+		i++;
 	}
-	else
-		set_env(env, key_value, "", ctx);
 	return (0);
 }
 
-/*
-if (set_env(env, key, value, ctx) == -1)
-			write(2, "export: failed to set env var\n", 31);
-{
-		if (set_env(env, key_value, "", ctx) == -1)
-			write(2, "export: failed to set env var\n", 31);
-	}*/
+
+
+
+

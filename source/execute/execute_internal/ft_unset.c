@@ -43,10 +43,7 @@ int	ft_unset(t_command *cmd, char ***env)
 
 	key = cmd->argv[1];
 	if (!key)
-	{
-		write(2, "unset: not enough arguments\n", 28);
-		return (1);
-	}
+		return (0);
 	remove_env_key(env, key);
 	return (0);
 }
