@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 14:39:13 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/23 14:02:04 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/24 14:46:16 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	main(int argc, char **argv, char **envp)
 		write(2, "Failied to copy environment\n", 28);
 		return (1);
 	}
-	setup_signal();
 	minishell(&ctx);
 	rl_clear_history();
 	free_environment(ctx.our_env);
@@ -56,6 +55,7 @@ void	minishell(t_exec_context *ctx)
 {
 	char	*input;
 
+	setup_signal();
 	initialize_exit_status(ctx);
 	while (1)
 	{

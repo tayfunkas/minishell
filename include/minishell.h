@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/23 15:01:24 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/24 14:58:48 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,13 @@
 
 # include <readline/readline.h>
 # include <readline/history.h>
+
+typedef struct s_signal
+{
+	int		sig_num;
+}	t_signal;
+
+extern t_signal	g_signal;
 
 typedef enum e_token_type
 {
@@ -204,6 +211,8 @@ void		execute_redir_heredoc(t_token *current, int *fd_in);
 //signal.c
 void		setup_signal(void);
 void		signal_handler(int sig);
+void		check_signal_status(void);
+void		handle_child_process_signals(void);
 
 //status.c
 void		update_last_status(t_exec_context *ctx, int status);
