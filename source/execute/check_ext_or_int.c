@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_ext_or_int.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 16:57:31 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/23 14:57:11 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/24 17:59:42 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ int	is_internal_command(char *cmd)
 	if (ft_strcmp(cmd, "env") == 0)
 		return (1);
 	if (ft_strcmp(cmd, "exit") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "pwd") == 0)
 		return (1);
 	return (0);
 }

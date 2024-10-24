@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:56:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/22 13:55:54 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/24 17:47:07 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int	handle_tokens(t_token *tokens, t_exec_context *ctx)
 	int		i;
 	int		status;
 	int		child_status;
-	
+
 	if (!reset_context_for_command(ctx, tokens))
 		return (-1);
 	pids = malloc(sizeof(pid_t) * (ctx->pipe_count + 1));

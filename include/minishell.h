@@ -70,6 +70,7 @@ typedef struct s_exec_context
 	int		current_index;
 	int		last_status;
 	char	**our_env;
+	t_command	*cmd;
 }	t_exec_context;
 
 typedef struct s_expand
@@ -159,7 +160,7 @@ int			execute_internal_commands(t_command *cmd, char ***env,
 				t_exec_context *ctx);
 
 //ft_cd.c, ft_echo.c, ft_env.c, ft_exit.c, ft_export.c, ft_pwd.c, ft_unset.c
-int			ft_cd(char *path, char ***env, t_exec_context *ctx);
+int	ft_cd(t_command *cmd, char *path, char ***env, t_exec_context *ctx);
 int			ft_echo(char **args);
 int			ft_env(char **env);
 int			ft_exit(char **args);

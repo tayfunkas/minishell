@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:05:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/23 14:30:20 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/24 17:53:52 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,17 @@ static int	validate_env_and_getcwd(char ***env, char *dir)
 	return (0);
 }
 
-int	ft_cd(char *path, char ***env, t_exec_context *ctx)
+int	ft_cd(t_command *cmd, char *path, char ***env, t_exec_context *ctx)
 {
 	char	current_dir[1024];
 	char	new_dir[1024];
 	char	*home;
 
+	if (cmd->argc > 2)
+	{
+		write(2, "cd : too many arguments\n", 24);
+		return (1);
+	}
 	if (validate_env_and_getcwd(env, current_dir) == -1)
 		return (1);
 	home = get_env_value(*env, "HOME");
