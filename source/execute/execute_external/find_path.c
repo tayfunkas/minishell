@@ -63,3 +63,4 @@ char	*find_cmd_path(char *cmd, char **our_env)
 	free_split(paths);
 	return (cmd_path);
 }
+

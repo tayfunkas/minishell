@@ -12,11 +12,16 @@
 
 #include "minishell.h"
 
-int	ft_env(char **env)
+int	ft_env(char **env, t_command *cmd)
 {
 	int	i;
 
 	i = 0;
+	if (cmd->argc > 1)
+	{
+		write(2, "env: no such file or directory\n", 32);
+		return (127);
+	}	
 	if (env == NULL)
 	{
 		write(2, "env: no environment variables\n", 31);

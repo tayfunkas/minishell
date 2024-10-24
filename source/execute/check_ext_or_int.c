@@ -6,20 +6,20 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 16:57:31 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/24 17:59:42 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/24 19:49:00 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	check_cmd_path(char *cmd_path, t_token *start, t_exec_context *ctx)
+/*int	check_cmd_path(char *cmd_path, t_token *start, t_exec_context *ctx)
 {
 	struct stat	st;
 
 	cmd_path = find_cmd_path(start->str, ctx->our_env);
 	if (cmd_path == NULL && stat(start->str, &st) == -1)
 	{
-		write(2, "minishell: command not found: ", 30);
+		write(2, "minishell: command not found: 1", 31);
 		write(2, start->str, ft_strlen(start->str));
 		write(2, "\n", 1);
 		return (127);
@@ -35,6 +35,41 @@ int	check_cmd_path(char *cmd_path, t_token *start, t_exec_context *ctx)
 		return (126);
 	}
 	return (0);
+}*/
+
+int	check_cmd_path(char **cmd_path, t_token *start, t_exec_context *ctx)
+{
+	struct stat	st;
+
+	*cmd_path = find_cmd_path(start->str, ctx->our_env);
+	if (*cmd_path == NULL) 
+	{
+		if (stat(start->str, &st) == -1) 
+		{
+			write_error("minishell: command not found: ", start->str);
+			return (127);
+		}
+		if (S_ISDIR(st.st_mode)) 
+		{
+			write_error("minishell: is a directory: ", start->str);
+			return (126);
+		}
+		*cmd_path = ft_strdup(start->str);
+	}
+	if (access(*cmd_path, X_OK) == -1) 
+	{
+		write_error("minishell: permission denied: ", start->str);
+		free(*cmd_path);
+		return (126);
+	}
+	return (0);
+}
+
+void	write_error(const char *message_prefix, const char *command)
+{
+	write(STDERR_FILENO, message_prefix, ft_strlen(message_prefix));
+	write(STDERR_FILENO, command, ft_strlen(command));
+	write(STDERR_FILENO, "\n", 1);
 }
 
 int	check_command_in_paths(char *cmd, char **paths)

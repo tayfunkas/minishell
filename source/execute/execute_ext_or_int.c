@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ext_or_int.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:43:31 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/23 14:59:17 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/24 19:20:55 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int	execute_ext_or_int(t_token *start, t_token *end, t_command *cmd,
 		free_command(internal_cmd);
 		return (status);
 	}
-	status = check_cmd_path(cmd_path, start, ctx);
 	arg_count = count_tokens_until(start, end);
 	status = execute_external_commands(start, arg_count, cmd, ctx);
 	free(cmd_path);

@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 10:37:55 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/24 17:57:12 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/24 19:49:39 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	check_internal_c(t_command *cmd, char ***env, t_exec_context *ctx)
 	else if (ft_strcmp(cmd->argv[0], "unset") == 0)
 		return (ft_unset(cmd, env));
 	else if (ft_strcmp(cmd->argv[0], "env") == 0)
-		return (ft_env(*env));
+		return (ft_env(*env, cmd));
 	else if (ft_strcmp(cmd->argv[0], "exit") == 0)
 		return (ft_exit(cmd->argv));
 	else if (ft_strcmp(cmd->argv[0], "echo") == 0)
@@ -29,10 +29,7 @@ static int	check_internal_c(t_command *cmd, char ***env, t_exec_context *ctx)
 	else if (ft_strcmp(cmd->argv[0], "pwd") == 0)
 		return (ft_pwd());
 	else
-	{
-		write(2, "minishell: command not found 2\n", 31);
 		return (127);
-	}
 }
 
 static void	dup_and_close(int original_stdin, int original_stdout)
@@ -51,11 +48,6 @@ int	execute_internal_commands(t_command *cmd, char ***env, t_exec_context *ctx)
 
 	original_stdin = dup(STDIN_FILENO);
 	original_stdout = dup(STDOUT_FILENO);
-	if (cmd == NULL || cmd->argv == NULL || cmd->argv[0] == NULL)
-	{
-		write(2, "minishell: command not found\n", 29);
-		return (127);
-	}
 	if (cmd->fd_in != STDIN_FILENO)
 	{
 		dup2(cmd->fd_in, STDIN_FILENO);
