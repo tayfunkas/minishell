@@ -37,6 +37,13 @@ int	handle_command(t_token *current, t_token *cmd_end, t_exec_context *ctx,
 	int	status;
 
 	status = 0;
+	if (current == NULL || current->str == NULL)
+	{
+		if (ctx->syntax_error)
+			return (2);
+		else
+			return (0);
+	}
 	if (is_internal_command(current->str) && ctx->pipe_count == 0)
 		status = execute_command(current, cmd_end, ctx);
 	else

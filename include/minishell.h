@@ -69,8 +69,8 @@ typedef struct s_exec_context
 	int		pipe_count;
 	int		current_index;
 	int		last_status;
+	int		syntax_error;
 	char	**our_env;
-	t_command	*cmd;
 }	t_exec_context;
 
 typedef struct s_expand
