@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork_and_execute_extcmd.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:44:48 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/25 15:23:43 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/25 19:55:12 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	restore_fds(int parent_in, int parent_out)
 	close(parent_out);
 }
 
-static int	handle_child_process(char *cmd_path, char **args, 
+static int	handle_child_process(char *cmd_path, char **args,
 	t_exec_context *ctx)
 {
 	int	exec_result;
@@ -61,7 +61,7 @@ static void	check_fds(t_command *cmd)
 		close(cmd->fd_out);
 }
 
-int	fork_and_execute(t_command *cmd, char *cmd_path, char **args, 
+int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
 	t_exec_context *ctx)
 {
 	pid_t	pid;
@@ -74,7 +74,6 @@ int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
 	pid = fork();
 	if (pid == 0)
 	{
-		handle_child_process_signals();
 		duplicate_fds(cmd->fd_in, cmd->fd_out);
 		handle_child_process(cmd_path, args, ctx);
 	}

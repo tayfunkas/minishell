@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redir_heredoc.c                                    :+:      :+:    :+:   */
+/*   execute_redir_heredoc.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 17:45:39 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/15 17:47:33 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/25 19:54:54 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static void	heredoc_input(int *pipe_fd, char *delimiter)
 {
 	char	*line;
 
+	signal(SIGINT, heredoc_sigint_handler);
 	close(pipe_fd[0]);
 	while (1)
 	{
@@ -42,11 +43,13 @@ static void	heredoc_wait(int *pipe_fd, int *fd_in, pid_t pid)
 {
 	int	status;
 
+	signal(SIGINT, SIG_IGN);
 	close(pipe_fd[1]);
 	waitpid(pid, &status, 0);
 	if (*fd_in != STDIN_FILENO)
 		close(*fd_in);
 	*fd_in = pipe_fd[0];
+	signal(SIGINT, sigint_handler);
 }
 
 void	execute_redir_heredoc(t_token *current, int *fd_in)

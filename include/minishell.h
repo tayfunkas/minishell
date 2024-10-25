@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/25 15:24:09 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/25 19:54:27 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+# include <termio.h>
 # include <unistd.h>
 
 # include <sys/stat.h>
@@ -205,10 +206,9 @@ void		execute_redir_heredoc(t_token *current, int *fd_in);
 
 //----------------------------------utils----------------------------------
 //signal.c
+void		sigint_handler(int sig);
+void		heredoc_sigint_handler(int sig);
 void		setup_signal(void);
-void		signal_handler(int sig);
-void		check_signal_status(void);
-void		handle_child_process_signals(void);
 
 //status.c
 void		update_last_status(t_exec_context *ctx, int status);
