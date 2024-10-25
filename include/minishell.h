@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/24 18:55:58 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/25 15:24:09 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ char		*find_cmd_path(char *cmd, char **our_env);
 char		*get_path_env(char **our_env);
 
 //fork_and_execute_external_command.c
-int			fork_and_execute(t_command *cmd, char *cmd_path, char **args);
+int			fork_and_execute(t_command *cmd, char *cmd_path, char **args, t_exec_context *ctx);
 
 //-------------------------------redirection-------------------------------
 //execute_redir.c + execute_redir_heredoc.c

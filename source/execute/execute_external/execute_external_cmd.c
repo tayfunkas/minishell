@@ -85,7 +85,7 @@ int	execute_external_commands(t_token *tokens, int token_count,
 		return (1);
 	}
 	prep_args(tokens, token_count, args, ctx);
-	status = fork_and_execute(cmd, cmd_path, args);
+	status = fork_and_execute(cmd, cmd_path, args, ctx);
 	free_external_c(cmd_path, args, token_count);
 	return (status);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork_and_execute_extcmd.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:44:48 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/24 14:58:33 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/25 15:23:43 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,17 @@ static void	restore_fds(int parent_in, int parent_out)
 	close(parent_out);
 }
 
-static int	handle_child_process(char *cmd_path, char **args)
+static int	handle_child_process(char *cmd_path, char **args, 
+	t_exec_context *ctx)
 {
 	int	exec_result;
 
-	exec_result = execve(cmd_path, args, NULL);
+	exec_result = execve(cmd_path, args, ctx->our_env);
+	if (ctx->our_env == NULL)
+	{
+		printf("env issue in child\n");
+		return (88);
+	}
 	if (exec_result == -1)
 	{
 		perror("execve");
@@ -55,7 +61,8 @@ static void	check_fds(t_command *cmd)
 		close(cmd->fd_out);
 }
 
-int	fork_and_execute(t_command *cmd, char *cmd_path, char **args)
+int	fork_and_execute(t_command *cmd, char *cmd_path, char **args, 
+	t_exec_context *ctx)
 {
 	pid_t	pid;
 	int		parent_in;
@@ -69,7 +76,7 @@ int	fork_and_execute(t_command *cmd, char *cmd_path, char **args)
 	{
 		handle_child_process_signals();
 		duplicate_fds(cmd->fd_in, cmd->fd_out);
-		handle_child_process(cmd_path, args);
+		handle_child_process(cmd_path, args, ctx);
 	}
 	else if (pid > 0)
 	{
