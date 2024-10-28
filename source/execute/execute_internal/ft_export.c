@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:02:40 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/23 15:00:50 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 15:38:59 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,29 +105,29 @@ int	set_env(char ***env, const char *name, const char *value,
 static int	is_valid_env_var_name(const char *name)
 {
 	int	i;
-	
+
 	i = 0;
 	if (name == NULL || name[0] == '\0')
-		return (0); 
+		return (0);
 	if (!isalpha(name[0]) && name[0] != '_')
 		return (0);
 	while (name[i] != '\0')
 	{
 		if (!isalnum(name[i]) && name[i] != '_')
 			return (0);
-		i++; 
+		i++;
 	}
-	return (1); 
+	return (1);
 }
 
-int ft_export(t_command *cmd, char ***env, t_exec_context *ctx)
+int	ft_export(t_command *cmd, char ***env, t_exec_context *ctx)
 {
 	char	*key_value;
 	char	*equals_sign;
 	char	*key;
 	char	*value;
-	int	i;
-	
+	int		i;
+
 	i = 1;
 	if (cmd->argc < 2)
 	{
@@ -147,7 +147,7 @@ int ft_export(t_command *cmd, char ***env, t_exec_context *ctx)
 			}
 			set_env(env, key_value, "", ctx);
 			i++;
-			continue;
+			continue ;
 		}
 		if (equals_sign == key_value)
 		{
@@ -156,7 +156,7 @@ int ft_export(t_command *cmd, char ***env, t_exec_context *ctx)
 		}
 		*equals_sign = '\0';
 		key = key_value;
-        	value = equals_sign + 1;
+		value = equals_sign + 1;
 		if (!is_valid_env_var_name(key))
 		{
 			write(2, "export: not a valid identifier\n", 31);
@@ -169,8 +169,3 @@ int ft_export(t_command *cmd, char ***env, t_exec_context *ctx)
 	}
 	return (0);
 }
-
-
-
-
-

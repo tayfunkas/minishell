@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 15:24:00 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 15:37:42 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,8 @@ int			execute_ext_or_int(t_token *start, t_token *end, t_command *cmd,
 				t_exec_context *ctx);
 
 //check_ext_or_int.c
-int			check_cmd_path(char **cmd_path, t_token *start, t_exec_context *ctx);
+int			check_cmd_path(char **cmd_path, t_token *start,
+				t_exec_context *ctx);
 int			check_command_in_paths(char *cmd, char **paths);
 int			is_external_command(char *cmd, char **our_env);
 int			is_internal_command(char *cmd);
@@ -161,7 +162,8 @@ int			execute_internal_commands(t_command *cmd, char ***env,
 				t_exec_context *ctx);
 
 //ft_cd.c, ft_echo.c, ft_env.c, ft_exit.c, ft_export.c, ft_pwd.c, ft_unset.c
-int	ft_cd(t_command *cmd, char *path, char ***env, t_exec_context *ctx);
+int			ft_cd(t_command *cmd, char *path, char ***env,
+				t_exec_context *ctx);
 int			ft_echo(char **args);
 int			ft_env(char **env, t_command *cmd);
 int			ft_exit(char **args);
@@ -194,7 +196,8 @@ char		*find_cmd_path(char *cmd, char **our_env);
 char		*get_path_env(char **our_env);
 
 //fork_and_execute_external_command.c
-int			fork_and_execute(t_command *cmd, char *cmd_path, char **args, t_exec_context *ctx);
+int			fork_and_execute(t_command *cmd, char *cmd_path, char **args,
+				t_exec_context *ctx);
 
 //-------------------------------redirection-------------------------------
 //execute_redir.c + execute_redir_heredoc.c
@@ -241,6 +244,6 @@ int			ft_isalnum(int c);
 void		*ft_memcpy(void *dst, const void *src, size_t n);
 char		*ft_strndup(const char *s1, size_t n);
 
-void write_error(const char *message_prefix, const char *command);
+void		write_error(const char *message_prefix, const char *command);
 
 #endif

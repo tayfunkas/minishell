@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:09:54 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/21 17:44:49 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 15:38:31 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_echo(char **args)
 	int	newline;
 	int	i;
 	int	j;
-	
+
 	newline = 1;
 	i = 1;
 	while (args[i] != NULL && args[i][0] == '-')
@@ -31,7 +31,7 @@ int	ft_echo(char **args)
 			i++;
 		}
 		else
-			break;
+			break ;
 	}
 	while (args[i] != NULL)
 	{
@@ -44,5 +44,3 @@ int	ft_echo(char **args)
 		write(STDOUT_FILENO, "\n", 1);
 	return (0);
 }
-
-

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:03:47 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/23 14:52:20 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 15:38:35 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	ft_env(char **env, t_command *cmd)
 	{
 		write(2, "env: no such file or directory\n", 32);
 		return (127);
-	}	
+	}
 	if (env == NULL)
 	{
 		write(2, "env: no environment variables\n", 31);

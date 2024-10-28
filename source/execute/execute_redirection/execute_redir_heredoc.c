@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 17:45:39 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 15:15:57 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 15:36:27 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,7 @@ static void	heredoc_input(int *pipe_fd, char *delimiter)
 {
 	char	*line;
 
-	//g_signal = 1;
-	//signal(SIGINT, sigint_handler);
-	setup_signal_child();
+	signal(SIGINT, child_sigint_handler);
 	close(pipe_fd[0]);
 	while (1)
 	{
@@ -78,14 +76,8 @@ void	execute_redir_heredoc(t_token *current, int *fd_in)
 		close(pipe_fd[1]);
 		exit(EXIT_FAILURE);
 	}
-	//signal(SIGINT, SIG_IGN);
 	if (pid == 0)
-	{
 		heredoc_input(pipe_fd, delimiter);
-	}
 	else
-	{
 		heredoc_wait(pipe_fd, fd_in, pid);
-	}
-	g_signal = 0;
 }
