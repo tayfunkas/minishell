@@ -12,32 +12,6 @@
 
 #include "minishell.h"
 
-/*	ft_echo(char **args)
-{
-	int	newline;
-	int	i;
-
-	newline = 1;
-	i = 1;
-	if (args[1] != NULL && ft_strcmp(args[1], "-n") == 0)
-	{
-		newline = 0;
-		i = 2;
-	}
-	while (args[i] != NULL)
-	{
-		printf("%s", args[i]);
-		if (args[i + 1] != NULL)
-		{
-			printf(" ");
-		}
-		i++;
-	}
-	if (newline)
-		printf("\n");
-	return (0);
-}*/
-
 int	ft_echo(char **args)
 {
 	int	newline;
@@ -45,7 +19,7 @@ int	ft_echo(char **args)
 	int	j;
 	
 	newline = 1;
-	i = 1;    // Handle multiple -n flags
+	i = 1;
 	while (args[i] != NULL && args[i][0] == '-')
 	{
 		j = 1;
@@ -61,13 +35,13 @@ int	ft_echo(char **args)
 	}
 	while (args[i] != NULL)
 	{
-		printf("%s", args[i]);
+		write(STDOUT_FILENO, args[i], ft_strlen(args[i]));
 		if (args[i + 1] != NULL)
-			printf(" ");
+			write(STDOUT_FILENO, " ", 1);
 		i++;
 	}
 	if (newline)
-		printf("\n");
+		write(STDOUT_FILENO, "\n", 1);
 	return (0);
 }
 
