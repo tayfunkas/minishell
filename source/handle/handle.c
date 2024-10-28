@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:56:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/24 17:47:07 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/28 22:00:10 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,18 @@ static int	reset_context_for_command(t_exec_context *ctx, t_token *tokens)
 	pipe_count = count_pipes(tokens);
 	ctx->pipe_count = pipe_count;
 	ctx->current_index = 0;
+	if (pipe_count == 0)
+	{
+		ctx->pipe_fds = NULL;
+		return (1);
+	}
 	ctx->pipe_fds = malloc(sizeof(int *) * pipe_count);
 	if (!ctx->pipe_fds)
 		return (0);
 	if (!create_pipes(ctx->pipe_fds, pipe_count))
 	{
 		free_pipe_fds(ctx->pipe_fds, pipe_count);
+		ctx->pipe_fds = NULL;
 		return (0);
 	}
 	return (1);
@@ -98,6 +104,7 @@ int	handle_tokens(t_token *tokens, t_exec_context *ctx)
 	if (!pids)
 	{
 		free_pipe_fds(ctx->pipe_fds, ctx->pipe_count);
+		ctx->pipe_fds = NULL;
 		return (-1);
 	}
 	i = 0;
@@ -106,9 +113,10 @@ int	handle_tokens(t_token *tokens, t_exec_context *ctx)
 	status = handle_tokens_loop(tokens, ctx, pids);
 	close_pipes(ctx->pipe_fds, ctx->pipe_count);
 	free_pipe_fds(ctx->pipe_fds, ctx->pipe_count);
+	ctx->pipe_fds = NULL;
 	child_status = wait_for_children(pids, ctx->pipe_count);
+	free(pids);
 	if (child_status != 0)
 		status = child_status;
-	free(pids);
 	return (status);
 }
