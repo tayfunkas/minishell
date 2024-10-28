@@ -6,7 +6,7 @@
 /*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 16:57:31 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/25 16:42:45 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/28 11:52:20 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,8 @@ int	is_internal_command(char *cmd)
 	if (ft_strcmp(cmd, "exit") == 0)
 		return (1);
 	if (ft_strcmp(cmd, "pwd") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "echo") == 0)
 		return (1);
 	return (0);
 }
