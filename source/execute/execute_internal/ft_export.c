@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:02:40 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 15:38:59 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 18:44:50 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	find_new_var(char ***env, const char *name, int len)
 	{
 		if (ft_strncmp((*env)[i], name, len) == 0 && (*env)[i][len] == '=')
 		{
-			free((*env)[i]);
+			//free((*env)[i]);
 			return (i);
 		}
 		i++;
