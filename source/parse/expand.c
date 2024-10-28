@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand_variables.c                                 :+:      :+:    :+:   */
+/*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 18:18:40 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/22 18:34:38 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 21:49:22 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ char	*expand_var(char *token, t_exec_context *ctx)
 		return (NULL);
 	if (exp.result == static_buffer)
 	{
+		if (ft_strcmp(exp.result, token) == 0)
+			return (token);
 		final_result = ft_strdup(exp.result);
 		if (!final_result)
 			return (NULL);
@@ -88,8 +90,11 @@ void	expand_tokens(t_token *head, t_exec_context *ctx)
 			expanded = expand_var(current->str, ctx);
 			if (expanded)
 			{
-				free(current->str);
-				current->str = expanded;
+				if (expanded != current->str)
+				{
+					free(current->str);
+					current->str = expanded;
+				}
 			}
 		}
 		current = current->next;
