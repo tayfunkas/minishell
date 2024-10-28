@@ -6,76 +6,11 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 14:39:13 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/28 15:32:29 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 15:44:51 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	check_syntax(t_token *tokens, t_exec_context *ctx)
-{
-	t_token *current = tokens;
-	int pipe_count = 0;
-	int cmd_count = 0;
-	int redir_count = 0;
-	int has_cmd = 0;
-
-	if (!tokens)
-		return (0);
-
-	while (current)
-	{
-		if (current->type == PIPE)
-		{
-			pipe_count++;
-			redir_count = 0;
-			if (!has_cmd || !current->next || current->next->type == PIPE)
-			{
-				fprintf(stderr, "syntax error near unexpected token `|'\n");
-				ctx->syntax_error = 1;
-				return (0);
-			}
-			has_cmd = 0;
-		}
-		else if (current->type == CMD)
-		{
-			cmd_count++;
-			redir_count = 0;
-			has_cmd = 1;
-		}
-		else if (current->type == TRUNC || current->type == APPEND ||
-			current->type == INPUT || current->type == HEREDOC)
-		{
-			redir_count++;
-			if (redir_count > 1 || !current->next ||
-				(current->next->type != ARG && current->next->type != CMD))
-				{
-					fprintf(stderr, "syntax error near unexpected token `%s'\n", current->str);
-					ctx->syntax_error = 1;
-					return (0);
-				}
-		}
-		else if (current->type == ARG)
-		{
-			redir_count = 0;
-			has_cmd = 1;  // Consider an ARG as a potential command
-		}
-		else if (current->type == END && pipe_count >= cmd_count)
-		{
-			fprintf(stderr, "syntax error: unexpected end of file\n");
-			ctx->syntax_error = 1;
-			return (0);
-		}
-		current = current->next;
-	}
-	if (pipe_count >= cmd_count && cmd_count > 0)
-	{
-		fprintf(stderr, "syntax error near unexpected token `|'\n");
-		ctx->syntax_error = 1;
-		return (0);
-	}
-	return (1);
-}
 
 int	main(int argc, char **argv, char **envp)
 {

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 17:28:58 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/22 18:05:03 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 19:31:40 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -352,4 +352,14 @@ char	*ft_strstr(char *str, char *to_find)
 		i++;
 	}
 	return (0);
+}
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	unsigned char	*p;
+
+	p = (unsigned char *)s;
+	while (n--)
+		*p++ = (unsigned char)c;
+	return (s);
 }

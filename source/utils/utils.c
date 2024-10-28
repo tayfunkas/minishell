@@ -6,11 +6,18 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 17:37:11 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 16:40:09 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 18:42:17 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	write_error(const char *message_prefix, const char *command)
+{
+	write(STDERR_FILENO, message_prefix, ft_strlen(message_prefix));
+	write(STDERR_FILENO, command, ft_strlen(command));
+	write(STDERR_FILENO, "\n", 1);
+}
 
 void	free_tokens(t_token *tokens)
 {

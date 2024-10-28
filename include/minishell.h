@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 15:37:42 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 19:32:16 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,10 @@ typedef struct s_token
 	char			quote;
 	int				quo_info;
 	int				in_single_quotes;
+	int				pipe_count;
+	int				cmd_count;
+	int				redir_count;
+	int				cmd_flag;
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;
@@ -87,6 +91,13 @@ typedef struct s_expand
 	int		in_double_quote;
 	int		token_idx;
 }	t_expand;
+
+typedef struct s_env
+{
+	char	*key;
+	char	*value;
+	char	*key_value;
+}	t_env;
 
 typedef struct s_parser
 {
@@ -218,11 +229,15 @@ void		setup_signal_child(void);
 void		update_last_status(t_exec_context *ctx, int status);
 int			initialize_exit_status(t_exec_context *ctx);
 
+//syntax.c
+int			check_syntax(t_token *tokens, t_exec_context *ctx);
+
 //utils.c
 void		free_tokens(t_token *tokens);
 void		free_command(t_command *cmd);
 void		free_split(char **paths);
 int			count_tokens(t_token *tokens);
+void		write_error(const char *message_prefix, const char *command);
 
 //libft.c
 int			ft_isspace(int c);
@@ -243,7 +258,6 @@ char		*ft_itoa(int num);
 int			ft_isalnum(int c);
 void		*ft_memcpy(void *dst, const void *src, size_t n);
 char		*ft_strndup(const char *s1, size_t n);
-
-void		write_error(const char *message_prefix, const char *command);
+void		*ft_memset(void *s, int c, size_t n);
 
 #endif

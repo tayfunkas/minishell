@@ -3,83 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   check_ext_or_int.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 16:57:31 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 11:52:20 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/28 19:33:13 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*int	check_cmd_path(char *cmd_path, t_token *start, t_exec_context *ctx)
+static int	if_path_is_null(char **cmd_path, t_token *start, struct stat st)
 {
-	struct stat	st;
-
-	cmd_path = find_cmd_path(start->str, ctx->our_env);
-	if (cmd_path == NULL && stat(start->str, &st) == -1)
+	if (*cmd_path == NULL)
 	{
-		write(2, "minishell: command not found: 1", 31);
-		write(2, start->str, ft_strlen(start->str));
-		write(2, "\n", 1);
-		return (127);
-	}
-	if (cmd_path == NULL)
-		cmd_path = ft_strdup(start->str);
-	if (access(cmd_path, X_OK) == -1)
-	{
-		write(2, "minishell: permission denied: ", 30);
-		write(2, start->str, ft_strlen(start->str));
-		write(2, "\n", 1);
-		free(cmd_path);
-		return (126);
-	}
-	return (0);
-}*/
-
-/*int	check_cmd_path(char **cmd_path, t_token *start, t_exec_context *ctx)
-{
-	struct stat	st;
-
-	*cmd_path = find_cmd_path(start->str, ctx->our_env);
-	if (*cmd_path == NULL) 
-	{
-		if (stat(start->str, &st) == -1) 
+		if (start->str[0] == '/'
+			|| (start->str[0] == '.' && start->str[1] == '/'))
 		{
-			write_error("minishell: command not found: ", start->str);
-			return (127);
-		}
-		if (S_ISDIR(st.st_mode)) 
-		{
-			write_error("minishell: is a directory: ", start->str);
-			return (126);
-		}
-		*cmd_path = ft_strdup(start->str);
-	}
-	if (access(*cmd_path, X_OK) == -1) 
-	{
-		write_error("minishell: permission denied: ", start->str);
-		free(*cmd_path);
-		return (126);
-	}
-	return (0);
-}*/
-
-int	check_cmd_path(char **cmd_path, t_token *start, t_exec_context *ctx)
-{
-	struct stat st;
-
-	*cmd_path = find_cmd_path(start->str, ctx->our_env);
-	if (*cmd_path == NULL) 
-	{
-		if (start->str[0] == '/' || (start->str[0] == '.' && start->str[1] == '/'))
-		{
-			if (stat(start->str, &st) == -1) 
+			if (stat(start->str, &st) == -1)
 			{
-				write_error("minishell: no such file or directory: ", start->str);
+				write_error("minishell: no such file or directory: ",
+					start->str);
 				return (127);
 			}
-			if (S_ISDIR(st.st_mode)) 
+			if (S_ISDIR(st.st_mode))
 			{
 				write_error("minishell: is a directory: ", start->str);
 				return (126);
@@ -92,9 +38,22 @@ int	check_cmd_path(char **cmd_path, t_token *start, t_exec_context *ctx)
 			return (127);
 		}
 	}
-	if (access(*cmd_path, X_OK) == -1) 
+	return (0);
+}
+
+int	check_cmd_path(char **cmd_path, t_token *start, t_exec_context *ctx)
+{
+	struct stat	st;
+	int			status;
+
+	ft_memset(&st, 0, sizeof(struct stat));
+	*cmd_path = find_cmd_path(start->str, ctx->our_env);
+	status = if_path_is_null(cmd_path, start, st);
+	if (status != 0)
+		return (status);
+	if (access(*cmd_path, X_OK) == -1)
 	{
-		if (S_ISDIR(st.st_mode)) 
+		if (S_ISDIR(st.st_mode))
 		{
 			write_error("minishell: is a directory: ", start->str);
 			return (126);
@@ -104,13 +63,6 @@ int	check_cmd_path(char **cmd_path, t_token *start, t_exec_context *ctx)
 		return (126);
 	}
 	return (0);
-}
-
-void	write_error(const char *message_prefix, const char *command)
-{
-	write(STDERR_FILENO, message_prefix, ft_strlen(message_prefix));
-	write(STDERR_FILENO, command, ft_strlen(command));
-	write(STDERR_FILENO, "\n", 1);
 }
 
 int	check_command_in_paths(char *cmd, char **paths)
@@ -168,3 +120,56 @@ int	is_internal_command(char *cmd)
 		return (1);
 	return (0);
 }
+
+/*int	check_cmd_path(char *cmd_path, t_token *start, t_exec_context *ctx)
+{
+	struct stat	st;
+
+	cmd_path = find_cmd_path(start->str, ctx->our_env);
+	if (cmd_path == NULL && stat(start->str, &st) == -1)
+	{
+		write(2, "minishell: command not found: 1", 31);
+		write(2, start->str, ft_strlen(start->str));
+		write(2, "\n", 1);
+		return (127);
+	}
+	if (cmd_path == NULL)
+		cmd_path = ft_strdup(start->str);
+	if (access(cmd_path, X_OK) == -1)
+	{
+		write(2, "minishell: permission denied: ", 30);
+		write(2, start->str, ft_strlen(start->str));
+		write(2, "\n", 1);
+		free(cmd_path);
+		return (126);
+	}
+	return (0);
+}*/
+
+/*int	check_cmd_path(char **cmd_path, t_token *start, t_exec_context *ctx)
+{
+	struct stat	st;
+
+	*cmd_path = find_cmd_path(start->str, ctx->our_env);
+	if (*cmd_path == NULL)
+	{
+		if (stat(start->str, &st) == -1)
+		{
+			write_error("minishell: command not found: ", start->str);
+			return (127);
+		}
+		if (S_ISDIR(st.st_mode))
+		{
+			write_error("minishell: is a directory: ", start->str);
+			return (126);
+		}
+		*cmd_path = ft_strdup(start->str);
+	}
+	if (access(*cmd_path, X_OK) == -1)
+	{
+		write_error("minishell: permission denied: ", start->str);
+		free(*cmd_path);
+		return (126);
+	}
+	return (0);
+}*/
