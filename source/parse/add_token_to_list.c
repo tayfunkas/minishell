@@ -31,47 +31,50 @@ static t_token	*init_new_token(char *cleaned_str, char quote, t_token *current)
 	return (new_token);
 }
 
-//s stands for start
-static void	process_quote(char *s, int len, char *cleaned_str, int i)
+static char *clean_token_str(char *start, int len)
 {
-	int		j;
-	char	out;
-	char	in;
+    char *cleaned_str;
+    int i, j;
+    char outer_quote, inner_quote;
 
-	j = 0;
-	out = 0;
-	in = 0;
-	while (i < len)
-	{
-		if (!out && (s[i] == '"' || s[i] == '\''))
-			out = s[i];
-		else if (out && s[i] == out)
-			out = 0;
-		else if (out && !in && s[i] != out && (s[i] == '"' || s[i] == '\''))
-		{
-			in = s[i];
-			cleaned_str[j++] = s[i];
-		}
-		else if (in && s[i] == in)
-			in = 0;
-		else
-			cleaned_str[j++] = s[i];
-		i++;
-	}
-	cleaned_str[j] = '\0';
-}
+    cleaned_str = malloc(len + 1);
+    if (!cleaned_str)
+        return (NULL);
 
-static char	*clean_token_str(char *start, int len)
-{
-	char	*cleaned_str;
-	int		i;
+    i = 0;
+    j = 0;
+    outer_quote = 0;
+    inner_quote = 0;
 
-	i = 0;
-	cleaned_str = malloc(len + 1);
-	if (!cleaned_str)
-		return (NULL);
-	process_quote(start, len, cleaned_str, i);
-	return (cleaned_str);
+    while (i < len)
+    {
+        if (!outer_quote && (start[i] == '"' || start[i] == '\''))
+        {
+            outer_quote = start[i];
+            i++;
+        }
+        else if (outer_quote && start[i] == outer_quote)
+        {
+            outer_quote = 0;
+            i++;
+        }
+        else if (outer_quote && !inner_quote && start[i] != outer_quote && (start[i] == '"' || start[i] == '\''))
+        {
+            inner_quote = start[i];
+            cleaned_str[j++] = start[i++];
+        }
+        else if (inner_quote && start[i] == inner_quote)
+        {
+            inner_quote = 0;
+            cleaned_str[j++] = start[i++];
+        }
+        else
+        {
+            cleaned_str[j++] = start[i++];
+        }
+    }
+    cleaned_str[j] = '\0';
+    return cleaned_str;
 }
 
 t_token	*add_token_to_list(char *start, int len, char quote, t_token *current)

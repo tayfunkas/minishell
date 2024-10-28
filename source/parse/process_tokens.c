@@ -30,7 +30,7 @@ static t_token	*handle_special_characters(t_parser *parser, int *i,
 	return (new_token);
 }
 
-static void	process_quotes(t_parser *parser)
+/*static void	process_quotes(t_parser *parser)
 {
 	if (!parser->outer_quote && (*parser->end == '"' || *parser->end == '\''))
 	{
@@ -52,6 +52,22 @@ static void	process_quotes(t_parser *parser)
 	else if (parser->inner_quote && *parser->end == parser->inner_quote)
 	{
 		parser->inner_quote = 0;
+		parser->end++;
+	}
+	else
+		parser->end++;
+}*/
+
+static void	process_quotes(t_parser *parser)
+{
+	if (!parser->outer_quote && (*parser->end == '"' || *parser->end == '\''))
+	{
+		parser->outer_quote = *parser->end;
+		parser->end++;
+	}
+	else if (parser->outer_quote && *parser->end == parser->outer_quote)
+	{
+		parser->outer_quote = 0;
 		parser->end++;
 	}
 	else
