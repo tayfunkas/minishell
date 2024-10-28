@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 14:39:13 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/25 13:21:51 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/28 15:32:29 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	check_syntax(t_token *tokens, t_exec_context *ctx)
 
 	if (!tokens)
 		return (0);
-	
+
 	while (current)
 	{
 		if (current->type == PIPE)
@@ -43,11 +43,11 @@ int	check_syntax(t_token *tokens, t_exec_context *ctx)
 			redir_count = 0;
 			has_cmd = 1;
 		}
-		else if (current->type == TRUNC || current->type == APPEND || 
+		else if (current->type == TRUNC || current->type == APPEND ||
 			current->type == INPUT || current->type == HEREDOC)
 		{
 			redir_count++;
-			if (redir_count > 1 || !current->next || 
+			if (redir_count > 1 || !current->next ||
 				(current->next->type != ARG && current->next->type != CMD))
 				{
 					fprintf(stderr, "syntax error near unexpected token `%s'\n", current->str);
@@ -113,7 +113,9 @@ static void	run_minishell(char *input, t_exec_context *ctx)
 		assign_token_types(tokens);
 		if (check_syntax(tokens, ctx))
 		{
+			signal(SIGINT, SIG_IGN);
 			status = handle_tokens(tokens, ctx);
+			setup_signal();
 			update_last_status(ctx, status);
 		}
 		else
@@ -126,6 +128,7 @@ void	minishell(t_exec_context *ctx)
 {
 	char	*input;
 
+	g_signal = 0;
 	setup_signal();
 	initialize_exit_status(ctx);
 	while (1)

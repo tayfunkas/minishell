@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/25 19:54:27 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/28 15:24:00 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,9 +206,10 @@ void		execute_redir_heredoc(t_token *current, int *fd_in);
 
 //----------------------------------utils----------------------------------
 //signal.c
-void		sigint_handler(int sig);
-void		heredoc_sigint_handler(int sig);
 void		setup_signal(void);
+void		parent_sigint_handler(int sig);
+void		child_sigint_handler(int sig);
+void		setup_signal_child(void);
 
 //status.c
 void		update_last_status(t_exec_context *ctx, int status);
