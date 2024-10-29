@@ -23,7 +23,7 @@ static int	check_internal_c(t_command *cmd, char ***env, t_exec_context *ctx)
 	else if (ft_strcmp(cmd->argv[0], "env") == 0)
 		return (ft_env(*env, cmd));
 	else if (ft_strcmp(cmd->argv[0], "exit") == 0)
-		return (ft_exit(cmd->argv));
+		return (ft_exit(cmd->argv, ctx));
 	else if (ft_strcmp(cmd->argv[0], "echo") == 0)
 		return (ft_echo(cmd->argv));
 	else if (ft_strcmp(cmd->argv[0], "pwd") == 0)

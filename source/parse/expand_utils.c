@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand_variables_utils.c                           :+:      :+:    :+:   */
+/*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 18:19:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/22 18:20:30 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 17:09:49 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,11 @@ int	handle_env_var_exp(char *token, t_expand *exp, t_exec_context *ctx)
 		if (exp->env_var)
 		{
 			if (expand_env_var(exp, ctx, static_buffer) == -1)
+			{
+				free(exp->env_var);
 				return (-1);
+			}
+			exp->env_var = NULL;
 		}
 		exp->token_idx = i;
 	}

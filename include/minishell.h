@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/29 18:27:13 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 21:02:34 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 
 # include <ctype.h>
 # include <fcntl.h>
+# include <limits.h>
 # include <stddef.h>
+# include <stdint.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -113,6 +115,11 @@ void		minishell(t_exec_context *ctx);
 char		**copy_environment(char **envp);
 void		free_environment(char **env);
 
+//--------------------------------free--------------------------------
+void		free_context(t_exec_context *ctx);
+void		free_expand(t_expand *exp);
+void		free_command_list(t_command *head);
+
 //--------------------------------parse--------------------------------
 //init_tokens.c
 t_token		*tokenize_inputs(char *input, int max_args);
@@ -177,7 +184,7 @@ int			ft_cd(t_command *cmd, char *path, char ***env,
 				t_exec_context *ctx);
 int			ft_echo(char **args);
 int			ft_env(char **env, t_command *cmd);
-int			ft_exit(char **args);
+int			ft_exit(char **args, t_exec_context *ctx);
 int			ft_export(t_command *cmd, char ***env, t_exec_context *ctx);
 int			set_env(char ***env, const char *name, const char *value,
 				t_exec_context *ctx);
@@ -209,9 +216,9 @@ char		*get_path_env(char **our_env);
 //fork_and_execute_external_command.c + fork_helper.c
 int			fork_and_execute(t_command *cmd, char *cmd_path, char **args,
 				t_exec_context *ctx);
-void		duplicate_fds(int fd_in, int fd_out);
-void		restore_fds(int parent_in, int parent_out);
-void		check_fds(t_command *cmd);
+//void		duplicate_fds(int fd_in, int fd_out);
+//void		restore_fds(int parent_in, int parent_out);
+//void		check_fds(t_command *cmd);
 
 //-------------------------------redirection-------------------------------
 //execute_redir.c + execute_redir_heredoc.c
@@ -263,5 +270,6 @@ int			ft_isalnum(int c);
 void		*ft_memcpy(void *dst, const void *src, size_t n);
 char		*ft_strndup(const char *s1, size_t n);
 void		*ft_memset(void *s, int c, size_t n);
+void		*ft_calloc(size_t nmemb, size_t size);
 
 #endif

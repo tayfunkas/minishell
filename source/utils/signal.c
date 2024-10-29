@@ -6,13 +6,14 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 15:45:59 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/29 18:33:23 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 21:02:23 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 int	g_signal = 0;
+
 
 void	parent_sigint_handler(int sig)
 {

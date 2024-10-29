@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 15:27:28 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/22 18:56:51 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 21:00:16 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,34 +29,6 @@ static t_token	*handle_special_characters(t_parser *parser, int *i,
 	(*i)++;
 	return (new_token);
 }
-
-/*static void	process_quotes(t_parser *parser)
-{
-	if (!parser->outer_quote && (*parser->end == '"' || *parser->end == '\''))
-	{
-		parser->outer_quote = *parser->end;
-		parser->end++;
-	}
-	else if (parser->outer_quote && *parser->end == parser->outer_quote)
-	{
-		parser->outer_quote = 0;
-		parser->end++;
-	}
-	else if (parser->outer_quote && !parser->inner_quote
-		&& *parser->end != parser->outer_quote
-		&& (*parser->end == '"' || *parser->end == '\''))
-	{
-		parser->inner_quote = *parser->end;
-		parser->end++;
-	}
-	else if (parser->inner_quote && *parser->end == parser->inner_quote)
-	{
-		parser->inner_quote = 0;
-		parser->end++;
-	}
-	else
-		parser->end++;
-}*/
 
 static void	process_quotes(t_parser *parser)
 {

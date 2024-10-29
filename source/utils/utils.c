@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 17:37:11 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 18:42:17 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 18:33:15 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void	free_tokens(t_token *tokens)
 	t_token	*current;
 	t_token	*next;
 
+	if (!tokens)
+		return ;
 	current = tokens;
 	while (current)
 	{

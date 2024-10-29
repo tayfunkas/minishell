@@ -73,6 +73,9 @@ char	*expand_var(char *token, t_exec_context *ctx)
 			return (NULL);
 		return (final_result);
 	}
+	final_result = exp.result;
+	exp.result = NULL;
+	free_expand(&exp);
 	return (exp.result);
 }
 
@@ -96,6 +99,8 @@ void	expand_tokens(t_token *head, t_exec_context *ctx)
 					current->str = expanded;
 				}
 			}
+			else
+				current->str = ft_strdup("");
 		}
 		current = current->next;
 	}

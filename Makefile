@@ -10,9 +10,10 @@ SRCS = $(addprefix source/, \
 		$(addprefix handle/, handle.c handle_pipe.c handle_command.c) \
 		$(addprefix execute/, execute_command.c execute_ext_or_int.c check_ext_or_int.c \
 		$(addprefix execute_internal/, init_internal_cmd.c execute_internal_cmd.c ft_cd.c ft_cd_helpers.c ft_echo.c ft_env.c ft_exit.c ft_export.c ft_pwd.c ft_unset.c set_env.c) \
-		$(addprefix execute_external/, execute_external_cmd.c find_path.c fork_and_execute_extcmd.c prepare_args.c fork_helper.c) \
+		$(addprefix execute_external/, execute_external_cmd.c find_path.c fork_and_execute_extcmd.c prepare_args.c) \
 		$(addprefix execute_redirection/, execute_redir.c execute_redir_heredoc.c)) \
 		$(addprefix utils/, libft.c utils.c signal.c status.c syntax.c) \
+		$(addprefix free/, free_structs.c ) \
 		minishell.c)
 
 OBJS = $(SRCS:.c=.o)
