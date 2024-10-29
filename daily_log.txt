@@ -52,7 +52,8 @@ Oct 18th
 -Majority of the functions are turned into int for exit_status
 
 HOW TO USE
-- Valgrind command: valgrind --suppressions=./readline.supp --show-leak-kinds=all --leak-check=full ./minishell
+- Valgrind command:
+valgrind --suppressions=./readline.supp --show-leak-kinds=all --leak-check=full ./minishell
 - When a new memory leak from readline appears:
   1. valgrind --leak-check=full --show-reachable=yes --error-limit=no --gen-suppressions=all --log-file=minishellraw.log ./minishell
   2. Create 'parse_valgrind_suppressions.sh' file (https://wiki.wxwidgets.org/Parse_valgrind_suppressions.sh)
