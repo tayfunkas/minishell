@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_redir_heredoc.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 17:45:39 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 15:36:27 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 14:34:14 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static void	heredoc_wait(int *pipe_fd, int *fd_in, pid_t pid)
 {
 	int	status;
 
-	signal(SIGINT, SIG_IGN);
+	signal(SIGINT, SIG_DFL);
 	close(pipe_fd[1]);
 	waitpid(pid, &status, 0);
 	if (*fd_in != STDIN_FILENO)

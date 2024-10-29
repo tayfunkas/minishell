@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:56:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 22:00:10 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 19:46:21 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ static int	handle_tokens_loop(t_token *tokens, t_exec_context *ctx,
 			current = NULL;
 		ctx->current_index++;
 	}
+	free_tokens(tokens);
 	return (status);
 }
 
@@ -94,22 +95,19 @@ static int	reset_context_for_command(t_exec_context *ctx, t_token *tokens)
 int	handle_tokens(t_token *tokens, t_exec_context *ctx)
 {
 	pid_t	*pids;
-	int		i;
 	int		status;
 	int		child_status;
 
+	pids = NULL;
 	if (!reset_context_for_command(ctx, tokens))
 		return (-1);
-	pids = malloc(sizeof(pid_t) * (ctx->pipe_count + 1));
+	pids = ft_calloc(ctx->pipe_count + 1, sizeof(pid_t));
 	if (!pids)
 	{
 		free_pipe_fds(ctx->pipe_fds, ctx->pipe_count);
 		ctx->pipe_fds = NULL;
 		return (-1);
 	}
-	i = 0;
-	while (i <= ctx->pipe_count)
-		pids[i++] = 0;
 	status = handle_tokens_loop(tokens, ctx, pids);
 	close_pipes(ctx->pipe_fds, ctx->pipe_count);
 	free_pipe_fds(ctx->pipe_fds, ctx->pipe_count);

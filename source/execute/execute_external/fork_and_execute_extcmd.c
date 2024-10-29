@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork_and_execute_extcmd.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:44:48 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/25 19:55:12 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 18:54:54 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ static int	handle_child_process(char *cmd_path, char **args,
 		perror("execve");
 		exit(EXIT_FAILURE);
 	}
+	
 	return (0);
 }
 

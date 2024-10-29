@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 14:39:13 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/28 15:44:51 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 18:20:32 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ static void	run_minishell(char *input, t_exec_context *ctx)
 		else
 			update_last_status(ctx, 2);
 	}
-	free_tokens(tokens);
 }
 
 void	minishell(t_exec_context *ctx)

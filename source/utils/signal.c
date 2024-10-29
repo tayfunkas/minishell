@@ -27,7 +27,7 @@ void	child_sigint_handler(int sig)
 {
 	g_signal = sig;
 	write(STDOUT_FILENO, "\n", 1);
-	exit(1);
+	exit(130);
 }
 
 void	setup_signal(void)

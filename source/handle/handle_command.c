@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_command.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 15:38:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/21 16:45:04 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 18:55:55 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ static void	handle_child_process(t_token *current, t_token *cmd_end,
 
 	setup_child_pipes(ctx);
 	status = execute_command(current, cmd_end, ctx);
+	free_tokens(current);
+	free_context(ctx);
 	exit(status);
 }
 
