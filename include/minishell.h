@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 19:32:16 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 18:27:13 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,9 +206,12 @@ char		**allocate_args(int token_count);
 char		*find_cmd_path(char *cmd, char **our_env);
 char		*get_path_env(char **our_env);
 
-//fork_and_execute_external_command.c
+//fork_and_execute_external_command.c + fork_helper.c
 int			fork_and_execute(t_command *cmd, char *cmd_path, char **args,
 				t_exec_context *ctx);
+void		duplicate_fds(int fd_in, int fd_out);
+void		restore_fds(int parent_in, int parent_out);
+void		check_fds(t_command *cmd);
 
 //-------------------------------redirection-------------------------------
 //execute_redir.c + execute_redir_heredoc.c
@@ -223,6 +226,7 @@ void		execute_redir_heredoc(t_token *current, int *fd_in);
 void		setup_signal(void);
 void		parent_sigint_handler(int sig);
 void		child_sigint_handler(int sig);
+void		child_sigquit_handler(int sig);
 void		setup_signal_child(void);
 
 //status.c

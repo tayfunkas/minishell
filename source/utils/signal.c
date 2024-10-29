@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 15:45:59 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 15:40:22 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 18:33:23 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,24 @@ void	child_sigint_handler(int sig)
 {
 	g_signal = sig;
 	write(STDOUT_FILENO, "\n", 1);
-	exit(1);
+	exit(130);
+}
+
+void	child_sigquit_handler(int sig)
+{
+	g_signal = sig;
+	write(STDERR_FILENO, "Quit (core dumped)\n", 19);
+	exit(131);
 }
 
 void	setup_signal(void)
 {
+	//struct termios	term;
+	//if (tcgetattr(0, &term) != 0)
+	//	perror("tcgetattr");
+	//term.c_lflag &= ~ECHOCTL;
+	//if (tcsetattr(0, 0, &term) != 0)
+	//	perror("tcsetattr");
 	signal(SIGINT, parent_sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 }
-
-	//term.c_lflag &= ~ECHOCTL;
-	//struct termios	term;
-
-	//if (tcgetattr(0, &term) != 0)
-	//	perror("tcgetattr");
-	//if (tcsetattr(0, 0, &term) != 0)
-	//	perror("tcsetattr");

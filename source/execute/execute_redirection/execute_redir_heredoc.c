@@ -6,11 +6,20 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 17:45:39 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 15:36:27 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/29 18:32:59 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	errmsg_if_no_line(char *line, char *delimiter)
+{
+	if (!line)
+	{
+		printf("minishell: warning: here-document at line ");
+		printf("delimited by end-of-file (wanted '%s')\n", delimiter);
+	}
+}
 
 static void	heredoc_input(int *pipe_fd, char *delimiter)
 {
@@ -23,6 +32,7 @@ static void	heredoc_input(int *pipe_fd, char *delimiter)
 		line = readline("> ");
 		if (!line || ft_strcmp(line, delimiter) == 0)
 		{
+			errmsg_if_no_line(line, delimiter);
 			free(line);
 			break ;
 		}
@@ -43,7 +53,7 @@ static void	heredoc_wait(int *pipe_fd, int *fd_in, pid_t pid)
 {
 	int	status;
 
-	signal(SIGINT, SIG_IGN);
+	signal(SIGINT, SIG_DFL);
 	close(pipe_fd[1]);
 	waitpid(pid, &status, 0);
 	if (*fd_in != STDIN_FILENO)
