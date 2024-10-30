@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:00:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/29 14:16:08 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/30 18:53:32 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_exit(char **args, t_exec_context *ctx)
+int	ft_exit(char **args, t_master *master)
 {
 	int	status;
 
@@ -20,7 +20,7 @@ int	ft_exit(char **args, t_exec_context *ctx)
 	printf("exit\n");
 	if (args[1] == NULL)
 	{
-		free_context(ctx);
+		free_master(master);
 		exit(0);
 	}
 	if (!ft_isdigit_str(args[1]))
@@ -28,7 +28,7 @@ int	ft_exit(char **args, t_exec_context *ctx)
 		write(2, "minishell: exit: ", 17);
 		write(2, args[1], ft_strlen(args[1]));
 		write(2, ": numeric argument required\n", 28);
-		free_context(ctx);
+		free_master(master);
 		exit(2);
 	}
 	if (args[2] != NULL)
@@ -37,6 +37,6 @@ int	ft_exit(char **args, t_exec_context *ctx)
 		return (1);
 	}
 	status = ft_atoi(args[1]) % 256;
-	free_context(ctx);
+	free_master(master);
 	exit(status);
 }

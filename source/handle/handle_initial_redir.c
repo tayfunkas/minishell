@@ -3,34 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   handle_initial_redir.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 14:36:26 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/30 14:36:38 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/30 18:45:52 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	handle_initial_redir(t_token **current, int *fd_in)
+int	handle_initial_redir(t_master *master, int *fd_in)
 {
 	int	flags;
 	int	fd;
 
-	if (!*current || !(*current)->str)
-		return 0;
-	if ((*current)->str[0] == '>' || (*current)->str[0] == '<')
+	if (!master->token->cur || !master->token->cur->str)
+		return (0);
+	if (master->token->cur->str[0] == '>' || master->token->cur->str[0] == '<')
 	{
-		if (!(*current)->next)
+		if (!master->token->cur->next)
 		{
 			write(2, "syntax error near unexpected token `newline'\n", 44);
 			return (2);
 		}
-		if ((*current)->str[0] == '>')
+		if (master->token->cur->str[0] == '>')
 		{
 			flags = O_WRONLY | O_CREAT;
-			flags |= ((*current)->str[1] == '>') ? O_APPEND : O_TRUNC;
-			fd = open((*current)->next->str, flags, 0644);
+			flags |= (master->token->cur->str[1] == '>') ? O_APPEND : O_TRUNC;
+			fd = open(master->token->cur->next->str, flags, 0644);
 			if (fd == -1)
 			{
 				perror("open");
@@ -38,18 +38,18 @@ int	handle_initial_redir(t_token **current, int *fd_in)
 			}
 			close(fd);
 		}
-		else if ((*current)->str[0] == '<')
+		else if (master->token->cur->str[0] == '<')
 		{
-			if ((*current)->str[1] == '<')
-				execute_redir_heredoc(*current, fd_in);
+			if (master->token->cur->str[1] == '<')
+				execute_redir_heredoc(master->token->cur, fd_in);
 			else
 			{
-				fd = open((*current)->next->str, O_RDONLY);
+				fd = open(master->token->cur->next->str, O_RDONLY);
 				if (fd == -1)
 				{
 					write(2, "minishell: ", 11);
-					write(2, (*current)->next->str, strlen((*current)->next->str));
-					write(2, ": No such file or directory\n", 28);
+					write(2, master->token->cur->next->str, ft_strlen(master->token->cur->next->str));
+					write(2, " : No such file or directory\n", 28);
 					return (1);
 				}
 				if (*fd_in != STDIN_FILENO)
@@ -57,8 +57,8 @@ int	handle_initial_redir(t_token **current, int *fd_in)
 				*fd_in = fd;
 			}
 		}
-		*current = (*current)->next->next;
-		return (handle_initial_redir(current, fd_in));
+		master->token->cur = master->token->cur->next->next;
+		return (handle_initial_redir(master, fd_in));
 	}
 	return (0);
 }

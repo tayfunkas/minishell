@@ -68,3 +68,10 @@ After getting rid of readline memory leak, we have:
 - still reachable from malloc() - copy_environment()
 - still reachable from malloc() - ft_strdup() - copy_environment()
 - conditional jump or move depends on uninitialized value from free() - free_external_command()
+
+Oct 30th
+- don't have segfault, but have double free somewhere, and tester has 129.
+- exit now has 1 valgrind issue from init_master().
+- cat hi.txt doesn't work, no idea why..
+- need to add free_master() whenever child process ends
+- need to add free_master() whenever signal works

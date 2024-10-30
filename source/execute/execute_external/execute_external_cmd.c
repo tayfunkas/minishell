@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_external_cmd.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 15:46:35 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/29 18:54:04 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/30 18:03:08 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,25 +22,24 @@ static void	free_external_c(char *cmd_path, char **args, int token_count)
 	free(args);
 }
 
-int	execute_external_commands(t_token *tokens, int token_count, 
-			t_command *cmd, t_exec_context *ctx)
+int	execute_external_commands(t_master *master, int token_count)
 {
 	char	*cmd_path;
 	char	**args;
 	int		status;
 	int		check_result;
 
-	check_result = check_cmd_path(&cmd_path, tokens, ctx);
-	if (check_result != 0) 
+	check_result = check_cmd_path(&cmd_path, master->token->cur, master->ctx);
+	if (check_result != 0)
 		return (check_result);
 	args = allocate_args(token_count);
-	if (args == NULL) 
+	if (args == NULL)
 	{
 		free(cmd_path);
 		return (1);
 	}
-	prep_args(tokens, token_count, args, ctx);
-	status = fork_and_execute(cmd, cmd_path, args, ctx);
+	prep_args(master->token->cur, token_count, args, master->ctx);
+	status = fork_and_execute(master, cmd_path, args);
 	free_external_c(cmd_path, args, token_count);
 	return (status);
 }

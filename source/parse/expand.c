@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 18:18:40 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 21:49:22 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/30 17:39:37 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,18 +79,18 @@ char	*expand_var(char *token, t_exec_context *ctx)
 	return (exp.result);
 }
 
-void	expand_tokens(t_token *head, t_exec_context *ctx)
+void	expand_tokens(t_master *master)
 {
 	t_token	*current;
 	char	*expanded;
 
-	current = head;
+	current = master->token;
 	expanded = NULL;
 	while (current)
 	{
 		if (!current->in_single_quotes)
 		{
-			expanded = expand_var(current->str, ctx);
+			expanded = expand_var(current->str, master->ctx);
 			if (expanded)
 			{
 				if (expanded != current->str)

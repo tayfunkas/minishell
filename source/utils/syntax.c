@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 15:44:37 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 17:53:43 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/30 17:40:51 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,23 +85,23 @@ static int	check_token_type(t_token *current, t_token *tokens,
 	return (1);
 }
 
-int	check_syntax(t_token *tokens, t_exec_context *ctx)
+int	check_syntax(t_master *master)
 {
 	t_token	*current;
 
-	current = tokens;
-	tokens->pipe_count = 0;
-	tokens->cmd_count = 0;
-	tokens->redir_count = 0;
-	tokens->cmd_flag = 0;
-	if (!tokens)
+	current = master->token;
+	master->token->pipe_count = 0;
+	master->token->cmd_count = 0;
+	master->token->redir_count = 0;
+	master->token->cmd_flag = 0;
+	if (!master->token)
 		return (0);
-	if (check_token_type(current, tokens, ctx) == 0)
+	if (check_token_type(current, master->token, master->ctx) == 0)
 		return (0);
-	if (tokens->pipe_count >= tokens->cmd_count && tokens->cmd_count > 0)
+	if (master->token->pipe_count >= master->token->cmd_count && master->token->cmd_count > 0)
 	{
 		write(STDERR_FILENO, "syntax error near unexpected token '|'\n", 39);
-		ctx->syntax_error = 1;
+		master->ctx->syntax_error = 1;
 		return (0);
 	}
 	return (1);

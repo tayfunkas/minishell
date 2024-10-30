@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ext_or_int.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:43:31 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/24 19:20:55 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/30 19:07:38 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,28 +27,26 @@ static int	count_tokens_until(t_token *start, t_token *end)
 	return (count);
 }
 
-int	execute_ext_or_int(t_token *start, t_token *end, t_command *cmd,
-		t_exec_context *ctx)
+int	execute_ext_or_int(t_master *master, t_token *end)
 {
 	int			arg_count;
-	t_command	*internal_cmd;
 	int			status;
 	char		*cmd_path;
 
 	cmd_path = NULL;
-	if (is_internal_command(start->str))
+	if (is_internal_command(master->token->cur->str))
 	{
-		internal_cmd = init_internal_command(start);
-		if (!internal_cmd)
+		master->cmd->int_cmd = init_internal_command(master);
+		if (!master->cmd->int_cmd)
 			return (1);
-		internal_cmd->fd_in = cmd->fd_in;
-		internal_cmd->fd_out = cmd->fd_out;
-		status = execute_internal_commands(internal_cmd, &ctx->our_env, ctx);
-		free_command(internal_cmd);
+		master->cmd->int_cmd->fd_in = master->cmd->fd_in;
+		master->cmd->int_cmd->fd_out = master->cmd->fd_out;
+		status = execute_internal_commands(master);
+		//free_command(master->cmd->int_cmd);
 		return (status);
 	}
-	arg_count = count_tokens_until(start, end);
-	status = execute_external_commands(start, arg_count, cmd, ctx);
+	arg_count = count_tokens_until(master->token->cur, end);
+	status = execute_external_commands(master, arg_count);
 	free(cmd_path);
 	return (status);
 }

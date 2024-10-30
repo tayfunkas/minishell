@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:56:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/29 19:46:21 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/30 19:05:55 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,26 +45,23 @@ static t_token	*find_cmd_end(t_token *current)
 	return (cmd_end);
 }
 
-static int	handle_tokens_loop(t_token *tokens, t_exec_context *ctx,
-		pid_t *pids)
+static int	handle_tokens_loop(t_master *master)
 {
-	t_token	*current;
 	t_token	*cmd_end;
 	int		status;
 
 	status = 0;
-	current = tokens;
-	while (ctx->current_index <= ctx->pipe_count)
+	master->token->cur = master->token;
+	while (master->ctx->current_index <= master->ctx->pipe_count)
 	{
-		cmd_end = find_cmd_end(current);
-		status = handle_command(current, cmd_end, ctx, pids);
+		cmd_end = find_cmd_end(master->token->cur);
+		status = handle_command(master, cmd_end);
 		if (cmd_end)
-			current = cmd_end->next;
+			master->token->cur = cmd_end->next;
 		else
-			current = NULL;
-		ctx->current_index++;
+			master->token->cur = NULL;
+		master->ctx->current_index++;
 	}
-	free_tokens(tokens);
 	return (status);
 }
 
@@ -92,28 +89,27 @@ static int	reset_context_for_command(t_exec_context *ctx, t_token *tokens)
 	return (1);
 }
 
-int	handle_tokens(t_token *tokens, t_exec_context *ctx)
+int	handle_tokens(t_master *master)
 {
-	pid_t	*pids;
 	int		status;
 	int		child_status;
 
-	pids = NULL;
-	if (!reset_context_for_command(ctx, tokens))
+	master->ctx->pid = NULL;
+	if (!reset_context_for_command(master->ctx, master->token))
 		return (-1);
-	pids = ft_calloc(ctx->pipe_count + 1, sizeof(pid_t));
-	if (!pids)
+	master->ctx->pid = ft_calloc(master->ctx->pipe_count + 1, sizeof(pid_t));
+	if (!master->ctx->pid)
 	{
-		free_pipe_fds(ctx->pipe_fds, ctx->pipe_count);
-		ctx->pipe_fds = NULL;
+		free_pipe_fds(master->ctx->pipe_fds, master->ctx->pipe_count);
+		master->ctx->pipe_fds = NULL;
 		return (-1);
 	}
-	status = handle_tokens_loop(tokens, ctx, pids);
-	close_pipes(ctx->pipe_fds, ctx->pipe_count);
-	free_pipe_fds(ctx->pipe_fds, ctx->pipe_count);
-	ctx->pipe_fds = NULL;
-	child_status = wait_for_children(pids, ctx->pipe_count);
-	free(pids);
+	status = handle_tokens_loop(master);
+	close_pipes(master->ctx->pipe_fds, master->ctx->pipe_count);
+	free_pipe_fds(master->ctx->pipe_fds, master->ctx->pipe_count);
+	master->ctx->pipe_fds = NULL;
+	child_status = wait_for_children(master->ctx->pid, master->ctx->pipe_count);
+	free(master->ctx->pid);
 	if (child_status != 0)
 		status = child_status;
 	return (status);

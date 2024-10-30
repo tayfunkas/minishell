@@ -3,30 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   execute_internal_cmd.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 10:37:55 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/24 19:49:39 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/10/30 18:53:48 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	check_internal_c(t_command *cmd, char ***env, t_exec_context *ctx)
+static int	check_internal_c(t_master *master)
 {
-	if (ft_strcmp(cmd->argv[0], "cd") == 0)
-		return (ft_cd(cmd, cmd->argv[1], env, ctx));
-	else if (ft_strcmp(cmd->argv[0], "export") == 0)
-		return (ft_export(cmd, env, ctx));
-	else if (ft_strcmp(cmd->argv[0], "unset") == 0)
-		return (ft_unset(cmd, env));
-	else if (ft_strcmp(cmd->argv[0], "env") == 0)
-		return (ft_env(*env, cmd));
-	else if (ft_strcmp(cmd->argv[0], "exit") == 0)
-		return (ft_exit(cmd->argv, ctx));
-	else if (ft_strcmp(cmd->argv[0], "echo") == 0)
-		return (ft_echo(cmd->argv));
-	else if (ft_strcmp(cmd->argv[0], "pwd") == 0)
+	if (ft_strcmp(master->cmd->argv[0], "cd") == 0)
+		return (ft_cd(master->cmd, master->cmd->argv[1], &master->ctx->our_env, master->ctx));
+	else if (ft_strcmp(master->cmd->argv[0], "export") == 0)
+		return (ft_export(master->cmd, &master->ctx->our_env, master->ctx));
+	else if (ft_strcmp(master->cmd->argv[0], "unset") == 0)
+		return (ft_unset(master->cmd, &master->ctx->our_env));
+	else if (ft_strcmp(master->cmd->argv[0], "env") == 0)
+		return (ft_env(master->ctx->our_env, master->cmd));
+	else if (ft_strcmp(master->cmd->argv[0], "exit") == 0)
+		return (ft_exit(master->cmd->argv, master));
+	else if (ft_strcmp(master->cmd->argv[0], "echo") == 0)
+		return (ft_echo(master->cmd->argv));
+	else if (ft_strcmp(master->cmd->argv[0], "pwd") == 0)
 		return (ft_pwd());
 	else
 		return (127);
@@ -40,7 +40,7 @@ static void	dup_and_close(int original_stdin, int original_stdout)
 	close(original_stdout);
 }
 
-int	execute_internal_commands(t_command *cmd, char ***env, t_exec_context *ctx)
+int	execute_internal_commands(t_master *master)
 {
 	int	original_stdin;
 	int	original_stdout;
@@ -48,17 +48,17 @@ int	execute_internal_commands(t_command *cmd, char ***env, t_exec_context *ctx)
 
 	original_stdin = dup(STDIN_FILENO);
 	original_stdout = dup(STDOUT_FILENO);
-	if (cmd->fd_in != STDIN_FILENO)
+	if (master->cmd->fd_in != STDIN_FILENO)
 	{
-		dup2(cmd->fd_in, STDIN_FILENO);
-		close(cmd->fd_in);
+		dup2(master->cmd->fd_in, STDIN_FILENO);
+		close(master->cmd->fd_in);
 	}
-	if (cmd->fd_out != STDOUT_FILENO)
+	if (master->cmd->fd_out != STDOUT_FILENO)
 	{
-		dup2(cmd->fd_out, STDOUT_FILENO);
-		close(cmd->fd_out);
+		dup2(master->cmd->fd_out, STDOUT_FILENO);
+		close(master->cmd->fd_out);
 	}
-	status = check_internal_c(cmd, env, ctx);
+	status = check_internal_c(master);
 	dup_and_close(original_stdin, original_stdout);
 	return (status);
 }
