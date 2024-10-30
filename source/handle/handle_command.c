@@ -37,7 +37,9 @@ int	handle_command(t_token *current, t_token *cmd_end, t_exec_context *ctx,
 			pid_t *pids)
 {
 	int	status;
-
+	int	fd_in;
+	
+	fd_in = STDIN_FILENO;
 	status = 0;
 	if (current == NULL || current->str == NULL)
 	{
@@ -46,6 +48,11 @@ int	handle_command(t_token *current, t_token *cmd_end, t_exec_context *ctx,
 		else
 			return (0);
 	}
+	status = handle_initial_redir(&current, &fd_in);
+	if (status != 0)
+		return (status);
+	if (current == NULL || current->str == NULL)
+		return (0);
 	if (is_internal_command(current->str) && ctx->pipe_count == 0)
 		status = execute_command(current, cmd_end, ctx);
 	else

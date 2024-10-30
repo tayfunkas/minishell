@@ -155,6 +155,8 @@ void		close_pipes(int **pipe_fds, int pipe_count);
 //handle_command.c
 int			handle_command(t_token *current, t_token *cmd_end,
 				t_exec_context *ctx, pid_t *pids);
+//handle_initial_redir.c			
+int			handle_initial_redir(t_token **current, int *fd_in);
 
 //--------------------------execute command--------------------------
 //execute_command.c
