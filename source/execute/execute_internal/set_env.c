@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 17:54:49 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 19:40:18 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/30 13:36:18 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static char	*create_env_var(const char *name, const char *value)
 	return (new_var);
 }
 
-static int	extend_env(char ***env, char *new_var, t_exec_context *ctx, int i)
+static int	extend_env(char ***env, char *new_var, t_exec_context *ctx)
 {
 	char	**new_env;
 	int		env_size;
@@ -57,45 +57,50 @@ static int	extend_env(char ***env, char *new_var, t_exec_context *ctx, int i)
 		perror("malloc failed");
 		return (-1);
 	}
-	i = 0;
-	while (i < env_size)
-	{
-		new_env[i] = (*env)[i];
-		i++;
-	}
+	ft_memcpy(new_env, *env, sizeof(char *) * env_size);
 	new_env[env_size] = new_var;
 	new_env[env_size + 1] = NULL;
-	if (*env != NULL)
-		free(*env);
+	free(*env);
+	*env = new_env;
 	ctx->our_env = new_env;
 	return (0);
 }
 
-int	set_env(char ***env, const char *name, const char *value,
-	t_exec_context *ctx)
+static int	check_env(char ***env, const char *name, const char *value)
 {
-	int		i;
-	int		len;
-	char	*new_var;
-	int		j;
-	int		n;
-
-	n = 0;
 	if (!env || !*env || !name || !value)
 	{
 		printf("set_env: Invalid arguments\n");
 		return (-1);
 	}
+	return (0);
+}
+
+int	set_env(char ***env, const char *name, const char *value, 
+	t_exec_context *ctx)
+{
+	int		i;
+	int		len;
+	char	*new_var;
+
+	check_env(env, name, value);
 	len = ft_strlen(name);
 	i = find_new_var(env, name, len);
 	new_var = create_env_var(name, value);
 	if (!new_var)
 		return (-1);
-	if (extend_env(env, new_var, ctx, n) == -1)
+	if ((*env)[i] != NULL)
 	{
-		free(new_var);
-		return (-1);
+		free((*env)[i]);
+		(*env)[i] = new_var;
 	}
-	j = 0;
+	else
+	{
+		if (extend_env(env, new_var, ctx) == -1)
+		{
+			free(new_var);
+			return (-1);
+		}
+	}
 	return (0);
 }
