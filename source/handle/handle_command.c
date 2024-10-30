@@ -50,7 +50,11 @@ int	handle_command(t_token *current, t_token *cmd_end, t_exec_context *ctx,
 	}
 	status = handle_initial_redir(&current, &fd_in);
 	if (status != 0)
+	{
+		if (fd_in != STDIN_FILENO)
+			close(fd_in);	
 		return (status);
+	}
 	if (current == NULL || current->str == NULL)
 		return (0);
 	if (is_internal_command(current->str) && ctx->pipe_count == 0)
