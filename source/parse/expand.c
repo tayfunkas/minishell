@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 18:18:40 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/30 17:39:37 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/31 18:17:50 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,37 @@ static int	process_token_loop(char *token, t_expand *exp, t_exec_context *ctx)
 	return (0);
 }
 
+/*char	*expand_var(char *token, t_exec_context *ctx)
+{
+	static char	static_buffer[1024];
+	t_expand	exp;
+	char		*final_result;
+
+	exp.result = static_buffer;
+	exp.result_size = 1024;
+	exp.in_single_quote = 0;
+	exp.in_double_quote = 0;
+	exp.token_idx = 0;
+	exp.result_idx = 0;
+	if (process_token_loop(token, &exp, ctx) == -1)
+		return (NULL);
+	if (exp.result == static_buffer)
+	{
+		if (ft_strcmp(exp.result, token) == 0)
+			return (token);
+		final_result = ft_strdup(exp.result);
+		if (!final_result)
+			return (NULL);
+	}
+	else
+	{
+		final_result = exp.result;
+		exp.result = NULL;
+	}
+	free_expand(&exp);
+	return (final_result);
+}*/
+
 char	*expand_var(char *token, t_exec_context *ctx)
 {
 	static char	static_buffer[1024];
@@ -79,18 +110,18 @@ char	*expand_var(char *token, t_exec_context *ctx)
 	return (exp.result);
 }
 
-void	expand_tokens(t_master *master)
+void	expand_tokens(t_token *head, t_exec_context *ctx)
 {
 	t_token	*current;
 	char	*expanded;
 
-	current = master->token;
-	expanded = NULL;
+	current = head;
+	//expanded = NULL;
 	while (current)
 	{
 		if (!current->in_single_quotes)
 		{
-			expanded = expand_var(current->str, master->ctx);
+			expanded = expand_var(current->str, ctx);
 			if (expanded)
 			{
 				if (expanded != current->str)
@@ -100,7 +131,10 @@ void	expand_tokens(t_master *master)
 				}
 			}
 			else
+			{
+				free(current->str);
 				current->str = ft_strdup("");
+			}
 		}
 		current = current->next;
 	}

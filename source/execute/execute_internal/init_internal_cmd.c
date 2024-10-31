@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:31:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/30 19:07:47 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/23 14:58:52 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,23 +63,25 @@ static int	allocate_command_argv(t_command *cmd, t_token *current)
 	return (1);
 }
 
-t_command	*init_internal_command(t_master *master)
+t_command	*init_internal_command(t_token *current)
 {
-	master->cmd = init_command();
-	if (!master->cmd)
+	t_command	*cmd;
+
+	cmd = init_command();
+	if (!cmd)
 		return (NULL);
-	master->cmd->argc = count_command_args(master->token->cur);
-	master->cmd->argv = (char **)malloc(sizeof(char *) * (master->cmd->argc + 1));
-	if (!master->cmd->argv)
+	cmd->argc = count_command_args(current);
+	cmd->argv = (char **)malloc(sizeof(char *) * (cmd->argc + 1));
+	if (!cmd->argv)
 	{
 		perror("malloc failed.\n");
-		free_command(master->cmd);
+		free_command(cmd);
 		return (NULL);
 	}
-	if (!allocate_command_argv(master->cmd, master->token->cur))
+	if (!allocate_command_argv(cmd, current))
 	{
-		free_command(master->cmd);
+		free_command(cmd);
 		return (NULL);
 	}
-	return (master->cmd);
+	return (cmd);
 }

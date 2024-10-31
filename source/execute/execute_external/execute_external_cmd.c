@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 15:46:35 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/30 18:03:08 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/31 19:18:57 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,15 @@ static void	free_external_c(char *cmd_path, char **args, int token_count)
 	free(args);
 }
 
-int	execute_external_commands(t_master *master, int token_count)
+int	execute_external_commands(t_token *tokens, int token_count,
+			t_command *cmd, t_exec_context *ctx)
 {
 	char	*cmd_path;
 	char	**args;
 	int		status;
 	int		check_result;
 
-	check_result = check_cmd_path(&cmd_path, master->token->cur, master->ctx);
+	check_result = check_cmd_path(&cmd_path, tokens, ctx);
 	if (check_result != 0)
 		return (check_result);
 	args = allocate_args(token_count);
@@ -38,8 +39,8 @@ int	execute_external_commands(t_master *master, int token_count)
 		free(cmd_path);
 		return (1);
 	}
-	prep_args(master->token->cur, token_count, args, master->ctx);
-	status = fork_and_execute(master, cmd_path, args);
+	prep_args(tokens, token_count, args, ctx);
+	status = fork_and_execute(cmd, cmd_path, args, ctx);
 	free_external_c(cmd_path, args, token_count);
 	return (status);
 }

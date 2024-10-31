@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 17:45:39 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/29 21:03:14 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/31 17:11:59 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,12 @@ static void	errmsg_if_no_line(char *line, char *delimiter)
 	}
 }
 
-static void	heredoc_input(int *pipe_fd, char *delimiter)
+static void	heredoc_input(int *pipe_fd, char *delimiter, t_token *tokens, t_exec_context *ctx, t_command *cmd)
 {
 	char	*line;
 
-	signal(SIGINT, child_sigint_handler);
+	(void)cmd;
+	signal(SIGINT, (void (*)(int))child_sigint_handler);
 	close(pipe_fd[0]);
 	while (1)
 	{
@@ -41,11 +42,15 @@ static void	heredoc_input(int *pipe_fd, char *delimiter)
 		{
 			perror("write to pipe");
 			free(line);
+			free_tokens(tokens);
+			free_context(ctx);
 			exit(EXIT_FAILURE);
 		}
 		free(line);
 	}
 	close(pipe_fd[1]);
+	free_tokens(tokens);
+	free_context(ctx);
 	exit(EXIT_SUCCESS);
 }
 
@@ -66,7 +71,7 @@ static void	heredoc_wait(int *pipe_fd, int *fd_in, pid_t pid)
 		g_signal = 128 + WTERMSIG(status);
 }
 
-void	execute_redir_heredoc(t_token *current, int *fd_in)
+void	execute_redir_heredoc(t_token *current, int *fd_in, t_exec_context *ctx, t_command *cmd)
 {
 	int		pipe_fd[2];
 	char	*delimiter;
@@ -87,7 +92,7 @@ void	execute_redir_heredoc(t_token *current, int *fd_in)
 		exit(EXIT_FAILURE);
 	}
 	if (pid == 0)
-		heredoc_input(pipe_fd, delimiter);
+		heredoc_input(pipe_fd, delimiter, current, ctx, cmd);
 	else
 		heredoc_wait(pipe_fd, fd_in, pid);
 }

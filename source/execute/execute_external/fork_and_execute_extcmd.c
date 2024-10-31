@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:44:48 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/30 19:15:41 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/31 18:57:02 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,16 @@ static void	check_fds(t_command *cmd)
 		close(cmd->fd_out);
 }
 
-static int	handle_child_process(t_master *master, char *cmd_path, char **args)
+static int	handle_child_process(t_command *cmd, char *cmd_path, char **args,
+	t_exec_context *ctx)
 {
 	int	exec_result;
 
 	signal(SIGINT, child_sigint_handler);
 	signal(SIGQUIT, child_sigquit_handler);
-	duplicate_fds(master->cmd->fd_in, master->cmd->fd_out);
-	exec_result = execve(cmd_path, args, master->ctx->our_env);
-	if (master->ctx->our_env == NULL)
+	duplicate_fds(cmd->fd_in, cmd->fd_out);
+	exec_result = execve(cmd_path, args, ctx->our_env);
+	if (ctx->our_env == NULL)
 	{
 		printf("env issue in child\n");
 		return (88);
@@ -69,7 +70,8 @@ static void	child_signal_for_wait(void)
 	signal(SIGQUIT, child_sigquit_handler);
 }
 
-int	fork_and_execute(t_master *master, char *cmd_path, char **args)
+int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
+	t_exec_context *ctx)
 {
 	pid_t	pid;
 	int		parent_in;
@@ -80,11 +82,12 @@ int	fork_and_execute(t_master *master, char *cmd_path, char **args)
 	parent_out = dup(STDOUT_FILENO);
 	pid = fork();
 	if (pid == 0)
-		handle_child_process(master, cmd_path, args);
+		handle_child_process(cmd, cmd_path, args, ctx);
 	else if (pid > 0)
 	{
 		child_signal_for_wait();
-		check_fds(master->cmd);
+		check_fds(cmd);
+		printf("Second waitpid\n");
 		waitpid(pid, &status, 0);
 		restore_fds(parent_in, parent_out);
 		setup_signal();
@@ -97,3 +100,52 @@ int	fork_and_execute(t_master *master, char *cmd_path, char **args)
 		perror("fork");
 	return (1);
 }
+
+/*static int	handle_child_process(char *cmd_path, char **args,
+	t_exec_context *ctx)
+{
+	int	exec_result;
+
+	exec_result = execve(cmd_path, args, ctx->our_env);
+	if (ctx->our_env == NULL)
+	{
+		printf("env issue in child\n");
+		return (88);
+	}
+	if (exec_result == -1)
+	{
+		perror("execve");
+		exit(EXIT_FAILURE);
+	}
+
+	return (0);
+}
+
+int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
+	t_exec_context *ctx)
+{
+	pid_t	pid;
+	int		parent_in;
+	int		parent_out;
+	int		status;
+
+	parent_in = dup(STDIN_FILENO);
+	parent_out = dup(STDOUT_FILENO);
+	pid = fork();
+	if (pid == 0)
+	{
+		duplicate_fds(cmd->fd_in, cmd->fd_out);
+		handle_child_process(cmd_path, args, ctx);
+	}
+	else if (pid > 0)
+	{
+		check_fds(cmd);
+		waitpid(pid, &status, 0);
+		restore_fds(parent_in, parent_out);
+		if (WIFEXITED(status))
+			return (WEXITSTATUS(status));
+	}
+	else
+		perror("fork");
+	return (1);
+}*/

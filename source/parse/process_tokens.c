@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 15:27:28 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/29 21:15:49 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/31 18:16:05 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,54 @@ static void	init_parsers(t_parser *parser)
 	parser->len = 0;
 }
 
-/*t_token	*process_token(t_parser *parser, int *i, t_token *current)
+/*t_token *process_token(t_parser *parser, int *i, t_token *current)
+{
+	t_token *new_token;
+	int entirely_in_single_quotes;
+
+	entirely_in_single_quotes = 0;
+	init_parsers(parser);
+	if ((parser->end[0] == '\'' || parser->end[0] == '"') &&
+		(parser->end[1] == '|' || parser->end[1] == '<' || parser->end[1] == '>') &&
+		parser->end[2] == parser->end[0] &&
+		parser->end[3] == '\0')
+	{
+		parser->len = 3;
+		new_token = add_token_to_list(parser->start, parser->len, parser->end[0], current);
+		if (!new_token)
+			return (NULL);
+		new_token->in_single_quotes = (parser->end[0] == '\'');
+		parser->start = parser->end + parser->len;
+		(*i)++;
+		return new_token;
+	}
+
+	// Existing logic for other cases
+	if (*parser->end == '|' || *parser->end == '<' || *parser->end == '>')
+		return (handle_special_characters(parser, i, current));
+
+	entirely_in_single_quotes = (*parser->end == '\'');
+	while (*parser->end)
+	{
+		process_quotes(parser);
+		if (!parser->outer_quote && (ft_isspace(*parser->end)
+				|| *parser->end == '|' || *parser->end == '<'
+				|| *parser->end == '>'))
+			break;
+	}
+	parser->len = parser->end - parser->start;
+	new_token = add_token_to_list(parser->start, parser->len,
+			parser->outer_quote, current);
+	if (!new_token)
+		return (NULL);
+	new_token->in_single_quotes = entirely_in_single_quotes;
+	parser->start = parser->end;
+	(*i)++;
+	return (new_token);
+}*/
+
+
+t_token	*process_token(t_parser *parser, int *i, t_token *current)
 {
 	t_token	*new_token;
 	int		entirely_in_single_quotes;
@@ -100,52 +147,4 @@ static void	init_parsers(t_parser *parser)
 	parser->start = parser->end;
 	(*i)++;
 	return (new_token);
-}*/
-
-t_token *process_token(t_parser *parser, int *i, t_token *current)
-{
-    t_token *new_token;
-    int entirely_in_single_quotes;
-
-    entirely_in_single_quotes = 0;
-    init_parsers(parser);
-
-
-    if ((parser->end[0] == '\'' || parser->end[0] == '"') &&
-        (parser->end[1] == '|' || parser->end[1] == '<' || parser->end[1] == '>') &&
-        parser->end[2] == parser->end[0] &&
-        parser->end[3] == '\0')
-    {
-        parser->len = 3;
-        new_token = add_token_to_list(parser->start, parser->len, parser->end[0], current);
-        if (!new_token)
-            return (NULL);
-        new_token->in_single_quotes = (parser->end[0] == '\'');
-        parser->start = parser->end + parser->len;
-        (*i)++;
-        return new_token;
-    }
-
-    // Existing logic for other cases
-    if (*parser->end == '|' || *parser->end == '<' || *parser->end == '>')
-        return (handle_special_characters(parser, i, current));
-
-    entirely_in_single_quotes = (*parser->end == '\'');
-    while (*parser->end)
-    {
-        process_quotes(parser);
-        if (!parser->outer_quote && (ft_isspace(*parser->end)
-                || *parser->end == '|' || *parser->end == '<'
-                || *parser->end == '>'))
-            break;
-    }
-    parser->len = parser->end - parser->start;
-    new_token = add_token_to_list(parser->start, parser->len,
-            parser->outer_quote, current);
-    if (!new_token)
-        return (NULL);
-    new_token->in_single_quotes = entirely_in_single_quotes;
-    parser->start = parser->end;
-    (*i)++;
-    return (new_token);
 }

@@ -6,98 +6,65 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 14:39:13 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/30 18:57:20 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/31 19:32:45 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_master	*init_master(char **envp)
-{
-	t_master	*master;
-
-	master = malloc(sizeof(t_master));
-	if (!master)
-		return (NULL);
-	master->token = NULL;
-	master->cmd = malloc(sizeof(t_command));
-	if (!master->cmd)
-	{
-		free(master);
-		return (NULL);
-	}
-	ft_memset(master->cmd, 0, sizeof(t_command));
-	master->ctx = malloc(sizeof(t_exec_context));
-	if (!master->ctx)
-	{
-		free(master);
-		return (NULL);
-	}
-	master->ctx->pipe_fds = NULL;
-	master->ctx->pipe_count = 0;
-	master->ctx->current_index = 0;
-	master->ctx->last_status = 0;
-	master->ctx->our_env = NULL;
-	master->ctx->syntax_error = 0;
-	master->ctx->our_env = copy_environment(envp);
-	if (!master->ctx->our_env)
-	{
-		write(2, "Failied to copy environment\n", 28);
-		free(master->ctx);
-		free(master->cmd);
-		free(master);
-		return (NULL);
-	}
-	return (master);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
-	t_master	*master;
+	t_exec_context	ctx;
 
 	(void)argc;
 	(void)argv;
-	master = init_master(envp);
-	if (!master)
+	ctx.pipe_fds = NULL;
+	ctx.pipe_count = 0;
+	ctx.current_index = 0;
+	ctx.last_status = 0;
+	ctx.our_env = NULL;
+	ctx.syntax_error = 0;
+	ctx.our_env = copy_environment(envp);
+	if (!ctx.our_env)
 	{
-		write(2, "Failied to initiate struct\n", 27);
-		free_master(master);
+		write(2, "Failied to copy environment\n", 28);
 		return (1);
 	}
-	minishell(master);
+	minishell(&ctx);
 	rl_clear_history();
-	free_master(master);
+	free_context(&ctx);
 	return (0);
 }
 
-static void	run_minishell(char *input, t_master *master)
+static void	run_minishell(char *input, t_exec_context *ctx)
 {
+	t_token	*tokens;
 	int		status;
 
-	master->token = tokenize_inputs(input, 10);
-	if (master->token)
+	tokens = tokenize_inputs(input, 10);
+	if (tokens)
 	{
-		expand_tokens(master);
-		assign_token_types(master->token);
-		if (check_syntax(master))
+		expand_tokens(tokens, ctx);
+		assign_token_types(tokens);
+		if (check_syntax(tokens, ctx))
 		{
 			signal(SIGINT, SIG_IGN);
-			status = handle_tokens(master);
+			status = handle_tokens(tokens, ctx);
 			setup_signal();
-			update_last_status(master->ctx, status);
+			update_last_status(ctx, status);
 		}
 		else
-			update_last_status(master->ctx, 2);
+			update_last_status(ctx, 2);
 	}
 }
 
-void	minishell(t_master *master)
+void	minishell(t_exec_context *ctx)
 {
 	char	*input;
 
 	g_signal = 0;
 	setup_signal();
-	initialize_exit_status(master->ctx);
+	initialize_exit_status(ctx);
 	while (1)
 	{
 		input = readline("minishell> ");
@@ -110,7 +77,7 @@ void	minishell(t_master *master)
 		if (input[0])
 		{
 			add_history(input);
-			run_minishell(input, master);
+			run_minishell(input, ctx);
 		}
 		free(input);
 	}
@@ -149,6 +116,8 @@ void	free_environment(char **env)
 	int	i;
 
 	i = 0;
+	if (!env)
+		return ;
 	while (env[i] != NULL)
 	{
 		free(env[i]);

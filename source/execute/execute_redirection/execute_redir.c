@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 14:16:22 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/17 16:37:26 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/31 17:09:19 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	execute_redir_append(t_token *current, int *fd_out)
 	}
 }
 
-void	setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out)
+void	setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out, t_exec_context *ctx, t_command *cmd)
 {
 	t_token	*current;
 
@@ -62,7 +62,7 @@ void	setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out)
 		else if (current->type == APPEND)
 			execute_redir_append(current, fd_out);
 		else if (current->type == HEREDOC)
-			execute_redir_heredoc(current, fd_in);
+			execute_redir_heredoc(current, fd_in, ctx, cmd);
 		current = current->next;
 	}
 }

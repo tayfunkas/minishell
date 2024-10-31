@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 15:45:59 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/29 21:02:23 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/31 19:21:13 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,10 @@
 
 int	g_signal = 0;
 
-
 void	parent_sigint_handler(int sig)
 {
 	g_signal = sig;
-	write(STDOUT_FILENO, "\n", 1);
+	write(STDERR_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -27,8 +26,8 @@ void	parent_sigint_handler(int sig)
 void	child_sigint_handler(int sig)
 {
 	g_signal = sig;
-	write(STDOUT_FILENO, "\n", 1);
-	exit(130);
+	write(STDERR_FILENO, "\n", 1);
+	//exit(130);
 }
 
 void	child_sigquit_handler(int sig)

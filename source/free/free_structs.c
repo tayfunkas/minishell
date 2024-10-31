@@ -6,23 +6,11 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 15:13:46 by tkasapog          #+#    #+#             */
-/*   Updated: 2024/10/30 19:06:26 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/30 13:19:54 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	free_master(t_master *master)
-{
-	if (master == NULL)
-		return ;
-	free_context(master->ctx);
-	free(master->ctx);
-	free_command_list(master->cmd);
-	free_tokens(master->token);
-	if (master)
-		free(master);
-}
 
 void	free_context(t_exec_context *ctx)
 {
@@ -50,8 +38,8 @@ void	free_context(t_exec_context *ctx)
 		free_environment(ctx->our_env);
 		ctx->our_env = NULL;
 	}
-	if (ctx->pid != NULL)
-		free(ctx->pid);
+	if (ctx->child_pid != NULL)
+		free(ctx->child_pid);
 }
 
 void	free_expand(t_expand *exp)

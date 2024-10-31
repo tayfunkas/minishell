@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 15:38:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/30 19:27:12 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/31 19:28:17 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,48 +21,43 @@ static void	setup_child_pipes(t_exec_context *ctx)
 	close_pipes(ctx->pipe_fds, ctx->pipe_count);
 }
 
-static void	handle_child_process(t_master *master, t_token *cmd_end)
+static void	handle_child_process(t_token *current, t_token *cmd_end,
+			t_exec_context *ctx)
 {
 	int	status;
 
-	setup_child_pipes(master->ctx);
-	status = execute_command(master, cmd_end);
-	free_tokens(master->token->cur);
-	free_context(master->ctx);
-	exit(status);
+	setup_child_pipes(ctx);
+	status = execute_command(current, cmd_end, ctx, current);
+	//free_tokens(current);
+	//free_context(ctx);
 }
 
-int	handle_command(t_master *master, t_token *cmd_end)
+int	handle_command(t_token *current, t_token *cmd_end, t_exec_context *ctx,
+			pid_t *pids)
 {
+	(void)pids;
 	int	status;
-	int	fd_in;
 
-	fd_in = STDIN_FILENO;
 	status = 0;
-	if (master->token->cur == NULL || master->token->cur->str == NULL)
+	if (current == NULL || current->str == NULL)
 	{
-		if (master->ctx->syntax_error)
+		if (ctx->syntax_error)
 			return (2);
 		else
 			return (0);
 	}
-	status = handle_initial_redir(master, &fd_in);
-	if (status != 0)
-		return (status);
-	if (master->token->cur == NULL || master->token->cur->str == NULL)
-		return (0);
-	if (is_internal_command(master->token->cur->str) && master->ctx->pipe_count == 0)
-		status = execute_command(master, cmd_end);
+	if (is_internal_command(current->str) && ctx->pipe_count == 0)
+		status = execute_command(current, cmd_end, ctx, current);
 	else
 	{
-		master->ctx->pid[master->ctx->current_index] = fork();
-		if (master->ctx->pid[master->ctx->current_index] == -1)
-		{
-			perror("fork");
-			return (-1);
-		}
-		else if (master->ctx->pid[master->ctx->current_index] == 0)
-			handle_child_process(master, cmd_end);
+		// pids[ctx->current_index] = fork();
+		// if (pids[ctx->current_index] == -1)
+		// {
+		// 	perror("fork");
+		// 	return (-1);
+		// }
+		// else if (pids[ctx->current_index] == 0)
+		handle_child_process(current, cmd_end, ctx);
 	}
 	return (status);
 }

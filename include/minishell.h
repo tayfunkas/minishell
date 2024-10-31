@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/30 18:53:40 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/31 17:24:20 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ typedef struct s_token
 	int				cmd_count;
 	int				redir_count;
 	int				cmd_flag;
-	struct s_token	*cur;
 	struct s_token	*prev;
 	struct s_token	*next;
 }	t_token;
@@ -68,7 +67,6 @@ typedef struct s_command
 	int					argc;
 	int					fd_in;
 	int					fd_out;
-	struct s_command	*int_cmd;
 	struct s_command	*next;
 }	t_command;
 
@@ -80,15 +78,8 @@ typedef struct s_exec_context
 	int		last_status;
 	int		syntax_error;
 	char	**our_env;
-	pid_t	*pid;
+	pid_t	*child_pid;
 }	t_exec_context;
-
-typedef struct s_master
-{
-	t_token			*token;
-	t_command		*cmd;
-	t_exec_context	*ctx;
-}	t_master;
 
 typedef struct s_expand
 {
@@ -120,12 +111,8 @@ typedef struct s_parser
 	int		len;
 }	t_parser;
 
-//master.c
-t_master	*init_master(char **envp);
-void		free_master(t_master *master);
-
 //minishell.c
-void		minishell(t_master *master);
+void		minishell(t_exec_context *ctx);
 char		**copy_environment(char **envp);
 void		free_environment(char **env);
 
@@ -143,7 +130,7 @@ char		*skip_whitespace(char *start);
 t_token		*process_token(t_parser *parser, int *i, t_token *current);
 
 //expand.c + expand_utils.c
-void		expand_tokens(t_master *master);
+void		expand_tokens(t_token *head, t_exec_context *ctx);
 char		*expand_var(char *token, t_exec_context *ctx);
 int			handle_quotes(char *token, t_expand *exp);
 int			handle_env_var_exp(char *token, t_expand *exp, t_exec_context *ctx);
@@ -158,7 +145,7 @@ void		type_tokens(t_token *token);
 
 //-------------------------------handle-------------------------------
 //handling.c
-int			handle_tokens(t_master *master);
+int			handle_tokens(t_token *tokens, t_exec_context *ctx);
 
 //handle_pipe.c
 int			count_pipes(t_token *tokens);
@@ -167,16 +154,16 @@ void		free_pipe_fds(int **pipe_fds, int pipe_count);
 void		close_pipes(int **pipe_fds, int pipe_count);
 
 //handle_command.c
-int			handle_command(t_master *master, t_token *cmd_end);
-//handle_initial_redir.c
-int			handle_initial_redir(t_master *master, int *fd_in);
+int			handle_command(t_token *current, t_token *cmd_end,
+				t_exec_context *ctx, pid_t *pids);
 
 //--------------------------execute command--------------------------
 //execute_command.c
-int			execute_command(t_master *master, t_token *end);
+int			execute_command(t_token *start, t_token *end, t_exec_context *ctx, t_token *tokens);
 
 //execute_ext_or_int.c
-int			execute_ext_or_int(t_master *master, t_token *end);
+int			execute_ext_or_int(t_token *start, t_token *end, t_command *cmd,
+				t_exec_context *ctx, t_token *tokens);
 
 //check_ext_or_int.c
 int			check_cmd_path(char **cmd_path, t_token *start,
@@ -187,17 +174,18 @@ int			is_internal_command(char *cmd);
 
 //-----------------------execute internal command-----------------------
 //init_internal_cmd.c
-t_command	*init_internal_command(t_master *master);
+t_command	*init_internal_command(t_token *current);
 
 //execute_internal_cmd.c
-int			execute_internal_commands(t_master *master);
+int			execute_internal_commands(t_command *cmd, char ***env,
+				t_exec_context *ctx, t_token *tokens);
 
 //ft_cd.c, ft_echo.c, ft_env.c, ft_exit.c, ft_export.c, ft_pwd.c, ft_unset.c
 int			ft_cd(t_command *cmd, char *path, char ***env,
 				t_exec_context *ctx);
 int			ft_echo(char **args);
 int			ft_env(char **env, t_command *cmd);
-int			ft_exit(char **args, t_master *master);
+int			ft_exit(char **args, t_exec_context *ctx, t_token *tokens, t_command *cmdlist);
 int			ft_export(t_command *cmd, char ***env, t_exec_context *ctx);
 int			set_env(char ***env, const char *name, const char *value,
 				t_exec_context *ctx);
@@ -214,7 +202,8 @@ void		update_env(char ***env, char *current_dir, char *new_dir,
 
 //-----------------------execute external command-----------------------
 //execute_external_commands.c
-int			execute_external_commands(t_master *master, int token_count);
+int			execute_external_commands(t_token *tokens, int token_count,
+				t_command *cmd, t_exec_context *ctx);
 
 //prepare_args.c
 void		prep_args(t_token *tokens, int token_count, char **args,
@@ -226,19 +215,19 @@ char		*find_cmd_path(char *cmd, char **our_env);
 char		*get_path_env(char **our_env);
 
 //fork_and_execute_external_command.c + fork_helper.c
-int			fork_and_execute(t_master *master, char *cmd_path, char **args);
-
+int			fork_and_execute(t_command *cmd, char *cmd_path, char **args,
+				t_exec_context *ctx);
 //void		duplicate_fds(int fd_in, int fd_out);
 //void		restore_fds(int parent_in, int parent_out);
 //void		check_fds(t_command *cmd);
 
 //-------------------------------redirection-------------------------------
 //execute_redir.c + execute_redir_heredoc.c
-void		setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out);
+void		setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out, t_exec_context *ctx, t_command *cmd);
 void		execute_redir_input(t_token *current, int *fd_in);
 void		execute_redir_trunc(t_token *current, int *fd_out);
 void		execute_redir_append(t_token *current, int *fd_out);
-void		execute_redir_heredoc(t_token *current, int *fd_in);
+void		execute_redir_heredoc(t_token *current, int *fd_in, t_exec_context *ctx, t_command *cmd);
 
 //----------------------------------utils----------------------------------
 //signal.c
@@ -253,7 +242,7 @@ void		update_last_status(t_exec_context *ctx, int status);
 int			initialize_exit_status(t_exec_context *ctx);
 
 //syntax.c
-int			check_syntax(t_master *master);
+int			check_syntax(t_token *tokens, t_exec_context *ctx);
 
 //utils.c
 void		free_tokens(t_token *tokens);

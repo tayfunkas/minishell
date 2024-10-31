@@ -6,13 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:00:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/30 18:53:32 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/30 13:14:25 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_exit(char **args, t_master *master)
+int	ft_exit(char **args, t_exec_context *ctx, t_token *tokens, t_command *cmdlist)
 {
 	int	status;
 
@@ -20,7 +20,9 @@ int	ft_exit(char **args, t_master *master)
 	printf("exit\n");
 	if (args[1] == NULL)
 	{
-		free_master(master);
+		free_context(ctx);
+		free_tokens(tokens);
+		free_command_list(cmdlist);
 		exit(0);
 	}
 	if (!ft_isdigit_str(args[1]))
@@ -28,7 +30,9 @@ int	ft_exit(char **args, t_master *master)
 		write(2, "minishell: exit: ", 17);
 		write(2, args[1], ft_strlen(args[1]));
 		write(2, ": numeric argument required\n", 28);
-		free_master(master);
+		free_context(ctx);
+		free_tokens(tokens);
+		free_command_list(cmdlist);
 		exit(2);
 	}
 	if (args[2] != NULL)
@@ -37,6 +41,8 @@ int	ft_exit(char **args, t_master *master)
 		return (1);
 	}
 	status = ft_atoi(args[1]) % 256;
-	free_master(master);
+	free_tokens(tokens);
+	free_context(ctx);
+	free_command_list(cmdlist);
 	exit(status);
 }
