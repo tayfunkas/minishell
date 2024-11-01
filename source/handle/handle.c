@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:00:40 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 21:30:45 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/01 22:33:18 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ static int	handle_tokens_loop(t_token *tokens, t_exec_context *ctx)
 	t_token	*current;
 	t_token	*cmd_end;
 	int		status;
-	//pid_t	last_pid = -1;
 
 	status = 0;
 	current = tokens;
@@ -71,14 +70,14 @@ static int	handle_tokens_loop(t_token *tokens, t_exec_context *ctx)
 	free_pipe_fds(ctx->pipe_fds, ctx->pipe_count);
 	ctx->pipe_fds = NULL;
 	free_tokens(tokens);
-	if (status > 0)
+	/*if (status > 0)
 	{
 		waitpid(status, &status, 0);
 		//if (WIFEXITED(status))
 		//	status = WEXITSTATUS(status);
 		//else if (WIFSIGNALED(status))
 		//	status = 128 + WTERMSIG(status);
-	}
+	}*/
 	return (status);
 }
 

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:52:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 19:31:31 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/01 22:38:33 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,52 +65,53 @@ int	execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 		return (1);
 	parent_in = dup(STDIN_FILENO);
 	parent_out = dup(STDOUT_FILENO);
+	setup_cmd_fds(cmd, start, end, ctx);
+	if (cmd->fd_in != STDIN_FILENO)
+	{
+		dup2(cmd->fd_in, STDIN_FILENO);
+		close(cmd->fd_in);
+	}
+	if (cmd->fd_out != STDOUT_FILENO)
+	{
+		dup2(cmd->fd_out, STDOUT_FILENO);
+		close(cmd->fd_out);
+	}
 	if (ctx->pipe_count != 0)
 	{
 		pid = fork();
-		if (pid < 0)
+		if (pid == 0)
+		{
+			setup_child_pipes(ctx);
+			status = check_internal_c(cmd, &ctx->our_env, ctx, tokens);
+			return (status);
+		}
+		/*else if (pid > 0)
+		{
+			check_fds(cmd);
+			if (ctx->current_index > 0)
+				close(ctx->pipe_fds[ctx->current_index - 1][0]);
+			if (ctx->current_index < ctx->pipe_count)
+				close(ctx->pipe_fds[ctx->current_index][1]);
+			//waitpid(pid, &status, 0);
+			//restore_fds(parent_in, parent_out);
+			//setup_signal();
+			//if (WIFEXITED(status))
+			//	return (WEXITSTATUS(status));
+			//else if (WIFSIGNALED(status))
+			//	return (128 + WTERMSIG(status));
+		}*/
+		else
 		{
 			perror("fork failed");
 			free_command(cmd);
 			return (1);
 		}
-		else if (pid == 0)
-		{
-			setup_child_pipes(ctx);
-			setup_cmd_fds(cmd, start, end, ctx);
-			if (cmd->fd_in != STDIN_FILENO)
-			{
-				dup2(cmd->fd_in, STDIN_FILENO);
-				close(cmd->fd_in);
-			}
-			if (cmd->fd_out != STDOUT_FILENO)
-			{
-				dup2(cmd->fd_out, STDOUT_FILENO);
-				close(cmd->fd_out);
-			}
-			status = check_internal_c(cmd, &ctx->our_env, ctx, tokens);
-			free_command(cmd);
-			return (status);
-		}
-		else
-			waitpid(pid, &status, 0);
 	}
 	else
-	{
-		setup_cmd_fds(cmd, start, end, ctx);
-		if (cmd->fd_in != STDIN_FILENO)
-		{
-			dup2(cmd->fd_in, STDIN_FILENO);
-			close(cmd->fd_in);
-		}
-		if (cmd->fd_out != STDOUT_FILENO)
-		{
-			dup2(cmd->fd_out, STDOUT_FILENO);
-			close(cmd->fd_out);
-		}
 		status = check_internal_c(cmd, &ctx->our_env, ctx, tokens);
-	}
 	dup_and_close(parent_in, parent_out);
 	free_command(cmd);
+	//restore_fds(parent_in, parent_out);
+	//setup_signal();
 	return (status);
 }

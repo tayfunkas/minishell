@@ -6,13 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:06:11 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 21:49:30 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/01 22:40:56 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_external_cmd(char *cmd, char **our_env)
+/*static int	is_external_cmd(char *cmd, char **our_env)
 {
 	char	*path_env;
 	char	**paths;
@@ -29,7 +29,7 @@ static int	is_external_cmd(char *cmd, char **our_env)
 	result = check_cmd_in_paths(cmd, paths);
 	free_split(paths);
 	return (result);
-}
+}*/
 
 static int	is_internal_cmd(char *cmd)
 {

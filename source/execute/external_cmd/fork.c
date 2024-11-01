@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:30 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 21:25:44 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/01 22:42:12 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	handle_child_process(t_command *cmd, char *cmd_path, char **args,
 	if (exec_result == -1)
 	{
 		perror("execve");
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 	return (0);
 }
@@ -65,7 +65,7 @@ int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
 	if (pid == 0)
 	{
 		status = handle_child_process(cmd, cmd_path, args, ctx);
-		exit(1);
+		exit(status);
 	}
 	else if (pid > 0)
 	{
@@ -75,7 +75,7 @@ int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
 			close(ctx->pipe_fds[ctx->current_index - 1][0]);
 		if (ctx->current_index < ctx->pipe_count)
 			close(ctx->pipe_fds[ctx->current_index][1]);
-		//waitpid(pid, &status, 0);
+		waitpid(pid, &status, 0);
 		//restore_fds(parent_in, parent_out);
 		//setup_signal();
 		if (WIFEXITED(status))

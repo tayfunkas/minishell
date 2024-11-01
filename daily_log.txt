@@ -68,3 +68,12 @@ After getting rid of readline memory leak, we have:
 - still reachable from malloc() - copy_environment()
 - still reachable from malloc() - ft_strdup() - copy_environment()
 - conditional jump or move depends on uninitialized value from free() - free_external_command()
+
+Nov 1st
+- cat < daily_log.txt | grep Oct
+cat: grep: No such file or directory
+cat: Oct: No such file or directory
+- internal function with pipe still doesnt go back to minishell prompt
+- some signal handling needs to check
+- valgrind
+- '|' things with syntax error
