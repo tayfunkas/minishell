@@ -3,72 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   handle.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/30 14:56:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/29 19:46:21 by tkasapog         ###   ########.fr       */
+/*   Created: 2024/11/01 14:00:40 by kyukang           #+#    #+#             */
+/*   Updated: 2024/11/01 18:11:24 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	wait_for_children(pid_t *pids, int pipe_count)
-{
-	int	i;
-	int	last_status;
-	int	status;
-
-	i = 0;
-	last_status = 0;
-	while (i <= pipe_count)
-	{
-		if (pids[i] > 0)
-		{
-			waitpid(pids[i], &status, 0);
-			if (WIFEXITED(status))
-				last_status = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				last_status = 128 + WTERMSIG(status);
-		}
-		i++;
-	}
-	return (last_status);
-}
-
-static t_token	*find_cmd_end(t_token *current)
-{
-	t_token	*cmd_end;
-
-	cmd_end = current;
-	while (cmd_end && cmd_end->type != PIPE)
-		cmd_end = cmd_end->next;
-	return (cmd_end);
-}
-
-static int	handle_tokens_loop(t_token *tokens, t_exec_context *ctx,
-		pid_t *pids)
-{
-	t_token	*current;
-	t_token	*cmd_end;
-	int		status;
-
-	status = 0;
-	current = tokens;
-	while (ctx->current_index <= ctx->pipe_count)
-	{
-		cmd_end = find_cmd_end(current);
-		status = handle_command(current, cmd_end, ctx, pids);
-		if (cmd_end)
-			current = cmd_end->next;
-		else
-			current = NULL;
-		ctx->current_index++;
-	}
-	free_tokens(tokens);
-	return (status);
-}
-
-static int	reset_context_for_command(t_exec_context *ctx, t_token *tokens)
+static int	init_context(t_exec_context *ctx, t_token *tokens)
 {
 	int	pipe_count;
 
@@ -92,29 +36,47 @@ static int	reset_context_for_command(t_exec_context *ctx, t_token *tokens)
 	return (1);
 }
 
+static t_token	*find_cmd_end(t_token *current)
+{
+	t_token	*cmd_end;
+
+	cmd_end = current;
+	while (cmd_end && cmd_end->type != PIPE)
+		cmd_end = cmd_end->next;
+	return (cmd_end);
+}
+
+static int	handle_tokens_loop(t_token *tokens, t_exec_context *ctx)
+{
+	t_token	*current;
+	t_token	*cmd_end;
+	int		status;
+
+	status = 0;
+	current = tokens;
+	while (ctx->current_index <= ctx->pipe_count)
+	{
+		cmd_end = find_cmd_end(current);
+		status = handle_cmd(current, cmd_end, ctx);
+		if (cmd_end)
+			current = cmd_end->next;
+		else
+			current = NULL;
+		ctx->current_index++;
+	}
+	free_tokens(tokens);
+	return (status);
+}
+
 int	handle_tokens(t_token *tokens, t_exec_context *ctx)
 {
-	pid_t	*pids;
 	int		status;
-	int		child_status;
 
-	pids = NULL;
-	if (!reset_context_for_command(ctx, tokens))
+	if (!init_context(ctx, tokens))
 		return (-1);
-	pids = ft_calloc(ctx->pipe_count + 1, sizeof(pid_t));
-	if (!pids)
-	{
-		free_pipe_fds(ctx->pipe_fds, ctx->pipe_count);
-		ctx->pipe_fds = NULL;
-		return (-1);
-	}
-	status = handle_tokens_loop(tokens, ctx, pids);
+	status = handle_tokens_loop(tokens, ctx);
 	close_pipes(ctx->pipe_fds, ctx->pipe_count);
 	free_pipe_fds(ctx->pipe_fds, ctx->pipe_count);
 	ctx->pipe_fds = NULL;
-	child_status = wait_for_children(pids, ctx->pipe_count);
-	free(pids);
-	if (child_status != 0)
-		status = child_status;
 	return (status);
 }

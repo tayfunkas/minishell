@@ -4,35 +4,9 @@
    match-leak-kinds: reachable
    fun:malloc
    ...
-   fun:add_history
+   fun:readline
    fun:minishell
    fun:main
-}
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:realloc
-   ...
-   fun:readline
-}
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:calloc
-   ...
-   fun:readline
-   fun:minishell
-}
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   ...
-   fun:readline
-   fun:minishell
 }
 {
    <insert_a_suppression_name_here>
@@ -62,6 +36,171 @@
    fun:malloc
    ...
    fun:readline
+   fun:minishell
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   ...
+   fun:readline
+   fun:minishell
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   ...
+   fun:readline
+   fun:minishell
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   ...
+   fun:readline
+   fun:heredoc_input
+   fun:execute_redir_heredoc
+   fun:setup_redir
+   fun:setup_command_fds
+   fun:execute_command
+   fun:handle_child_process
+   fun:handle_command
+   fun:handle_tokens_loop
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   ...
+   fun:readline
+   fun:heredoc_input
+   fun:execute_redir_heredoc
+   fun:setup_redir
+   fun:setup_command_fds
+   fun:execute_command
+   fun:handle_child_process
+   fun:handle_command
+   fun:handle_tokens_loop
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   ...
+   fun:readline
+   fun:heredoc_input
+   fun:execute_redir_heredoc
+   fun:setup_redir
+   fun:setup_command_fds
+   fun:execute_command
+   fun:handle_child_process
+   fun:handle_command
+   fun:handle_tokens_loop
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   ...
+   fun:readline
+   fun:heredoc_input
+   fun:execute_redir_heredoc
+   fun:setup_redir
+   fun:setup_command_fds
+   fun:execute_command
+   fun:handle_child_process
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   ...
+   fun:readline
+   fun:heredoc_input
+   fun:execute_redir_heredoc
+   fun:setup_redir
+   fun:setup_command_fds
+   fun:execute_command
+   fun:handle_child_process
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   ...
+   fun:readline
+   fun:heredoc_input
+   fun:execute_redir_heredoc
+   fun:setup_redir
+   fun:setup_command_fds
+   fun:execute_command
+   fun:handle_child_process
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   ...
+   fun:readline
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   ...
+   fun:readline
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   ...
+   fun:readline
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   ...
+   fun:add_history
+   fun:minishell
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   ...
+   fun:add_history
+   fun:minishell
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   ...
+   fun:add_history
    fun:minishell
    fun:main
 }

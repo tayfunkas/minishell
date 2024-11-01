@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/25 17:37:11 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/29 18:33:15 by tkasapog         ###   ########.fr       */
+/*   Created: 2024/11/01 13:24:29 by kyukang           #+#    #+#             */
+/*   Updated: 2024/11/01 14:43:04 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,61 +19,30 @@ void	write_error(const char *message_prefix, const char *command)
 	write(STDERR_FILENO, "\n", 1);
 }
 
-void	free_tokens(t_token *tokens)
-{
-	t_token	*current;
-	t_token	*next;
-
-	if (!tokens)
-		return ;
-	current = tokens;
-	while (current)
-	{
-		next = current->next;
-		free(current->str);
-		free(current);
-		current = next;
-	}
-}
-
-void	free_command(t_command *cmd)
-{
-	int	i;
-
-	i = 0;
-	while (i < cmd->argc)
-	{
-		free(cmd->argv[i]);
-		i++;
-	}
-	free(cmd->argv);
-	free(cmd);
-}
-
-void	free_split(char **paths)
-{
-	int	i;
-
-	i = 0;
-	while (paths[i])
-	{
-		free(paths[i]);
-		i++;
-	}
-	free(paths);
-}
-
-int	count_tokens(t_token *tokens)
+char	**copy_environment(char **envp)
 {
 	int		count;
-	t_token	*current;
+	char	**new_env;
+	int		i;
 
 	count = 0;
-	current = tokens;
-	while (current)
-	{
+	i = 0;
+	while (envp[count] != NULL)
 		count++;
-		current = current->next;
+	new_env = malloc(sizeof(char *) * (count + 1));
+	if (!new_env)
+		return (NULL);
+	while (i < count)
+	{
+		new_env[i] = ft_strdup(envp[i]);
+		if (!new_env[i++])
+		{
+			while (i-- >= 0)
+				free(new_env[i]);
+			free(new_env);
+			return (NULL);
+		}
 	}
-	return (count);
+	new_env[count] = NULL;
+	return (new_env);
 }

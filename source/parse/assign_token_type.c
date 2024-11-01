@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.c                                          :+:      :+:    :+:   */
+/*   assign_token_type.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/25 17:34:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/17 15:22:42 by kyukang          ###   ########.fr       */
+/*   Created: 2024/11/01 13:39:00 by kyukang           #+#    #+#             */
+/*   Updated: 2024/11/01 13:39:15 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	type_tokens(t_token *token)
+static void	type_tokens(t_token *token)
 {
 	if (ft_strcmp(token->str, "") == 0)
 		token->type = EMPTY;
@@ -45,13 +45,3 @@ void	assign_token_types(t_token *tokens)
 		current = current->next;
 	}
 }
-
-/*char	*handle_quoted_string(char *start, char quote)
-{
-	char	*end;
-
-	end = ft_strchr(start, quote);
-	if (!end)
-		end = start + ft_strlen(start);
-	return (end);
-}*/
