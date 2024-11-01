@@ -100,6 +100,7 @@ typedef struct s_parser
 	int		len;
 }	t_parser;
 
+void	free_external_c(char *cmd_path, char **args, int token_count);
 //--------------------------------parse--------------------------------
 //init_tokens.c
 t_token		*tokenize_inputs(char *input, int max_args);

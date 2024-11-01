@@ -6,13 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:15:21 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 19:07:48 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/01 21:25:04 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	free_external_c(char *cmd_path, char **args, int token_count)
+void	free_external_c(char *cmd_path, char **args, int token_count)
 {
 	int	i;
 
@@ -55,21 +55,18 @@ int	execute_external_cmd(t_exec_context *ctx, t_token *start, t_token *end)
 	int			check_result;
 	char		**args;
 	char		*cmd_path;
+	//pid_t		pid;
 
 	setup_cmd_fds(&cmd, start, end, ctx);
-	//if (cmd.fd_in != STDIN_FILENO)
-	//	close(cmd.fd_in);
-	//if (cmd.fd_out != STDOUT_FILENO)
-	//	close(cmd.fd_out);
 	token_count = count_tokens_until(start, end);
 	check_result = check_cmd_path(&cmd_path, start, ctx);
 	if (check_result != 0)
-		return (check_result);
+		return (-1);
 	args = allocate_args(token_count);
 	if (args == NULL)
 	{
 		free(cmd_path);
-		return (1);
+		return (-1);
 	}
 	prep_args(start, token_count, args, ctx);
 	status = fork_and_execute(&cmd, cmd_path, args, ctx);

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:27:58 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 18:15:11 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/01 19:16:49 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	child_sigquit_handler(int sig)
 {
 	g_signal = sig;
 	write(STDERR_FILENO, "Quit (core dumped)\n", 19);
-	exit(131);
+	//exit(131);
 }
 
 void	setup_signal(void)

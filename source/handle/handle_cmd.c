@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:06:11 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 18:10:49 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/01 21:49:30 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int	handle_cmd(t_token *current, t_token *cmd_end, t_exec_context *ctx)
 	int	status;
 	int	fd_in;
 
+	status = 0;
 	if (current == NULL || current->str == NULL)
 	{
 		if (ctx->syntax_error)
@@ -71,14 +72,13 @@ int	handle_cmd(t_token *current, t_token *cmd_end, t_exec_context *ctx)
 	}
 	if (is_internal_cmd(current->str))
 		status = execute_internal_cmd(ctx, current, cmd_end, current);
-	else if (is_external_cmd(current->str, ctx->our_env))
-		status = execute_external_cmd(ctx, current, cmd_end);
 	else if (is_redir(current->str))
 	{
 		fd_in = STDIN_FILENO;
 		status = handle_initial_redir(&current, &fd_in);
 	}
+	//else if (is_external_cmd(current->str, ctx->our_env))
 	else
-		status = 0;
+		status = execute_external_cmd(ctx, current, cmd_end);
 	return (status);
 }

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:52:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 18:14:44 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/01 19:31:31 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ int	execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 	cmd = init_internal_cmd(start);
 	if (!cmd)
 		return (1);
+	parent_in = dup(STDIN_FILENO);
+	parent_out = dup(STDOUT_FILENO);
 	if (ctx->pipe_count != 0)
 	{
 		pid = fork();
@@ -76,8 +78,6 @@ int	execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 		{
 			setup_child_pipes(ctx);
 			setup_cmd_fds(cmd, start, end, ctx);
-			parent_in = dup(STDIN_FILENO);
-			parent_out = dup(STDOUT_FILENO);
 			if (cmd->fd_in != STDIN_FILENO)
 			{
 				dup2(cmd->fd_in, STDIN_FILENO);
@@ -90,22 +90,27 @@ int	execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 			}
 			status = check_internal_c(cmd, &ctx->our_env, ctx, tokens);
 			free_command(cmd);
-			return(status);
+			return (status);
 		}
 		else
-		{
-			check_fds(cmd);
 			waitpid(pid, &status, 0);
-			restore_fds(parent_in, parent_out);
-		}
 	}
 	else
+	{
+		setup_cmd_fds(cmd, start, end, ctx);
+		if (cmd->fd_in != STDIN_FILENO)
+		{
+			dup2(cmd->fd_in, STDIN_FILENO);
+			close(cmd->fd_in);
+		}
+		if (cmd->fd_out != STDOUT_FILENO)
+		{
+			dup2(cmd->fd_out, STDOUT_FILENO);
+			close(cmd->fd_out);
+		}
 		status = check_internal_c(cmd, &ctx->our_env, ctx, tokens);
+	}
 	dup_and_close(parent_in, parent_out);
 	free_command(cmd);
-	if (cmd->fd_in != STDIN_FILENO)
-		close(cmd->fd_in);
-	if (cmd->fd_out != STDOUT_FILENO)
-		close(cmd->fd_out);
 	return (status);
 }
