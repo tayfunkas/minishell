@@ -98,6 +98,7 @@ typedef struct s_parser
 	char	outer_quote;
 	char	inner_quote;
 	int		len;
+	char	unclosed_quote;
 }	t_parser;
 
 void		free_external_c(char *cmd_path, char **args, int token_count);

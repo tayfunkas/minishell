@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:30 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 20:00:01 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 20:44:12 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ static int	handle_child_process(t_command *cmd, char *cmd_path, char **args,
 	}
 	if (exec_result == -1)
 	{
-		perror("execve");
-		exit(1);
+		//perror("execve");
+		exit(0);
 	}
 	return (0);
 }

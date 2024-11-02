@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_redir.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 18:01:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 19:16:40 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 20:17:16 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void	execute_redir_input(t_token *current, int *fd_in)
 	if (*fd_in == -1)
 	{
 		perror("open");
-		//exit(EXIT_FAILURE);
+		exit(1);
 	}
 }
 
@@ -129,7 +129,7 @@ void	execute_redir_trunc(t_token *current, int *fd_out)
 	if (*fd_out == -1)
 	{
 		perror("open");
-		//exit(EXIT_FAILURE);
+		exit(1);
 	}
 }
 
@@ -141,7 +141,7 @@ void	execute_redir_append(t_token *current, int *fd_out)
 	if (*fd_out == -1)
 	{
 		perror("open");
-		//exit(EXIT_FAILURE);
+		exit(1);
 	}
 }
 

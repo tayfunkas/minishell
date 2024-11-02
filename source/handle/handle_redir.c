@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redir.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 18:06:21 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 17:36:12 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 21:39:06 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	handle_initial_redir(t_token **current, int *fd_in)
 			}
 		}
 		*current = (*current)->next->next;
-		//return (handle_initial_redir(current, fd_in));
+		return (handle_initial_redir(current, fd_in));
 	}
 	return (0);
 }

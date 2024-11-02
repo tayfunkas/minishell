@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:32:37 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 19:49:26 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 21:49:54 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static void	init_parsers(t_parser *parser)
 	parser->len = 0;
 }
 
-t_token	*process_token(t_parser *parser, int *i, t_token *current)
+/*t_token	*process_token(t_parser *parser, int *i, t_token *current)
 {
 	t_token	*new_token;
 	int		entirely_in_single_quotes;
@@ -100,6 +100,63 @@ t_token	*process_token(t_parser *parser, int *i, t_token *current)
 	parser->len = parser->end - parser->start;
 	new_token = add_token_to_list(parser->start, parser->len,
 			parser->outer_quote, current);
+	if (!new_token)
+		return (NULL);
+	new_token->in_single_quotes = entirely_in_single_quotes;
+	parser->start = parser->end;
+	(*i)++;
+	return (new_token);
+}*/
+
+t_token	*process_token(t_parser *parser, int *i, t_token *current)
+{
+	t_token	*new_token;
+	int	entirely_in_single_quotes;
+	char	initial_quote;
+
+	entirely_in_single_quotes = 0;
+	init_parsers(parser);
+	initial_quote = *parser->end;
+	if ((*parser->end == '"' || *parser->end == '\'') &&
+	(*(parser->end + 1) == '|' || *(parser->end + 1) == '<' || *(parser->end + 1) == '>'))
+	{
+		parser->len = 2;
+		if ((*(parser->end + 1) == '<' && *(parser->end + 2) == '<') ||
+		(*(parser->end + 1) == '>' && *(parser->end + 2) == '>'))
+		{
+			parser->len = 3;
+		}
+		if (*(parser->end + parser->len) == initial_quote)
+		{
+			parser->len++;
+			new_token = add_token_to_list(parser->start, parser->len, initial_quote, current);
+			if (!new_token)
+				return (NULL);
+			parser->start = parser->end + parser->len;
+			parser->end = parser->start;
+			(*i)++;
+			return (new_token);
+		}
+	}
+	else if (*parser->end == '|' || *parser->end == '<' || *parser->end == '>')
+		return (handle_special_characters(parser, i, current));
+	entirely_in_single_quotes = (*parser->end == '\'');
+	while (*parser->end)
+	{
+		process_quotes(parser);
+		if (!parser->outer_quote && (ft_isspace(*parser->end)
+			|| *parser->end == '|' || *parser->end == '<'
+			|| *parser->end == '>'))
+			break ;
+	}
+	parser->len = parser->end - parser->start;
+	if (parser->outer_quote)
+    {
+        parser->unclosed_quote = parser->outer_quote;
+		return (NULL);
+	}
+	new_token = add_token_to_list(parser->start, parser->len,
+		parser->outer_quote, current);
 	if (!new_token)
 		return (NULL);
 	new_token->in_single_quotes = entirely_in_single_quotes;
@@ -127,6 +184,11 @@ t_token	*tokenize_inputs(char *input, int max_args)
 		current = process_token(&parser, &i, current);
 		if (!current)
 		{
+			if (parser.unclosed_quote)
+			{
+				write(2, "Unclosed quotes aren't handled\n", 31);
+				return (NULL);
+			}
 			free_tokens(head);
 			return (NULL);
 		}
