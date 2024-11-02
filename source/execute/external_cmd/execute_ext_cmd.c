@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:15:21 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 18:54:12 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 19:44:29 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	execute_external_cmd(t_exec_context *ctx, t_token *start, t_token *end)
 	char		**args;
 	char		*cmd_path;
 
-	setup_cmd_fds(&cmd, start, end, ctx);
+	//setup_cmd_fds(&cmd, start, end, ctx);
 	token_count = count_tokens_until(start, end);
 	status = check_cmd_path(&cmd_path, start, ctx);
 	if (status != 0)

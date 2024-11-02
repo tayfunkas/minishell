@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:30 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 18:52:10 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 20:00:01 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	handle_child_process(t_command *cmd, char *cmd_path, char **args,
 
 	signal(SIGINT, child_sigint_handler);
 	signal(SIGQUIT, child_sigquit_handler);
-	setup_child_pipes(ctx);
+	//setup_child_pipes(ctx);
 	if (cmd->fd_in != STDIN_FILENO)
 	{
 		dup2(cmd->fd_in, STDIN_FILENO);
@@ -65,6 +65,7 @@ int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
 	if (pid == 0)
 	{
 		setup_cmd_fds(cmd, start, end, ctx);
+		//printf("Child process - fd_in: %d, fd_out: %d\n", cmd->fd_in, cmd->fd_out);
 		status = handle_child_process(cmd, cmd_path, args, ctx);
 		exit(status);
 	}

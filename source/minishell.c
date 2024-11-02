@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:23:05 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 17:42:20 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 19:55:29 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,12 @@ static void	run_minishell(char *input, t_exec_context *ctx)
 	}
 	status = 0;
 	tokens = tokenize_inputs(input, 20);
+	/*t_token *test = tokens;
+	while (test)
+	{
+		printf("token: %s\n", test->str);
+		test = test->next;
+	}*/
 	if (tokens)
 	{
 		expand_tokens(tokens, ctx);

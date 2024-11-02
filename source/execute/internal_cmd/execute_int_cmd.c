@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:52:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 18:49:58 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 19:58:29 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,21 @@ static int	check_internal_c(t_command *cmd, char ***env, t_exec_context *ctx,
 		return (127);
 }
 
-static void	dup_and_close(int original_stdin, int original_stdout)
+/* static void	dup_and_close(int original_stdin, int original_stdout)
 {
 	dup2(original_stdin, STDIN_FILENO);
 	dup2(original_stdout, STDOUT_FILENO);
 	close(original_stdin);
 	close(original_stdout);
-}
+} */
 
-/*static void	setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx)
+/* static void	setup_cmd_fds_int(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx)
 {
 	(void)ctx;
 	cmd->fd_in = STDIN_FILENO;
 	cmd->fd_out = STDOUT_FILENO;
 	setup_redir(start, end, &cmd->fd_in, &cmd->fd_out);
-}*/
+} */
 
 int execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_token *tokens)
 {
@@ -57,7 +57,6 @@ int execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 	cmd = init_internal_cmd(start);
 	if (!cmd)
 		return (1);
-	setup_cmd_fds(cmd, start, end, ctx);
 	if (ctx->pipe_count != 0)
 	{
 		pid = fork();
@@ -70,7 +69,8 @@ int execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 		else if (pid == 0)
 		{
 			// Child process
-			setup_child_pipes(ctx);
+			setup_cmd_fds(cmd, start, end, ctx);
+			//setup_child_pipes(ctx);
 			if (cmd->fd_in != STDIN_FILENO)
 			{
 				dup2(cmd->fd_in, STDIN_FILENO);
@@ -99,20 +99,20 @@ int execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 	else
 	{
 		// No pipes, execute directly
-		int parent_in = dup(STDIN_FILENO);
-		int parent_out = dup(STDOUT_FILENO);
-		if (cmd->fd_in != STDIN_FILENO)
-		{
-			dup2(cmd->fd_in, STDIN_FILENO);
-			close(cmd->fd_in);
-		}
-		if (cmd->fd_out != STDOUT_FILENO)
-		{
-			dup2(cmd->fd_out, STDOUT_FILENO);
-			close(cmd->fd_out);
-		}
+		//int parent_in = dup(STDIN_FILENO);
+		//int parent_out = dup(STDOUT_FILENO);
+		//if (cmd->fd_in != STDIN_FILENO)
+		//{
+		//	dup2(cmd->fd_in, STDIN_FILENO);
+		//	close(cmd->fd_in);
+		//}
+		//if (cmd->fd_out != STDOUT_FILENO)
+		//{
+		//	dup2(cmd->fd_out, STDOUT_FILENO);
+	//		close(cmd->fd_out);
+		//}
 		status = check_internal_c(cmd, &ctx->our_env, ctx, tokens);
-		dup_and_close(parent_in, parent_out);
+	//	dup_and_close(parent_in, parent_out);
 	}
 	free_command(cmd);
 	return (status);
