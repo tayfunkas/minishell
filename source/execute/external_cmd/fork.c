@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:30 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 22:42:12 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 18:52:10 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void	child_signal_for_wait(void)
 }
 
 int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
-	t_exec_context *ctx)
+	t_exec_context *ctx, t_token *start, t_token *end)
 {
 	pid_t	pid;
 	int		parent_in;
@@ -64,6 +64,7 @@ int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
 	pid = fork();
 	if (pid == 0)
 	{
+		setup_cmd_fds(cmd, start, end, ctx);
 		status = handle_child_process(cmd, cmd_path, args, ctx);
 		exit(status);
 	}

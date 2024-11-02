@@ -100,7 +100,7 @@ typedef struct s_parser
 	int		len;
 }	t_parser;
 
-void	free_external_c(char *cmd_path, char **args, int token_count);
+void		free_external_c(char *cmd_path, char **args, int token_count);
 //--------------------------------parse--------------------------------
 //init_tokens.c
 t_token		*tokenize_inputs(char *input, int max_args);
@@ -134,6 +134,7 @@ int			create_pipes(int **pipe_fds, int pipe_count);
 void		close_pipes(int **pipe_fds, int pipe_count);
 void		free_pipe_fds(int **pipe_fds, int pipe_count);
 void		setup_child_pipes(t_exec_context *ctx);
+void		setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx);
 
 //-------------------------------execute_ext--------------------------------
 //execute_ext
@@ -150,7 +151,7 @@ void		prep_args(t_token *tokens, int token_count, char **args, t_exec_context *c
 char		**allocate_args(int token_count);
 
 //fork + utils
-int			fork_and_execute(t_command *cmd, char *cmd_path, char **args, t_exec_context *ctx);
+int			fork_and_execute(t_command *cmd, char *cmd_path, char **args, t_exec_context *ctx, t_token *start, t_token *end);
 void		duplicate_fds(int fd_in, int fd_out);
 void		restore_fds(int parent_in, int parent_out);
 void		check_fds(t_command *cmd);

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 18:01:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 18:45:17 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 17:58:35 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	errmsg_if_no_line(char *line, char *delimiter)
 	}
 }
 
-static void heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count)
+static void heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count, t_token *current)
 {
 	char	*line;
 	int		current_delimiter = 0;
@@ -32,9 +32,6 @@ static void heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count)
 	{
 		while (1)
 		{
-			printf("you are in heredoc_input while loop\n");
-			printf("delimiter count: %d\n", delimiter_count);
-			printf("current delimiter: %d\n", current_delimiter);
 			line = readline("> ");
 			if (!line || ft_strcmp(line, delimiters[current_delimiter]) == 0)
 			{
@@ -47,6 +44,7 @@ static void heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count)
 			{
 				perror("write to pipe");
 				free(line);
+				free_tokens(current);
 				exit(EXIT_FAILURE);
 			}
 			free(line);
@@ -54,6 +52,7 @@ static void heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count)
 		current_delimiter++;
 	}
 	close(pipe_fd[1]);
+	free_tokens(current);
 	exit(EXIT_SUCCESS);
 }
 
@@ -79,8 +78,6 @@ static void	recursive_heredoc(t_token *current, int *fd_in, char **delimiters, i
 	if (current == NULL || current->type != HEREDOC)
 		return ;
 	delimiters[*delimiter_count] = current->next->str;
-	printf("delimiter_count: %d\n", (*delimiter_count));
-	printf("delimiters: %s\n", delimiters[*delimiter_count]);
 	(*delimiter_count)++;
 	recursive_heredoc(current->next->next, fd_in, delimiters, delimiter_count);
 }
@@ -107,7 +104,7 @@ void	execute_redir_heredoc(t_token *current, int *fd_in)
 		exit(EXIT_FAILURE);
 	}
 	if (pid == 0)
-		heredoc_input(pipe_fd, delimiters, delimiter_count);
+		heredoc_input(pipe_fd, delimiters, delimiter_count, current);
 	else
 		heredoc_wait(pipe_fd, fd_in, pid);
 }

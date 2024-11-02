@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:15:21 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 22:22:49 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 18:54:12 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int	count_tokens_until(t_token *start, t_token *end)
 	return (count);
 }
 
-static void	setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx)
+/*static void	setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx)
 {
 	cmd->fd_in = STDIN_FILENO;
 	cmd->fd_out = STDOUT_FILENO;
@@ -45,7 +45,7 @@ static void	setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_c
 	(void)end;
 	(void)ctx;
 	setup_redir(start, end, &cmd->fd_in, &cmd->fd_out);
-}
+}*/
 
 int	execute_external_cmd(t_exec_context *ctx, t_token *start, t_token *end)
 {
@@ -67,7 +67,7 @@ int	execute_external_cmd(t_exec_context *ctx, t_token *start, t_token *end)
 		return (-1);
 	}
 	prep_args(start, token_count, args, ctx);
-	status = fork_and_execute(&cmd, cmd_path, args, ctx);
+	status = fork_and_execute(&cmd, cmd_path, args, ctx, start, end);
 	free_external_c(cmd_path, args, token_count);
 	return (status);
 }

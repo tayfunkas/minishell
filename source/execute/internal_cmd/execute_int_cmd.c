@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:52:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 22:38:33 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/02 18:49:58 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,84 @@ static void	dup_and_close(int original_stdin, int original_stdout)
 	close(original_stdout);
 }
 
-static void	setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx)
+/*static void	setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx)
 {
+	(void)ctx;
 	cmd->fd_in = STDIN_FILENO;
 	cmd->fd_out = STDOUT_FILENO;
-	(void)start;
-	(void)end;
-	(void)ctx;
 	setup_redir(start, end, &cmd->fd_in, &cmd->fd_out);
+}*/
+
+int execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_token *tokens)
+{
+	t_command *cmd;
+	int status = 0;
+	pid_t pid;
+	cmd = init_internal_cmd(start);
+	if (!cmd)
+		return (1);
+	setup_cmd_fds(cmd, start, end, ctx);
+	if (ctx->pipe_count != 0)
+	{
+		pid = fork();
+		if (pid < 0)
+		{
+			perror("fork failed");
+			free_command(cmd);
+			return (1);
+		}
+		else if (pid == 0)
+		{
+			// Child process
+			setup_child_pipes(ctx);
+			if (cmd->fd_in != STDIN_FILENO)
+			{
+				dup2(cmd->fd_in, STDIN_FILENO);
+				close(cmd->fd_in);
+			}
+			if (cmd->fd_out != STDOUT_FILENO)
+			{
+				dup2(cmd->fd_out, STDOUT_FILENO);
+				close(cmd->fd_out);
+			}
+			status = check_internal_c(cmd, &ctx->our_env, ctx, tokens);
+			exit(status);
+		}
+		else
+		{
+			// Parent process
+			if (ctx->current_index > 0)
+				close(ctx->pipe_fds[ctx->current_index - 1][0]);
+			if (ctx->current_index < ctx->pipe_count)
+				close(ctx->pipe_fds[ctx->current_index][1]);
+			waitpid(pid, &status, 0);
+			if (WIFEXITED(status))
+				status = WEXITSTATUS(status);
+		}
+	}
+	else
+	{
+		// No pipes, execute directly
+		int parent_in = dup(STDIN_FILENO);
+		int parent_out = dup(STDOUT_FILENO);
+		if (cmd->fd_in != STDIN_FILENO)
+		{
+			dup2(cmd->fd_in, STDIN_FILENO);
+			close(cmd->fd_in);
+		}
+		if (cmd->fd_out != STDOUT_FILENO)
+		{
+			dup2(cmd->fd_out, STDOUT_FILENO);
+			close(cmd->fd_out);
+		}
+		status = check_internal_c(cmd, &ctx->our_env, ctx, tokens);
+		dup_and_close(parent_in, parent_out);
+	}
+	free_command(cmd);
+	return (status);
 }
 
-int	execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_token *tokens)
+/*int	execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_token *tokens)
 {
 	t_command	*cmd;
 	int			status = 0;
@@ -85,7 +152,7 @@ int	execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 			status = check_internal_c(cmd, &ctx->our_env, ctx, tokens);
 			return (status);
 		}
-		/*else if (pid > 0)
+		else if (pid > 0)
 		{
 			check_fds(cmd);
 			if (ctx->current_index > 0)
@@ -99,7 +166,7 @@ int	execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 			//	return (WEXITSTATUS(status));
 			//else if (WIFSIGNALED(status))
 			//	return (128 + WTERMSIG(status));
-		}*/
+		}
 		else
 		{
 			perror("fork failed");
@@ -114,4 +181,4 @@ int	execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 	//restore_fds(parent_in, parent_out);
 	//setup_signal();
 	return (status);
-}
+}*/
