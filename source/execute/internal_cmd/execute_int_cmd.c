@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:52:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 21:18:53 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 21:38:23 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 			{
 				free_command(cmd);
 				restore_fds(fd_in, fd_out);
-				return (1);
+				exit(1);
 			}
 			if (cmd->fd_in != STDIN_FILENO)
 			{
