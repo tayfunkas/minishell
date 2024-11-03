@@ -1,4 +1,29 @@
-hi
-hihi
-bye
-byebye
+total 176
+-rw-r--r-- 1 tkasapog 2024_berlin     13 Nov  3 18:06 a.txt
+-rw-r--r-- 1 tkasapog 2024_berlin   3286 Nov  3 18:06 daily_log.txt
+-rw-r--r-- 1 tkasapog 2024_berlin      0 Nov  3 18:07 hi.txt
+drwxr-xr-x 2 tkasapog 2024_berlin     25 Nov  3 18:06 include
+-rw-r--r-- 1 tkasapog 2024_berlin   1092 Nov  3 18:06 Makefile
+-rwxr-xr-x 1 tkasapog 2024_berlin 107376 Nov  3 18:06 minishell
+drwxr-xr-x 2 tkasapog 2024_berlin      6 Nov  3 18:06 minishell_tester
+-rw-r--r-- 1 tkasapog 2024_berlin    111 Nov  3 18:06 new.txt
+-rw-r--r-- 1 tkasapog 2024_berlin   2681 Nov  3 18:06 parse_valgrind_suppressions.sh
+-rw-r--r-- 1 tkasapog 2024_berlin   3508 Nov  3 18:06 readline.supp
+-rw-r--r-- 1 tkasapog 2024_berlin     11 Nov  3 18:06 README.md
+drwxr-xr-x 6 tkasapog 2024_berlin     99 Nov  3 18:06 source
+-rw-r--r-- 1 tkasapog 2024_berlin  17892 Nov  3 18:06 testresult_134.txt
+-rw-r--r-- 1 tkasapog 2024_berlin  16750 Nov  3 18:06 testresult.txt
+a.txt
+daily_log.txt
+hi.txt
+include
+Makefile
+minishell
+minishell_tester
+new.txt
+parse_valgrind_suppressions.sh
+readline.supp
+README.md
+source
+testresult_134.txt
+testresult.txt

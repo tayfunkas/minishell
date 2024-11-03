@@ -71,8 +71,6 @@ After getting rid of readline memory leak, we have:
 
 Nov 1st
 - cat < daily_log.txt | grep Oct
-cat: grep: No such file or directory
-cat: Oct: No such file or directory
 - internal function with pipe still doesnt go back to minishell prompt
 - some signal handling needs to check
 - valgrind

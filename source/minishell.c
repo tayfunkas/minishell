@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:23:05 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 19:55:29 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 18:25:35 by tkasapog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,15 @@ static void	run_minishell(char *input, t_exec_context *ctx)
 	{
 		expand_tokens(tokens, ctx);
 		assign_token_types(tokens);
-		if (check_syntax(tokens, ctx))
-		{
+		//if (check_syntax(tokens, ctx))
+		//{
 			signal(SIGINT, SIG_IGN);
 			status = handle_tokens(tokens, ctx);
 			setup_signal();
 			update_last_status(ctx, status);
-		}
-		else
-			update_last_status(ctx, 2);
+		//}
+		//else
+		//	update_last_status(ctx, 2);
 	}
 }
 

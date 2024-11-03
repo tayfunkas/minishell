@@ -23,6 +23,7 @@ extern int	g_signal;
 
 typedef enum e_token_type
 {
+	FILENAME,
 	EMPTY,
 	TRUNC,
 	APPEND,
