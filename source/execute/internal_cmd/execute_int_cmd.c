@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:52:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 17:11:25 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 18:57:01 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 static int	check_internal_c(t_command *cmd, char ***env, t_exec_context *ctx,
 	t_token *tokens)
 {
+	t_token	*current = tokens;
+
 	if (ft_strcmp(cmd->argv[0], "cd") == 0)
 		return (ft_cd(cmd, cmd->argv[1], env, ctx));
 	else if (ft_strcmp(cmd->argv[0], "export") == 0)
@@ -26,7 +28,7 @@ static int	check_internal_c(t_command *cmd, char ***env, t_exec_context *ctx,
 	else if (ft_strcmp(cmd->argv[0], "exit") == 0)
 		return (ft_exit(cmd->argv, ctx, tokens, cmd));
 	else if (ft_strcmp(cmd->argv[0], "echo") == 0)
-		return (ft_echo(cmd->argv));
+		return (ft_echo(cmd->argv, current));
 	else if (ft_strcmp(cmd->argv[0], "pwd") == 0)
 		return (ft_pwd());
 	else

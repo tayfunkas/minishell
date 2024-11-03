@@ -164,7 +164,8 @@ t_command	*init_internal_cmd(t_token *current);
 int			execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_token *tokens);
 
 int			ft_cd(t_command *cmd, char *path, char ***env, t_exec_context *ctx);
-int			ft_echo(char **args);
+//int			ft_echo(char **args);
+int			ft_echo(char **args, t_token *tokens);
 int			ft_env(char **env, t_command *cmd);
 int			ft_exit(char **args, t_exec_context *ctx, t_token *tokens, t_command *cmdlist);
 int			ft_export(t_command *cmd, char ***env, t_exec_context *ctx);

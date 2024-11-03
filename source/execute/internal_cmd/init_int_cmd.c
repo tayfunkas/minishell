@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:54:29 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 15:23:29 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 19:05:22 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,23 @@ static int	count_command_args(t_token *current)
 	int	count;
 
 	count = 0;
-	while (current && (current->type == CMD || current->type == ARG))
+	while (current && current->type != PIPE)
 	{
-		count++;
+		if (current->type == INPUT || current->type == TRUNC || current->type == APPEND)
+		{
+			if (current->next->next && current->next->next->type != PIPE)
+				current = current->next->next;
+			else
+				break ;
+		}
+		if (current->type == CMD || current->type == ARG)
+		{
+			//printf("counted arg: %s with type %d\n", current->str, current->type);
+			count++;
+		}
 		current = current->next;
 	}
+	//printf("total count: %d\n", count);
 	return (count);
 }
 
@@ -48,15 +60,26 @@ static int	allocate_command_argv(t_command *cmd, t_token *current)
 	int		index;
 
 	index = 0;
-	while (current && (current->type == CMD || current->type == ARG))
+	while (current && index < cmd->argc && current->type != PIPE)
 	{
-		cmd->argv[index] = ft_strdup(current->str);
-		if (!cmd->argv[index])
+		if (current->type == INPUT || current->type == TRUNC || current->type == APPEND)
 		{
-			perror("malloc failed.\n");
-			return (0);
+			if (current->next->next)
+				current = current->next->next;
+			else
+				break ;
 		}
-		index++;
+		if (current->type == CMD || current->type == ARG)
+		{
+			cmd->argv[index] = ft_strdup(current->str);
+			//printf("allocated arg: %s\n", cmd->argv[index]);
+			if (!cmd->argv[index])
+			{
+				perror("malloc failed.\n");
+				return (0);
+			}
+			index++;
+		}
 		current = current->next;
 	}
 	cmd->argv[index] = NULL;

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:09:54 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/29 21:08:38 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 19:03:06 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,21 @@ static int	check_n_option(char *arg)
 	return (arg[j] == '\0');
 }
 
-static void	print_args(char **args, int start_index)
+static void	print_args(char **args, int start_index, t_token *tokens)
 {
 	while (args[start_index] != NULL)
 	{
-		write(STDOUT_FILENO, args[start_index], ft_strlen(args[start_index]));
-		if (args[start_index + 1] != NULL)
-			write(STDOUT_FILENO, " ", 1);
-		start_index++;
+		//if (tokens->type == ARG)
+		{	write(STDOUT_FILENO, args[start_index], ft_strlen(args[start_index]));
+			if (args[start_index + 1] != NULL)
+				write(STDOUT_FILENO, " ", 1);
+			start_index++;
+		}
+		tokens = tokens->next;
 	}
 }
 
-int	ft_echo(char **args)
+int	ft_echo(char **args, t_token *tokens)
 {
 	int	newline;
 	int	i;
@@ -50,7 +53,7 @@ int	ft_echo(char **args)
 		else
 			break ;
 	}
-	print_args(args, i);
+	print_args(args, i, tokens);
 	if (newline)
 		write(STDOUT_FILENO, "\n", 1);
 	return (0);
