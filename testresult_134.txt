@@ -1,0 +1,234 @@
+[0;31m🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+                                                                                             
+ ██    ██ █ ██    █ █ █████ █   █ █████ █     █       ██████ █████ █████ ██████ █████ █████  
+ ███  ███ █ ███   █ █ █     █   █ █     █     █         ██   █     █       ██   █     █   ██ 
+ █ ████ █ █ █ ██  █ █ █████ █████ ████  █     █         ██   ████  █████   ██   ████  █████  
+ █  ██  █ █ █  ██ █ █     █ █   █ █     █     █         ██   █         █   ██   █     █   ██ 
+ █      █ █ █   ███ █ █████ █   █ █████ █████ █████     ██   █████ █████   ██   █████ █   ██ 
+                                                                                             
+🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+                                                                                              
+[0;31m———————————— builtins
+[0;33mTest   1: ✅[38;5;244m echo hello world 
+[0m[0;33mTest   2: ✅[38;5;244m echo "hello world" 
+[0m[0;33mTest   3: ✅[38;5;244m echo 'hello world' 
+[0m[0;33mTest   4: ✅[38;5;244m echo hello'world' 
+[0m[0;33mTest   5: ✅[38;5;244m echo hello""world 
+[0m[0;33mTest   6: ✅[38;5;244m echo '' 
+[0m[0;33mTest   7: ✅[38;5;244m echo "$PWD" 
+[0m[0;33mTest   8: ✅[38;5;244m echo '$PWD' 
+[0m[0;33mTest   9: ✅[38;5;244m echo "aspas ->'" 
+[0m[0;33mTest  10: ✅[38;5;244m echo "aspas -> ' " 
+[0m[0;33mTest  11: ✅[38;5;244m echo 'aspas ->"' 
+[0m[0;33mTest  12: ✅[38;5;244m echo 'aspas -> " ' 
+[0m[0;33mTest  13: ✅[38;5;244m echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<" 
+[0m[0;33mTest  14: ✅[38;5;244m echo '> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<' 
+[0m[0;33mTest  15: ✅[38;5;244m echo "exit_code ->$? user ->$USER home -> $HOME" 
+[0m[0;33mTest  16: ✅[38;5;244m echo 'exit_code ->$? user ->$USER home -> $HOME' 
+[0m[0;33mTest  17: ✅[38;5;244m echo "$" 
+[0m[0;33mTest  18: ✅[38;5;244m echo '$' 
+[0m[0;33mTest  19: ✅[38;5;244m echo $ 
+[0m[0;33mTest  20: ✅[38;5;244m echo $? 
+[0m[0;33mTest  21: ❌[38;5;244m echo $?HELLO 
+[0mmini output = ()
+bash output = (0HELLO)
+[0;33mTest  22: ✅[38;5;244m pwd 
+[0m[0;33mTest  23: ✅[38;5;244m pwd oi 
+[0m[0;33mTest  24: ✅[38;5;244m export hello 
+[0m[0;33mTest  25: ✅[38;5;244m export HELLO=123 
+[0m[0;33mTest  26: ✅[38;5;244m export A- 
+[0m[0;33mTest  27: ✅[38;5;244m export HELLO=123 A 
+[0m[0;33mTest  28: ✅[38;5;244m export HELLO="123 A-" 
+[0m[0;33mTest  29: ✅[38;5;244m export hello world 
+[0m[0;33mTest  30: ✅[38;5;244m export HELLO-=123 
+[0m[0;33mTest  31: ✅[38;5;244m export = 
+[0m[0;33mTest  32: ✅[38;5;244m export 123 
+[0m[0;33mTest  33: ✅[38;5;244m unset 
+[0m[0;33mTest  34: ✅[38;5;244m unset HELLO 
+[0m[0;33mTest  35: ✅[38;5;244m unset HELLO1 HELLO2 
+[0m[0;33mTest  36: ✅[38;5;244m unset HOME 
+[0m[0;33mTest  37: ✅[38;5;244m unset PATH 
+[0m[0;33mTest  38: ✅[38;5;244m unset SHELL 
+[0m[0;33mTest  39: ✅[38;5;244m cd $PWD 
+[0m[0;33mTest  40: ✅[38;5;244m cd $PWD hi 
+[0m[0;33mTest  41: ✅[38;5;244m cd 123123 
+[0m[0;33mTest  42: ✅[38;5;244m exit 123 
+[0m[0;33mTest  43: ✅[38;5;244m exit 298 
+[0m[0;33mTest  44: ✅[38;5;244m exit +100 
+[0m[0;33mTest  45: ✅[38;5;244m exit "+100" 
+[0m[0;33mTest  46: ✅[38;5;244m exit +"100" 
+[0m[0;33mTest  47: ✅[38;5;244m exit -100 
+[0m[0;33mTest  48: ✅[38;5;244m exit "-100" 
+[0m[0;33mTest  49: ✅[38;5;244m exit -"100" 
+[0m[0;33mTest  50: ✅[38;5;244m exit hello 
+[0m[0;33mTest  51: ✅[38;5;244m exit 42 world 
+[0m[0;33mTest  52: ✅[38;5;244m  
+[0m[0;31m———————————— pipes
+[0;33mTest  53: ❌[38;5;244m env | sort | grep -v SHLVL | grep -v ^_ 
+[0mmini output = (?=0 COLORTERM=truecolor DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/102556/bus,guid=e04dceb06640503f7740fe25672647a2 DBUS_STARTER_ADDRESS=unix:path=/run/user/102556/bus,guid=e04dceb06640503f7740fe25672647a2 DBUS_STARTER_BUS_TYPE=session DESKTOP_SESSION=ubuntu DISPLAY=:0 DOCKER_HOST=unix:///run/user/102556/docker.sock GDM_LANG=en GDMSESSION=ubuntu GNOME_DESKTOP_SESSION_ID=this-is-deprecated GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/bccb83ec_8d48_443f_98c3_2b8c703b0853 GNOME_TERMINAL_SERVICE=:1.1601 GPG_AGENT_INFO=/run/user/102556/gnupg/S.gpg-agent:0:1 GTK_IM_MODULE=ibus GTK_MODULES=gail:atk-bridge HOME=/home/tkasapog KRB5CCNAME=FILE:/tmp/krb5cc_102556_16Xygq LANG=en_US.UTF-8 LANGUAGE=en LOGNAME=tkasapog MAIL=tkasapog@student.42berlin.de OLDPWD=/home/tkasapog/Desktop/Minishell_134/minishell_tester PATH=/home/tkasapog/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin PWD=/home/tkasapog/Desktop/Minishell_134/minishell_tester QT_ACCESSIBILITY=1 QT_IM_MODULE=ibus SESSION_MANAGER=local/c3a10c4.42berlin.de:@/tmp/.ICE-unix/8056,unix/c3a10c4.42berlin.de:/tmp/.ICE-unix/8056 SHELL=/bin/zsh SSH_AGENT_LAUNCHER=gnome-keyring SSH_AUTH_SOCK=/run/user/102556/keyring/ssh SYSTEMD_EXEC_PID=8056 TERM=xterm-256color USER=tkasapog VTE_VERSION=6800 XAUTHORITY=/home/tkasapog/.Xauthority XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/etc/xdg XDG_CURRENT_DESKTOP=ubuntu:GNOME XDG_DATA_DIRS=/usr/share/ubuntu:/usr/share/gnome:/home/tkasapog/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/tkasapog XDG_MENU_PREFIX=gnome- XDG_RUNTIME_DIR=/run/user/102556 XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0 XDG_SESSION_CLASS=user XDG_SESSION_DESKTOP=ubuntu XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0 XDG_SESSION_TYPE=x11 XMODIFIERS=@im=ibus)
+bash output = (COLORTERM=truecolor DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/102556/bus,guid=e04dceb06640503f7740fe25672647a2 DBUS_STARTER_ADDRESS=unix:path=/run/user/102556/bus,guid=e04dceb06640503f7740fe25672647a2 DBUS_STARTER_BUS_TYPE=session DESKTOP_SESSION=ubuntu DISPLAY=:0 DOCKER_HOST=unix:///run/user/102556/docker.sock GDM_LANG=en GDMSESSION=ubuntu GNOME_DESKTOP_SESSION_ID=this-is-deprecated GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/bccb83ec_8d48_443f_98c3_2b8c703b0853 GNOME_TERMINAL_SERVICE=:1.1601 GPG_AGENT_INFO=/run/user/102556/gnupg/S.gpg-agent:0:1 GTK_IM_MODULE=ibus GTK_MODULES=gail:atk-bridge HOME=/home/tkasapog KRB5CCNAME=FILE:/tmp/krb5cc_102556_16Xygq LANG=en_US.UTF-8 LANGUAGE=en LOGNAME=tkasapog MAIL=tkasapog@student.42berlin.de OLDPWD=/home/tkasapog/Desktop/Minishell_134/minishell_tester PATH=/home/tkasapog/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin PWD=/home/tkasapog/Desktop/Minishell_134/minishell_tester QT_ACCESSIBILITY=1 QT_IM_MODULE=ibus SESSION_MANAGER=local/c3a10c4.42berlin.de:@/tmp/.ICE-unix/8056,unix/c3a10c4.42berlin.de:/tmp/.ICE-unix/8056 SHELL=/bin/zsh SSH_AGENT_LAUNCHER=gnome-keyring SSH_AUTH_SOCK=/run/user/102556/keyring/ssh SYSTEMD_EXEC_PID=8056 TERM=xterm-256color USER=tkasapog VTE_VERSION=6800 XAUTHORITY=/home/tkasapog/.Xauthority XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/etc/xdg XDG_CURRENT_DESKTOP=ubuntu:GNOME XDG_DATA_DIRS=/usr/share/ubuntu:/usr/share/gnome:/home/tkasapog/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share:/var/lib/snapd/desktop XDG_GREETER_DATA_DIR=/var/lib/lightdm-data/tkasapog XDG_MENU_PREFIX=gnome- XDG_RUNTIME_DIR=/run/user/102556 XDG_SEAT_PATH=/org/freedesktop/DisplayManager/Seat0 XDG_SESSION_CLASS=user XDG_SESSION_DESKTOP=ubuntu XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0 XDG_SESSION_TYPE=x11 XMODIFIERS=@im=ibus)
+[0;33mTest  54: ✅[38;5;244m cat ./test_files/infile_big | grep oi 
+[0m[0;33mTest  55: ✅[38;5;244m cat minishell.h | grep ");"$ 
+[0m[0;33mTest  56: ✅[38;5;244m export GHOST=123 | env | grep GHOST 
+[0m[0;31m———————————— redirects
+[0;33mTest  57: ✅[38;5;244m grep hi <./test_files/infile 
+[0m[0;33mTest  58: ✅[38;5;244m grep hi "<infile" <         ./test_files/infile 
+[0m[0;33mTest  59: ❌[38;5;244m echo hi < ./test_files/infile bye bye 
+[0mmini output = (hi)
+bash output = (hi bye bye)
+[0;33mTest  60: ✅[38;5;244m grep hi <./test_files/infile_big <./test_files/infile 
+[0m[0;33mTest  61: ❌[38;5;244m echo <"./test_files/infile" "bonjour       42" 
+[0mmini output = ()
+bash output = (bonjour 42)
+[0;33mTest  62: ✅[38;5;244m cat <"./test_files/file name with spaces" 
+[0m[0;33mTest  63: ✅[38;5;244m cat <./test_files/infile_big ./test_files/infile 
+[0m[0;33mTest  64: ✅[38;5;244m cat <"1""2""3""4""5" 
+[0m[0;33mTest  65: ❌[38;5;244m echo <"./test_files/infile" <missing <"./test_files/infile" 
+[0mmini exit code = 0
+bash exit code = 1
+mini error = ()
+bash error = ( No such file or directory)
+[0;33mTest  66: ❌[38;5;244m echo <missing <"./test_files/infile" <missing 
+[0mmini exit code = 0
+bash exit code = 1
+mini error = ()
+bash error = ( No such file or directory)
+[0;33mTest  67: ✅[38;5;244m cat <"./test_files/infile" 
+[0m[0;33mTest  68: ✅[38;5;244m echo <"./test_files/infile_big" | cat <"./test_files/infile" 
+[0m[0;33mTest  69: ✅[38;5;244m echo <"./test_files/infile_big" | cat "./test_files/infile" 
+[0m[0;33mTest  70: ✅[38;5;244m echo <"./test_files/infile_big" | echo <"./test_files/infile" 
+[0m[0;33mTest  71: ✅[38;5;244m echo hi | cat <"./test_files/infile" 
+[0m[0;33mTest  72: ✅[38;5;244m echo hi | cat "./test_files/infile" 
+[0m[0;33mTest  73: ✅⚠️ [38;5;244m cat <"./test_files/infile" | echo hi 
+[0mmini error = ( No such file or directory No such file or directory)
+bash error = ( Broken pipe)
+[0;33mTest  74: ❌[38;5;244m cat <"./test_files/infile" | grep hello 
+[0mmini output = ()
+bash output = (hello)
+mini exit code = 1
+bash exit code = 0
+mini error = ( No such file or directory No such file or directory)
+bash error = ()
+[0;33mTest  75: ✅⚠️ [38;5;244m cat <"./test_files/infile_big" | echo hi 
+[0mmini error = ( No such file or directory No such file or directory)
+bash error = ( Broken pipe)
+[0;33mTest  76: ✅[38;5;244m cat <missing 
+[0m[0;33mTest  77: ✅[38;5;244m cat <missing | cat 
+[0m[0;33mTest  78: ✅[38;5;244m cat <missing | echo oi 
+[0m[0;33mTest  79: ✅[38;5;244m cat <missing | cat <"./test_files/infile" 
+[0m[0;33mTest  80: ✅[38;5;244m echo <123 <456 hi | echo 42 
+[0m[0;33mTest  81: ✅[38;5;244m ls >./outfiles/outfile01 
+[0m[0;33mTest  82: ✅[38;5;244m ls >         ./outfiles/outfile01 
+[0m[0;33mTest  83: ❌[38;5;244m echo hi >         ./outfiles/outfile01 bye 
+[0mOnly in ./bash_outfiles: outfile01
+mini outfiles:
+bash outfiles:
+hi bye
+mini output = (hi)
+bash output = ()
+[0;33mTest  84: ✅[38;5;244m ls >./outfiles/outfile01 >./outfiles/outfile02 
+[0m[0;33mTest  85: ✅[38;5;244m ls >./outfiles/outfile01 >./test_files/invalid_permission 
+[0m[0;33mTest  86: ✅[38;5;244m ls >"./outfiles/outfile with spaces" 
+[0m[0;33mTest  87: ✅[38;5;244m ls >"./outfiles/outfile""1""2""3""4""5" 
+[0m[0;33mTest  88: ✅[38;5;244m ls >"./outfiles/outfile01" >./test_files/invalid_permission >"./outfiles/outfile02" 
+[0m[0;33mTest  89: ✅[38;5;244m ls >./test_files/invalid_permission >"./outfiles/outfile01" >./test_files/invalid_permission 
+[0m[0;33mTest  90: ✅[38;5;244m cat <"./test_files/infile" >"./outfiles/outfile01" 
+[0m[0;33mTest  91: ✅[38;5;244m echo hi >./outfiles/outfile01 | echo bye 
+[0m[0;33mTest  92: ✅[38;5;244m echo hi >./outfiles/outfile01 >./outfiles/outfile02 | echo bye 
+[0m[0;33mTest  93: ❌[38;5;244m echo hi | echo >./outfiles/outfile01 bye 
+[0mFiles ./mini_outfiles/outfile01 and ./bash_outfiles/outfile01 differ
+mini outfiles:
+
+bash outfiles:
+bye
+[0;33mTest  94: ✅[38;5;244m echo hi | echo bye >./outfiles/outfile01 >./outfiles/outfile02 
+[0m[0;33mTest  95: ✅[38;5;244m echo hi >./outfiles/outfile01 | echo bye >./outfiles/outfile02 
+[0m[0;33mTest  96: ✅[38;5;244m echo hi >./outfiles/outfile01 >./test_files/invalid_permission | echo bye 
+[0m[0;33mTest  97: ✅[38;5;244m echo hi >./test_files/invalid_permission | echo bye 
+[0m[0;33mTest  98: ✅[38;5;244m echo hi >./test_files/invalid_permission >./outfiles/outfile01 | echo bye 
+[0m[0;33mTest  99: ✅[38;5;244m echo hi | echo bye >./test_files/invalid_permission 
+[0m[0;33mTest 100: ❌[38;5;244m echo hi | >./outfiles/outfile01 echo bye >./test_files/invalid_permission 
+[0mmini exit code = 0
+bash exit code = 1
+mini error = ()
+bash error = ( Permission denied)
+[0;33mTest 101: ✅[38;5;244m echo hi | echo bye >./test_files/invalid_permission >./outfiles/outfile01 
+[0m[0;33mTest 102: ✅[38;5;244m cat <"./test_files/infile" >./test_files/invalid_permission 
+[0m[0;33mTest 103: ✅[38;5;244m cat >./test_files/invalid_permission <"./test_files/infile" 
+[0m[0;33mTest 104: ✅[38;5;244m cat <missing >./outfiles/outfile01 
+[0m[0;33mTest 105: ✅[38;5;244m cat >./outfiles/outfile01 <missing 
+[0m[0;33mTest 106: ✅[38;5;244m cat <missing >./test_files/invalid_permission 
+[0m[0;33mTest 107: ✅[38;5;244m cat >./test_files/invalid_permission <missing 
+[0m[0;33mTest 108: ✅[38;5;244m cat >./outfiles/outfile01 <missing >./test_files/invalid_permission 
+[0m[0;33mTest 109: ✅[38;5;244m ls >>./outfiles/outfile01 
+[0m[0;33mTest 110: ✅[38;5;244m ls >>      ./outfiles/outfile01 
+[0m[0;33mTest 111: ✅[38;5;244m ls >>./outfiles/outfile01 >./outfiles/outfile01 
+[0m[0;33mTest 112: ✅[38;5;244m ls >./outfiles/outfile01 >>./outfiles/outfile01 
+[0m[0;33mTest 113: ✅[38;5;244m ls >./outfiles/outfile01 >>./outfiles/outfile01 >./outfiles/outfile02 
+[0m[0;33mTest 114: ✅[38;5;244m ls >>./outfiles/outfile01 >>./outfiles/outfile02 
+[0m[0;33mTest 115: ✅[38;5;244m ls >>./test_files/invalid_permission 
+[0m[0;33mTest 116: ✅[38;5;244m ls >>./test_files/invalid_permission >>./outfiles/outfile01 
+[0m[0;33mTest 117: ✅[38;5;244m ls >>./outfiles/outfile01 >>./test_files/invalid_permission 
+[0m[0;33mTest 118: ✅[38;5;244m ls >./outfiles/outfile01 >>./test_files/invalid_permission >>./outfiles/outfile02 
+[0m[0;33mTest 119: ✅[38;5;244m ls <missing >>./test_files/invalid_permission >>./outfiles/outfile02 
+[0m[0;33mTest 120: ✅[38;5;244m ls >>./test_files/invalid_permission >>./outfiles/outfile02 <missing 
+[0m[0;33mTest 121: ✅[38;5;244m echo hi >>./outfiles/outfile01 | echo bye 
+[0m[0;33mTest 122: ✅[38;5;244m echo hi >>./outfiles/outfile01 >>./outfiles/outfile02 | echo bye 
+[0m[0;33mTest 123: ❌[38;5;244m echo hi | echo >>./outfiles/outfile01 bye 
+[0mFiles ./mini_outfiles/outfile01 and ./bash_outfiles/outfile01 differ
+mini outfiles:
+
+bash outfiles:
+bye
+[0;33mTest 124: ✅[38;5;244m echo hi | echo bye >>./outfiles/outfile01 >>./outfiles/outfile02 
+[0m[0;33mTest 125: ✅[38;5;244m echo hi >>./outfiles/outfile01 | echo bye >>./outfiles/outfile02 
+[0m[0;33mTest 126: ✅[38;5;244m echo hi >>./test_files/invalid_permission | echo bye 
+[0m[0;33mTest 127: ✅[38;5;244m echo hi >>./test_files/invalid_permission >./outfiles/outfile01 | echo bye 
+[0m[0;33mTest 128: ✅[38;5;244m echo hi | echo bye >>./test_files/invalid_permission 
+[0m[0;33mTest 129: ✅[38;5;244m echo hi | echo >>./outfiles/outfile01 bye >./test_files/invalid_permission 
+[0m[0;33mTest 130: ✅[38;5;244m cat <minishell.h>./outfiles/outfile 
+[0m[0;33mTest 131: ✅[38;5;244m cat <minishell.h|ls 
+[0m[0;31m———————————— extras
+[0;33mTest 132: ✅[38;5;244m  
+[0m[0;33mTest 133: ✅⚠️ [38;5;244m $PWD 
+[0mmini error = ( /home/tkasapog/Desktop/Minishell_134/minishell_tester)
+bash error = ( Is a directory)
+[0;33mTest 134: ✅[38;5;244m $EMPTY 
+[0m[0;33mTest 135: ❌[38;5;244m $EMPTY echo hi 
+[0mmini output = ()
+bash output = (hi)
+[0;33mTest 136: ✅⚠️ [38;5;244m ./test_files/invalid_permission 
+[0mmini error = ( ./test_files/invalid_permission)
+bash error = ( Permission denied)
+[0;33mTest 137: ✅⚠️ [38;5;244m ./missing.out 
+[0mmini error = ( ./missing.out)
+bash error = ( No such file or directory)
+[0;33mTest 138: ✅⚠️ [38;5;244m missing.out 
+[0mmini error = ( missing.out)
+bash error = ( command not found)
+[0;33mTest 139: ✅⚠️ [38;5;244m "aaa" 
+[0mmini error = ( aaa)
+bash error = ( command not found)
+[0;33mTest 140: ✅⚠️ [38;5;244m test_files 
+[0mmini error = ( test_files)
+bash error = ( command not found)
+[0;33mTest 141: ✅⚠️ [38;5;244m ./test_files 
+[0mmini error = ( ./test_files)
+bash error = ( Is a directory)
+[0;33mTest 142: ✅⚠️ [38;5;244m /test_files 
+[0mmini error = ( /test_files)
+bash error = ( No such file or directory)
+[0;33mTest 143: ✅⚠️ [38;5;244m minishell.h 
+[0mmini error = ( minishell.h)
+bash error = ( command not found)
+[0;33mTest 144: ✅⚠️ [38;5;244m $ 
+[0mmini error = ( $)
+bash error = ( command not found)
+[0;33mTest 145: ✅⚠️ [38;5;244m $? 
+[0mmini error = ( 0)
+bash error = ( command not found)
+[0;33mTest 146: ✅⚠️ [38;5;244m README.md 
+[0mmini error = ( README.md)
+bash error = ( command not found)
+[0;35m[1m134/146
+[0m😭 😭 😭

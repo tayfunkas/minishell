@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 17:28:58 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 19:31:40 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/10/30 13:05:03 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -364,24 +364,23 @@ void	*ft_memset(void *s, int c, size_t n)
 	return (s);
 }
 
-static void	*allocate_and_zero_memory(size_t total_size)
+//this is for ft_calloc().
+static void	ft_bzero(void *s, int n)
 {
-	void	*ptr;
+	char	*p;
 
-	ptr = malloc(total_size);
-	if (ptr != NULL)
-		ft_memset(ptr, 0, total_size);
-	return (ptr);
+	p = (char *)s;
+	while (n--)
+		*p++ = 0;
 }
 
 void	*ft_calloc(size_t nmemb, size_t size)
 {
-	size_t			total_size;
+	void	*ptr;
 
-	if (nmemb == 0 || size == 0)
-		return (allocate_and_zero_memory(1));
-	if (nmemb > SIZE_MAX / size)
-		return (NULL);
-	total_size = nmemb * size;
-	return (allocate_and_zero_memory(total_size));
+	ptr = malloc(nmemb * size);
+	if (ptr == NULL)
+		return (ptr);
+	ft_bzero(ptr, nmemb * size);
+	return (ptr);
 }

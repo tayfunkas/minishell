@@ -6,14 +6,12 @@ LIBS = -lreadline
 RM = rm -f
 
 SRCS = $(addprefix source/, \
-		$(addprefix parse/, init_tokens.c process_tokens.c assign_token_type.c add_token_to_list.c expand.c expand_utils.c) \
-		$(addprefix handle/, handle.c handle_pipe.c handle_command.c handle_initial_redir.c) \
-		$(addprefix execute/, execute_command.c execute_ext_or_int.c check_ext_or_int.c \
-		$(addprefix execute_internal/, init_internal_cmd.c execute_internal_cmd.c ft_cd.c ft_cd_helpers.c ft_echo.c ft_env.c ft_exit.c ft_export.c ft_pwd.c ft_unset.c set_env.c) \
-		$(addprefix execute_external/, execute_external_cmd.c find_path.c fork_and_execute_extcmd.c prepare_args.c) \
-		$(addprefix execute_redirection/, execute_redir.c execute_redir_heredoc.c)) \
-		$(addprefix utils/, libft.c utils.c signal.c status.c syntax.c) \
-		$(addprefix free/, free_structs.c ) \
+		$(addprefix parse/, add_token_to_list.c assign_token_type.c expand_token.c expand_utils.c parse.c) \
+		$(addprefix handle/, handle.c pipes.c handle_cmd.c handle_redir.c) \
+		$(addprefix execute/external_cmd/, execute_ext_cmd.c check_ext_path.c prepare_args.c fork.c fork_utils.c) \
+		$(addprefix execute/internal_cmd/, init_int_cmd.c execute_int_cmd.c ft_cd.c ft_cd_helpers.c ft_echo.c ft_env.c ft_exit.c ft_export.c ft_pwd.c ft_unset.c set_env.c) \
+		$(addprefix execute/redirection/, execute_redir.c) \
+		$(addprefix utils/, free.c libft.c signal.c status.c syntax.c utils.c ) \
 		minishell.c)
 
 OBJS = $(SRCS:.c=.o)

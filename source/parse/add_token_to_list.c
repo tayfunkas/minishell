@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/22 16:41:33 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/22 16:42:29 by kyukang          ###   ########.fr       */
+/*   Created: 2024/11/01 13:34:54 by kyukang           #+#    #+#             */
+/*   Updated: 2024/11/01 13:55:32 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,50 +31,52 @@ static t_token	*init_new_token(char *cleaned_str, char quote, t_token *current)
 	return (new_token);
 }
 
-static char *clean_token_str(char *start, int len)
+static char	*clean_token_str(char *start, int len)
 {
-    char *cleaned_str;
-    int i, j;
-    char outer_quote, inner_quote;
+	char	*cleaned_str;
+	int		i;
+	int		j;
+	char	outer_quote;
+	char	inner_quote;
 
-    cleaned_str = malloc(len + 1);
-    if (!cleaned_str)
-        return (NULL);
+	cleaned_str = malloc(len + 1);
+	if (!cleaned_str)
+		return (NULL);
 
-    i = 0;
-    j = 0;
-    outer_quote = 0;
-    inner_quote = 0;
+	i = 0;
+	j = 0;
+	outer_quote = 0;
+	inner_quote = 0;
 
-    while (i < len)
-    {
-        if (!outer_quote && (start[i] == '"' || start[i] == '\''))
-        {
-            outer_quote = start[i];
-            i++;
-        }
-        else if (outer_quote && start[i] == outer_quote)
-        {
-            outer_quote = 0;
-            i++;
-        }
-        else if (outer_quote && !inner_quote && start[i] != outer_quote && (start[i] == '"' || start[i] == '\''))
-        {
-            inner_quote = start[i];
-            cleaned_str[j++] = start[i++];
-        }
-        else if (inner_quote && start[i] == inner_quote)
-        {
-            inner_quote = 0;
-            cleaned_str[j++] = start[i++];
-        }
-        else
-        {
-            cleaned_str[j++] = start[i++];
-        }
-    }
-    cleaned_str[j] = '\0';
-    return cleaned_str;
+	while (i < len)
+	{
+		if (!outer_quote && (start[i] == '"' || start[i] == '\''))
+		{
+			outer_quote = start[i];
+			i++;
+		}
+		else if (outer_quote && start[i] == outer_quote)
+		{
+			outer_quote = 0;
+			i++;
+		}
+		else if (outer_quote && !inner_quote && start[i] != outer_quote && (start[i] == '"' || start[i] == '\''))
+		{
+			inner_quote = start[i];
+			cleaned_str[j++] = start[i++];
+		}
+		else if (inner_quote && start[i] == inner_quote)
+		{
+			inner_quote = 0;
+			cleaned_str[j++] = start[i++];
+		}
+		else
+		{
+			cleaned_str[j++] = start[i++];
+		}
+	}
+	cleaned_str[j] = '\0';
+	return (cleaned_str);
 }
 
 t_token	*add_token_to_list(char *start, int len, char quote, t_token *current)
