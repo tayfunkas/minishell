@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:30 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 20:44:12 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/11/03 17:11:32 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
 	if (pid == 0)
 	{
 		setup_cmd_fds(cmd, start, end, ctx);
-		//printf("Child process - fd_in: %d, fd_out: %d\n", cmd->fd_in, cmd->fd_out);
 		status = handle_child_process(cmd, cmd_path, args, ctx);
 		exit(status);
 	}

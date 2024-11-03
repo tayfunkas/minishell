@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 18:01:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 16:17:26 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 17:10:26 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,9 @@ void	execute_redir_input(t_token *current, int *fd_in)
 	*fd_in = open(current->next->str, O_RDONLY);
 	if (*fd_in == -1)
 	{
-		perror("open");
+		write(2, "minishell: ", 11);
+		write(2, current->next->str, ft_strlen(current->next->str));
+		write(2, ": No such file or directory\n", 28);
 		exit(1);
 	}
 }

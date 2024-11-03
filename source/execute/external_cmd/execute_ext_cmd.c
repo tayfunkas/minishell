@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:15:21 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 19:44:29 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 17:02:20 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int	execute_external_cmd(t_exec_context *ctx, t_token *start, t_token *end)
 		return (-1);
 	}
 	prep_args(start, token_count, args, ctx);
+	//printf("current token: %s\n", start->str);
 	status = fork_and_execute(&cmd, cmd_path, args, ctx, start, end);
 	free_external_c(cmd_path, args, token_count);
 	return (status);

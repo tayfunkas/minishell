@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:06:11 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 16:09:14 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 17:10:42 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,8 @@ int	handle_cmd(t_token *current, t_token *cmd_end, t_exec_context *ctx)
 		fd_in = STDIN_FILENO;
 		fd_out = STDOUT_FILENO;
 		setup_redir(current, cmd_end, &fd_in, &fd_out);
-		//status = handle_initial_redir(&current, &fd_in);
 	}
-	// else if (is_external_cmd(current->str, ctx->our_env))
 	else
 		status = execute_external_cmd(ctx, current, cmd_end);
 	return (status);
 }
-
-

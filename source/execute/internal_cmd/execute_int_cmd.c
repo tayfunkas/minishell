@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:52:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 19:58:29 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 17:11:25 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,12 @@ static int	check_internal_c(t_command *cmd, char ***env, t_exec_context *ctx,
 
 int execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_token *tokens)
 {
-	t_command *cmd;
-	int status = 0;
-	pid_t pid;
+	t_command	*cmd;
+	int			status = 0;
+	pid_t		pid;
+	int			fd_in;
+	int			fd_out;
+
 	cmd = init_internal_cmd(start);
 	if (!cmd)
 		return (1);
@@ -86,7 +89,6 @@ int execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 		}
 		else
 		{
-			// Parent process
 			if (ctx->current_index > 0)
 				close(ctx->pipe_fds[ctx->current_index - 1][0]);
 			if (ctx->current_index < ctx->pipe_count)
@@ -98,21 +100,10 @@ int execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 	}
 	else
 	{
-		// No pipes, execute directly
-		//int parent_in = dup(STDIN_FILENO);
-		//int parent_out = dup(STDOUT_FILENO);
-		//if (cmd->fd_in != STDIN_FILENO)
-		//{
-		//	dup2(cmd->fd_in, STDIN_FILENO);
-		//	close(cmd->fd_in);
-		//}
-		//if (cmd->fd_out != STDOUT_FILENO)
-		//{
-		//	dup2(cmd->fd_out, STDOUT_FILENO);
-	//		close(cmd->fd_out);
-		//}
+		fd_in = STDIN_FILENO;
+		fd_out = STDOUT_FILENO;
+		setup_redir(start, end, &fd_in, &fd_out);
 		status = check_internal_c(cmd, &ctx->our_env, ctx, tokens);
-	//	dup_and_close(parent_in, parent_out);
 	}
 	free_command(cmd);
 	return (status);
