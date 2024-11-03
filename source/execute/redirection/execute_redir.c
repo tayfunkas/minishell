@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 18:01:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 18:45:35 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 19:26:59 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	errmsg_if_no_line(char *line, char *delimiter)
 	}
 }
 
-static void heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count, t_token *current)
+static void	heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count, t_token *current, t_exec_context *ctx)
 {
 	char	*line;
 	int		current_delimiter = 0;
@@ -45,6 +45,7 @@ static void heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count, 
 				perror("write to pipe");
 				free(line);
 				free_tokens(current);
+				free_context(ctx);
 				exit(EXIT_FAILURE);
 			}
 			free(line);
@@ -53,6 +54,7 @@ static void heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count, 
 	}
 	close(pipe_fd[1]);
 	free_tokens(current);
+	free_context(ctx);
 	exit(EXIT_SUCCESS);
 }
 
@@ -83,7 +85,7 @@ static void	recursive_heredoc(t_token *current, char **delimiters, int *delimite
 	// recursive_heredoc(current->next->next, fd_in, delimiters, delimiter_count);
 }
 
-void	execute_redir_heredoc(t_token *current, int *fd_in)
+void	execute_redir_heredoc(t_token *current, int *fd_in, t_exec_context *ctx)
 {
 	int		pipe_fd[2];
 	char	*delimiters[100];
@@ -105,7 +107,7 @@ void	execute_redir_heredoc(t_token *current, int *fd_in)
 		exit(EXIT_FAILURE);
 	}
 	if (pid == 0)
-		heredoc_input(pipe_fd, delimiters, delimiter_count, current);
+		heredoc_input(pipe_fd, delimiters, delimiter_count, current, ctx);
 	else
 		heredoc_wait(pipe_fd, fd_in, pid);
 }
@@ -148,7 +150,7 @@ void	execute_redir_append(t_token *current, int *fd_out)
 	}
 }
 
-void	setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out)
+void	setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out, t_exec_context *ctx)
 {
 	t_token	*current;
 
@@ -162,7 +164,7 @@ void	setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out)
 		else if (current->type == APPEND)
 			execute_redir_append(current, fd_out);
 		else if (current->type == HEREDOC)
-			execute_redir_heredoc(current, fd_in);
+			execute_redir_heredoc(current, fd_in, ctx);
 		current = current->next;
 	}
 }

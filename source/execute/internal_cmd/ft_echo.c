@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:09:54 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 19:03:06 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 19:43:25 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,10 @@ static void	print_args(char **args, int start_index, t_token *tokens)
 {
 	while (args[start_index] != NULL)
 	{
-		//if (tokens->type == ARG)
-		{	write(STDOUT_FILENO, args[start_index], ft_strlen(args[start_index]));
-			if (args[start_index + 1] != NULL)
-				write(STDOUT_FILENO, " ", 1);
-			start_index++;
-		}
+		write(STDOUT_FILENO, args[start_index], ft_strlen(args[start_index]));
+		if (args[start_index + 1] != NULL)
+			write(STDOUT_FILENO, " ", 1);
+		start_index++;
 		tokens = tokens->next;
 	}
 }

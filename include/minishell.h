@@ -181,11 +181,11 @@ void		expand_tilde(char **path, char *home);
 void		update_env(char ***env, char *current_dir, char *new_dir, t_exec_context *ctx);
 
 //--------------------------------execute_redir--------------------------------
-void		setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out);
+void		setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out, t_exec_context *ctx);
 void		execute_redir_input(t_token *current, int *fd_in);
 void		execute_redir_trunc(t_token *current, int *fd_out);
 void		execute_redir_append(t_token *current, int *fd_out);
-void		execute_redir_heredoc(t_token *current, int *fd_in);
+void		execute_redir_heredoc(t_token *current, int *fd_in, t_exec_context *ctx);
 
 //--------------------------------utils--------------------------------
 //syntax.c

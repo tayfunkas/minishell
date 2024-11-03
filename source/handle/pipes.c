@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:03:39 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 17:10:09 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 19:23:46 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context 
 {
 	cmd->fd_in = STDIN_FILENO;
 	cmd->fd_out = STDOUT_FILENO;
-	setup_redir(start, end, &cmd->fd_in, &cmd->fd_out);
+	setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx);
 	if (ctx->current_index > 0 && cmd->fd_in == STDIN_FILENO)
 		cmd->fd_in = ctx->pipe_fds[ctx->current_index - 1][0];
 	if (ctx->current_index < ctx->pipe_count && cmd->fd_out == STDOUT_FILENO)

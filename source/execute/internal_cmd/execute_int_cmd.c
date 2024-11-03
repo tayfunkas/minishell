@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:52:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 18:57:01 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 19:57:20 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 static int	check_internal_c(t_command *cmd, char ***env, t_exec_context *ctx,
 	t_token *tokens)
 {
-	t_token	*current = tokens;
+	t_token	*current;
 
+	current = tokens;
 	if (ft_strcmp(cmd->argv[0], "cd") == 0)
 		return (ft_cd(cmd, cmd->argv[1], env, ctx));
 	else if (ft_strcmp(cmd->argv[0], "export") == 0)
@@ -51,7 +52,7 @@ static int	check_internal_c(t_command *cmd, char ***env, t_exec_context *ctx,
 	setup_redir(start, end, &cmd->fd_in, &cmd->fd_out);
 } */
 
-int execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_token *tokens)
+int	execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_token *tokens)
 {
 	t_command	*cmd;
 	int			status = 0;
@@ -59,6 +60,8 @@ int execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 	int			fd_in;
 	int			fd_out;
 
+	fd_in = 0;
+	fd_out = 0;
 	cmd = init_internal_cmd(start);
 	if (!cmd)
 		return (1);
@@ -102,10 +105,22 @@ int execute_internal_cmd(t_exec_context *ctx, t_token *start, t_token *end, t_to
 	}
 	else
 	{
-		fd_in = STDIN_FILENO;
-		fd_out = STDOUT_FILENO;
-		setup_redir(start, end, &fd_in, &fd_out);
+		fd_in = dup(STDIN_FILENO);
+		fd_out = dup(STDOUT_FILENO);
+		//setup_redir(start, end, fd_in, fd_out, ctx);
+		setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx);
+		if (cmd->fd_in != STDIN_FILENO)
+		{
+			dup2(cmd->fd_in, STDIN_FILENO);
+			close(cmd->fd_in);
+		}
+		if (cmd->fd_out != STDOUT_FILENO)
+		{
+			dup2(cmd->fd_out, STDOUT_FILENO);
+			close(cmd->fd_out);
+		}
 		status = check_internal_c(cmd, &ctx->our_env, ctx, tokens);
+		restore_fds(fd_in, fd_out);
 	}
 	free_command(cmd);
 	return (status);

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:30 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 17:11:32 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 19:28:33 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
 	else if (pid > 0)
 	{
 		child_signal_for_wait();
-		check_fds(cmd);
+		//check_fds(cmd);
 		if (ctx->current_index > 0)
 			close(ctx->pipe_fds[ctx->current_index - 1][0]);
 		if (ctx->current_index < ctx->pipe_count)
