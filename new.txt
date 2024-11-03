@@ -1,9 +1,0 @@
-hi.txt
-include
-Makefile
-minishell
-minishell_tester
-new.txt
-parse_valgrind_suppressions.sh
-readline.supp
-source
