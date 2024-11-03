@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ext_cmd.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:15:21 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 18:27:47 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/11/03 20:03:29 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,6 @@ static int	count_tokens_until(t_token *start, t_token *end)
 	return (count);
 }
 
-/*static void	setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx)
-{
-	cmd->fd_in = STDIN_FILENO;
-	cmd->fd_out = STDOUT_FILENO;
-	(void)start;
-	(void)end;
-	(void)ctx;
-	setup_redir(start, end, &cmd->fd_in, &cmd->fd_out);
-}*/
-
 int	execute_external_cmd(t_exec_context *ctx, t_token *start, t_token *end)
 {
 	t_command	cmd;
@@ -55,7 +45,6 @@ int	execute_external_cmd(t_exec_context *ctx, t_token *start, t_token *end)
 	char		**args;
 	char		*cmd_path;
 
-	//setup_cmd_fds(&cmd, start, end, ctx);
 	token_count = count_tokens_until(start, end);
 	status = check_cmd_path(&cmd_path, start, ctx);
 	if (status != 0)
@@ -67,7 +56,6 @@ int	execute_external_cmd(t_exec_context *ctx, t_token *start, t_token *end)
 		return (-1);
 	}
 	prep_args(start, token_count, args, ctx);
-	//printf("current token: %s\n", start->str);
 	status = fork_and_execute(&cmd, cmd_path, args, ctx, start, end);
 	free_external_c(cmd_path, args, token_count);
 	return (status);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:32:37 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/02 21:49:54 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/11/03 20:10:45 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static char	*skip_whitespace(char *start)
 	return (start);
 }
 
-static t_token *handle_special_characters(t_parser *parser, int *i,
+static t_token	*handle_special_characters(t_parser *parser, int *i,
 	t_token *current)
 {
 	t_token	*new_token;
@@ -34,7 +34,6 @@ static t_token *handle_special_characters(t_parser *parser, int *i,
 	if (!new_token)
 		return (NULL);
 	parser->start = parser->end + parser->len;
-	//parser->end = parser->start;
 	(*i)++;
 	while (*parser->end && ft_isspace(*parser->end))
 		parser->end++;
@@ -79,50 +78,22 @@ static void	init_parsers(t_parser *parser)
 	parser->len = 0;
 }
 
-/*t_token	*process_token(t_parser *parser, int *i, t_token *current)
-{
-	t_token	*new_token;
-	int		entirely_in_single_quotes;
-
-	entirely_in_single_quotes = 0;
-	init_parsers(parser);
-	if (*parser->end == '|' || *parser->end == '<' || *parser->end == '>')
-		return (handle_special_characters(parser, i, current));
-	entirely_in_single_quotes = (*parser->end == '\'');
-	while (*parser->end)
-	{
-		process_quotes(parser);
-		if (!parser->outer_quote && (ft_isspace(*parser->end)
-				|| *parser->end == '|' || *parser->end == '<'
-				|| *parser->end == '>'))
-			break ;
-	}
-	parser->len = parser->end - parser->start;
-	new_token = add_token_to_list(parser->start, parser->len,
-			parser->outer_quote, current);
-	if (!new_token)
-		return (NULL);
-	new_token->in_single_quotes = entirely_in_single_quotes;
-	parser->start = parser->end;
-	(*i)++;
-	return (new_token);
-}*/
-
 t_token	*process_token(t_parser *parser, int *i, t_token *current)
 {
 	t_token	*new_token;
-	int	entirely_in_single_quotes;
+	int		entirely_in_single_quotes;
 	char	initial_quote;
 
 	entirely_in_single_quotes = 0;
 	init_parsers(parser);
 	initial_quote = *parser->end;
-	if ((*parser->end == '"' || *parser->end == '\'') &&
-	(*(parser->end + 1) == '|' || *(parser->end + 1) == '<' || *(parser->end + 1) == '>'))
+	if ((*parser->end == '"' || *parser->end == '\'')
+		&& (*(parser->end + 1) == '|' || *(parser->end + 1) == '<'
+			|| *(parser->end + 1) == '>'))
 	{
 		parser->len = 2;
-		if ((*(parser->end + 1) == '<' && *(parser->end + 2) == '<') ||
-		(*(parser->end + 1) == '>' && *(parser->end + 2) == '>'))
+		if ((*(parser->end + 1) == '<' && *(parser->end + 2) == '<')
+			|| (*(parser->end + 1) == '>' && *(parser->end + 2) == '>'))
 		{
 			parser->len = 3;
 		}
@@ -145,18 +116,18 @@ t_token	*process_token(t_parser *parser, int *i, t_token *current)
 	{
 		process_quotes(parser);
 		if (!parser->outer_quote && (ft_isspace(*parser->end)
-			|| *parser->end == '|' || *parser->end == '<'
-			|| *parser->end == '>'))
+				|| *parser->end == '|' || *parser->end == '<'
+				|| *parser->end == '>'))
 			break ;
 	}
 	parser->len = parser->end - parser->start;
 	if (parser->outer_quote)
-    {
-        parser->unclosed_quote = parser->outer_quote;
+	{
+		parser->unclosed_quote = parser->outer_quote;
 		return (NULL);
 	}
 	new_token = add_token_to_list(parser->start, parser->len,
-		parser->outer_quote, current);
+			parser->outer_quote, current);
 	if (!new_token)
 		return (NULL);
 	new_token->in_single_quotes = entirely_in_single_quotes;

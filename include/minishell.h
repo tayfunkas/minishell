@@ -136,7 +136,7 @@ int			create_pipes(int **pipe_fds, int pipe_count);
 void		close_pipes(int **pipe_fds, int pipe_count);
 void		free_pipe_fds(int **pipe_fds, int pipe_count);
 void		setup_child_pipes(t_exec_context *ctx);
-void		setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx);
+int		setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx);
 
 //-------------------------------execute_ext--------------------------------
 //execute_ext
@@ -181,10 +181,10 @@ void		expand_tilde(char **path, char *home);
 void		update_env(char ***env, char *current_dir, char *new_dir, t_exec_context *ctx);
 
 //--------------------------------execute_redir--------------------------------
-void		setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out, t_exec_context *ctx);
-void		execute_redir_input(t_token *current, int *fd_in);
-void		execute_redir_trunc(t_token *current, int *fd_out);
-void		execute_redir_append(t_token *current, int *fd_out);
+int		setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out, t_exec_context *ctx);
+int		execute_redir_input(t_token *current, int *fd_in);
+int		execute_redir_trunc(t_token *current, int *fd_out);
+int		execute_redir_append(t_token *current, int *fd_out);
 void		execute_redir_heredoc(t_token *current, int *fd_in, t_exec_context *ctx);
 
 //--------------------------------utils--------------------------------

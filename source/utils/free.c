@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:24:42 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 17:40:14 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 20:11:02 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	free_environment(char **env)
 	}
 	free(env);
 }
-
 
 void	free_context(t_exec_context *ctx)
 {
@@ -54,8 +53,6 @@ void	free_context(t_exec_context *ctx)
 		free_environment(ctx->our_env);
 		ctx->our_env = NULL;
 	}
-	//if (ctx->child_pid != NULL)
-	//	free(ctx->child_pid);
 }
 
 void	free_expand(t_expand *exp)
@@ -87,7 +84,6 @@ void	free_command_list(t_command *head)
 		current = next;
 	}
 }
-
 
 void	free_tokens(t_token *tokens)
 {

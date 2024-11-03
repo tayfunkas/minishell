@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:37:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 14:45:29 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 20:09:12 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ void	expand_tokens(t_token *head, t_exec_context *ctx)
 	char	*expanded;
 
 	current = head;
-	//expanded = NULL;
 	while (current)
 	{
 		if (!current->in_single_quotes)

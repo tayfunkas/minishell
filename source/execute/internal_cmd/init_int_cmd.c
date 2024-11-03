@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:54:29 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 19:05:22 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 20:07:18 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,10 @@ static int	count_command_args(t_token *current)
 		}
 		if (current->type == CMD || current->type == ARG)
 		{
-			//printf("counted arg: %s with type %d\n", current->str, current->type);
 			count++;
 		}
 		current = current->next;
 	}
-	//printf("total count: %d\n", count);
 	return (count);
 }
 
@@ -72,7 +70,6 @@ static int	allocate_command_argv(t_command *cmd, t_token *current)
 		if (current->type == CMD || current->type == ARG)
 		{
 			cmd->argv[index] = ft_strdup(current->str);
-			//printf("allocated arg: %s\n", cmd->argv[index]);
 			if (!cmd->argv[index])
 			{
 				perror("malloc failed.\n");

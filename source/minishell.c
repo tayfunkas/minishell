@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tkasapog <tkasapog@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:23:05 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 18:25:35 by tkasapog         ###   ########.fr       */
+/*   Updated: 2024/11/03 21:14:21 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,13 @@ static void	run_minishell(char *input, t_exec_context *ctx)
 		set_env(&(ctx->our_env), "?", "130", ctx);
 		g_signal = 0;
 	}
+	if (g_signal == 1)
+	{
+		set_env(&(ctx->our_env), "?", "1", ctx);
+		g_signal = 0;
+	}
 	status = 0;
 	tokens = tokenize_inputs(input, 20);
-	/*t_token *test = tokens;
-	while (test)
-	{
-		printf("token: %s\n", test->str);
-		test = test->next;
-	}*/
 	if (tokens)
 	{
 		expand_tokens(tokens, ctx);
@@ -48,8 +47,9 @@ static void	run_minishell(char *input, t_exec_context *ctx)
 
 static void	minishell(t_exec_context *ctx)
 {
-	char	*input = NULL;
+	char	*input;
 
+	input = NULL;
 	g_signal = 0;
 	setup_signal();
 	initialize_exit_status(ctx);

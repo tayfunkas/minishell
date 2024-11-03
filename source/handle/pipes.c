@@ -6,21 +6,26 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:03:39 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 19:23:46 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 21:19:43 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx)
+int	setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx)
 {
+	int	status;
+
 	cmd->fd_in = STDIN_FILENO;
 	cmd->fd_out = STDOUT_FILENO;
-	setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx);
+	status = setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx);
+	if (status == 1)
+		return (status);
 	if (ctx->current_index > 0 && cmd->fd_in == STDIN_FILENO)
 		cmd->fd_in = ctx->pipe_fds[ctx->current_index - 1][0];
 	if (ctx->current_index < ctx->pipe_count && cmd->fd_out == STDOUT_FILENO)
 		cmd->fd_out = ctx->pipe_fds[ctx->current_index][1];
+	return (status);
 }
 
 void	setup_child_pipes(t_exec_context *ctx)

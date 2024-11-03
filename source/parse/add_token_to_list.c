@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:34:54 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 13:55:32 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/03 20:08:21 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,10 @@ static char	*clean_token_str(char *start, int len)
 	cleaned_str = malloc(len + 1);
 	if (!cleaned_str)
 		return (NULL);
-
 	i = 0;
 	j = 0;
 	outer_quote = 0;
 	inner_quote = 0;
-
 	while (i < len)
 	{
 		if (!outer_quote && (start[i] == '"' || start[i] == '\''))
