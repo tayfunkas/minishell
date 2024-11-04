@@ -82,7 +82,7 @@ typedef struct s_expand
 	char	*env_value;
 	int		in_single_quote;
 	int		in_double_quote;
-	int		token_idx;
+	int		tok_idx;
 }	t_expand;
 
 typedef struct s_env
@@ -96,17 +96,19 @@ typedef struct s_parser
 {
 	char	*start;
 	char	*end;
-	char	outer_quote;
-	char	inner_quote;
+	char	outer;
+	char	inner;
 	int		len;
-	char	unclosed_quote;
+	char	unclosed;
 }	t_parser;
 
-typedef struct s_delim
+typedef struct s_quote
 {
-	char	*str;
-	int		count;
-}	t_delim;
+	char	outer;
+	char	inner;
+	int		i;
+	int		j;
+}	t_quote;
 
 void	free_external_c(char *cmd_path, char **args, int token_count);
 //--------------------------------parse--------------------------------
@@ -115,7 +117,7 @@ t_tok	*tokenize_inputs(char *input, int max_args);
 t_tok	*process_token(t_parser *parser, int *i, t_tok *current);
 
 //add_token_to_list.c
-t_tok	*add_token_to_list(char *start, int len, char quote, t_tok *current);
+t_tok	*tok_to_list(char *start, int len, char quote, t_tok *current);
 
 //expand_token.c
 void	expand_tokens(t_tok *head, t_ctx *ctx);
@@ -125,6 +127,12 @@ int		handle_quotes(char *token, t_expand *exp);
 
 //assign_token_type.c
 void	assign_token_types(t_tok *tokens);
+
+t_tok	*process_initial_operators(t_parser *pars, int *i, t_tok *current);
+
+void	init_parsers(t_parser *parser);
+void	process_quotes(t_parser *parser);
+t_tok	*handle_special_characters(t_parser *parser, int *i, t_tok *current);
 
 //--------------------------------handle--------------------------------
 //handle.c

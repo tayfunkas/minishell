@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:56:26 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:25:21 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 18:12:42 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 int	handle_quotes(char *token, t_expand *exp)
 {
-	if (token[exp->token_idx] == '\'' && !exp->in_double_quote)
+	if (token[exp->tok_idx] == '\'' && !exp->in_double_quote)
 	{
 		exp->in_single_quote = !exp->in_single_quote;
-		exp->result[exp->result_idx++] = token[exp->token_idx++];
+		exp->result[exp->result_idx++] = token[exp->tok_idx++];
 	}
-	else if (token[exp->token_idx] == '"' && !exp->in_single_quote)
+	else if (token[exp->tok_idx] == '"' && !exp->in_single_quote)
 	{
 		exp->in_double_quote = !exp->in_double_quote;
-		exp->result[exp->result_idx++] = token[exp->token_idx++];
+		exp->result[exp->result_idx++] = token[exp->tok_idx++];
 	}
 	if (exp->in_single_quote)
 	{
-		exp->result[exp->result_idx++] = token[exp->token_idx++];
+		exp->result[exp->result_idx++] = token[exp->tok_idx++];
 		return (1);
 	}
 	return (0);
@@ -99,23 +99,21 @@ static int	expand_env_var(t_expand *exp, t_ctx *ctx,
 	return (0);
 }
 
-int	handle_env_var_exp(char *token, t_expand *exp, t_ctx *ctx)
+int	handle_env_var_exp(char *tok, t_expand *exp, t_ctx *ctx)
 {
 	int			i;
 	static char	static_buffer[1024];
 
-	if (!token[exp->token_idx + 1] || token[exp->token_idx + 1] == ' '
-		|| token[exp->token_idx + 1] == '"'
-		|| token[exp->token_idx + 1] == '\'')
-		exp->result[exp->result_idx++] = token[exp->token_idx++];
+	if (!tok[exp->tok_idx + 1] || tok[exp->tok_idx + 1] == ' '
+		|| tok[exp->tok_idx + 1] == '"' || tok[exp->tok_idx + 1] == '\'')
+		exp->result[exp->result_idx++] = tok[exp->tok_idx++];
 	else
 	{
-		exp->token_idx++;
-		i = exp->token_idx;
-		while (token[i] && (ft_isalnum(token[i]) || token[i] == '_'
-				|| token[i] == '?'))
+		exp->tok_idx++;
+		i = exp->tok_idx;
+		while (tok[i] && (ft_isalnum(tok[i]) || tok[i] == '_' || tok[i] == '?'))
 			i++;
-		exp->env_var = ft_strndup(token + exp->token_idx, i - exp->token_idx);
+		exp->env_var = ft_strndup(tok + exp->tok_idx, i - exp->tok_idx);
 		if (exp->env_var)
 		{
 			if (expand_env_var(exp, ctx, static_buffer) == -1)
@@ -125,7 +123,7 @@ int	handle_env_var_exp(char *token, t_expand *exp, t_ctx *ctx)
 			}
 			exp->env_var = NULL;
 		}
-		exp->token_idx = i;
+		exp->tok_idx = i;
 	}
 	return (0);
 }

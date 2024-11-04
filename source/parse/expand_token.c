@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:37:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 17:58:21 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 18:17:52 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,17 @@ static int	process_token_loop(char *token, t_expand *exp, t_ctx *ctx)
 {
 	static char	static_buffer[1024];
 
-	while (token[exp->token_idx])
+	while (token[exp->tok_idx])
 	{
 		if (handle_quotes(token, exp))
 			continue ;
-		if (token[exp->token_idx] == '$' && !exp->in_single_quote)
+		if (token[exp->tok_idx] == '$' && !exp->in_single_quote)
 		{
 			if (handle_env_var_exp(token, exp, ctx) == -1)
 				return (-1);
 		}
 		else
-			exp->result[exp->result_idx++] = token[exp->token_idx++];
+			exp->result[exp->result_idx++] = token[exp->tok_idx++];
 		if (exp->result_idx >= (int)exp->result_size - 1)
 		{
 			if (expand_result_buffer(exp, static_buffer) == -1)
@@ -60,7 +60,7 @@ char	*expand_var(char *token, t_ctx *ctx)
 	exp.result_size = 1024;
 	exp.in_single_quote = 0;
 	exp.in_double_quote = 0;
-	exp.token_idx = 0;
+	exp.tok_idx = 0;
 	exp.result_idx = 0;
 	if (process_token_loop(token, &exp, ctx) == -1)
 		return (NULL);
