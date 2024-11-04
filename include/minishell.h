@@ -102,6 +102,12 @@ typedef struct s_parser
 	char	unclosed_quote;
 }	t_parser;
 
+typedef struct s_delim
+{
+	char	*str;
+	int		count;
+}	t_delim;
+
 void	free_external_c(char *cmd_path, char **args, int token_count);
 //--------------------------------parse--------------------------------
 //init_toks.c
@@ -181,15 +187,24 @@ void	expand_tilde(char **path, char *home);
 void	update_env(char ***env, char *current_dir, char *new_dir, t_ctx *ctx);
 
 //--------------------------------execute_redir--------------------------------
+//int		setup_redir(t_tok *start, t_tok *end, t_cmd *cmd, t_ctx *ctx);
 int		setup_redir(t_tok *start, t_tok *end, int *fd_in, int *fd_out, t_ctx *ctx);
 int		execute_redir_input(t_tok *current, int *fd_in);
 int		execute_redir_trunc(t_tok *current, int *fd_out);
 int		execute_redir_append(t_tok *current, int *fd_out);
 void	execute_redir_heredoc(t_tok *current, int *fd_in, t_ctx *ctx);
 
+//heredoc
+void	errmsg_if_no_line(char *line, char *delimiter);
+void	heredoc_input(int *pipe_fd, char **delims, int delim_count, t_tok *current, t_ctx *ctx);
+//void	heredoc_input(int *pipe_fd, t_delim *delim, t_tok *current, t_ctx *ctx);
+void	heredoc_wait(int *pipe_fd, int *fd_in, pid_t pid);
+void	recursive_heredoc(t_tok *current, char **delims, int *delim_count);
+
 //--------------------------------utils--------------------------------
 //syntax.c
-int		check_syntax(t_tok *tokens, t_ctx *ctx);
+int		check_syntax(t_tok *tokens);
+int		check_invalid_sequences(const char *input);
 
 //status.c
 int		initialize_exit_status(t_ctx *ctx);

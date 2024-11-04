@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:30 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:24:15 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 15:40:37 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,49 @@ static void	child_signal_for_wait(void)
 	signal(SIGQUIT, child_sigquit_handler);
 }
 
+static int	wait_child(pid_t pid, int *status, t_ctx *ctx)
+{
+	child_signal_for_wait();
+	if (ctx->current_index > 0)
+		close(ctx->pipe_fds[ctx->current_index - 1][0]);
+	if (ctx->current_index < ctx->pipe_count)
+		close(ctx->pipe_fds[ctx->current_index][1]);
+	waitpid(pid, status, 0);
+	if (WIFEXITED(*status))
+		return (WEXITSTATUS(*status));
+	else if (WIFSIGNALED(*status))
+		return (128 + WTERMSIG(*status));
+	return (-1);
+}
+
 int	fork_and_execute(t_cmd *cmd, char **args, t_ctx *ctx, t_tok *start, t_tok *end)
+{
+	pid_t	pid;
+	int		parent_in;
+	int		parent_out;
+	int		status;
+
+	status = 0;
+	parent_in = dup(STDIN_FILENO);
+	parent_out = dup(STDOUT_FILENO);
+	pid = fork();
+	if (pid == 0)
+	{
+		if (setup_cmd_fds(cmd, start, end, ctx))
+			exit(1);
+		status = handle_child_process(cmd, cmd->cmd_path, args, ctx);
+		exit(status);
+	}
+	else if (pid > 0)
+		status = wait_child(pid, &status, ctx);
+	else
+		return (-1);
+	restore_fds(parent_in, parent_out);
+	setup_signal();
+	return (status);
+}
+
+/*int	fork_and_execute(t_cmd *cmd, char **args, t_ctx *ctx, t_tok *start, t_tok *end)
 {
 	pid_t	pid;
 	int		parent_in;
@@ -85,4 +127,4 @@ int	fork_and_execute(t_cmd *cmd, char **args, t_ctx *ctx, t_tok *start, t_tok *e
 	restore_fds(parent_in, parent_out);
 	setup_signal();
 	return (status);
-}
+}*/

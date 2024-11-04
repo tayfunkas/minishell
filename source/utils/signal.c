@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:27:58 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:25:29 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:46:32 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	child_sigint_handler(int sig)
 {
 	g_signal = sig;
 	write(STDERR_FILENO, "\n", 1);
-	//exit(130);
 }
 
 void	child_sigquit_handler(int sig)

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:05 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:24:18 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 15:46:36 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,12 @@ void	prep_args(t_tok *tokens, int token_count, char **args, t_ctx *ctx)
 		if (current->type == CMD || current->type == ARG)
 		{
 			if (current->in_single_quotes)
-				args[i] = strdup(current->str);
+				args[i] = ft_strdup(current->str);
 			else
 				args[i] = expand_var(current->str, ctx);
 			i++;
 		}
-		else if (current->type == TRUNC || current->type == APPEND
-			|| current->type == INPUT || current->type == HEREDOC)
+		else if (current->type == TRUNC || current->type == APPEND || current->type == INPUT || current->type == HEREDOC)
 		{
 			current = current->next;
 			if (current)
@@ -44,6 +43,39 @@ void	prep_args(t_tok *tokens, int token_count, char **args, t_ctx *ctx)
 	}
 	args[i] = NULL;
 }
+
+/*void	prep_args(t_tok *tokens, int token_count, char **args, t_ctx *ctx)
+{
+	t_tok	*current;
+	int		i;
+
+	current = tokens;
+	i = 0;
+	while (current && i < token_count)
+	{
+		if (current->type == CMD || current->type == ARG)
+		{
+			if (current->in_single_quotes)
+				args[i] = strdup(current->str);
+			else
+				args[i] = expand_var(current->str, ctx);
+			i++;
+		}
+		else if (current->type == TRUNC || current->type == APPEND || current->type == INPUT || current->type == HEREDOC)
+		{
+			current = current->next;
+			if (current)
+				current = current->next;
+			continue ;
+		}
+		else if (current->type == PIPE)
+			break ;
+		if (current)
+			current = current->next;
+	}
+	args[i] = NULL;
+}
+*/
 
 char	**allocate_args(int token_count)
 {

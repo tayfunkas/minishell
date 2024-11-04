@@ -6,103 +6,117 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:41:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:25:30 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 16:51:22 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	if_pipe(t_tok *current, t_tok *tokens, t_ctx *ctx)
+int	check_invalid_sequences(const char *input)
 {
-	if (current->type == PIPE)
+	const char *ptr = input;
+	char quote_char = 0;
+
+	while (*ptr)
 	{
-		tokens->pipe_count++;
-		tokens->redir_count = 0;
-		if (!tokens->cmd_flag || !current->next || current->next->type == PIPE)
+		if (*ptr == '\'' || *ptr == '"')
 		{
-			write(STDERR_FILENO, "syntax error near unexpected token '|'\n", 39);
-			ctx->syntax_error = 1;
-			return (0);
+			quote_char = (quote_char == 0) ? *ptr : (quote_char == *ptr ? 0 : quote_char);
+			ptr++;
+			continue;
 		}
-		tokens->cmd_flag = 0;
-	}
-	return (1);
-}
-
-static int	if_redir(t_tok *current, t_tok *tokens, t_ctx *ctx)
-{
-	if (current->type == TRUNC || current->type == APPEND
-		|| current->type == INPUT || current->type == HEREDOC)
-	{
-		tokens->redir_count++;
-		if (tokens->redir_count > 1 || !current->next
-			|| (current->next->type != ARG && current->next->type != CMD))
+		if (quote_char != 0)
 		{
-			write(STDERR_FILENO, "syntax error near unexpected token ", 35);
-			printf("'%s'\n", current->str);
-			ctx->syntax_error = 1;
-			return (0);
+			ptr++;
+			continue;
 		}
+		if (*ptr == '>' || *ptr == '<')
+		{
+			char c = *ptr;
+			int count = 0;
+			while (*ptr == c)
+			{
+				count++;
+				ptr++;
+			}
+			if (count > 2)
+				return 0;  // Invalid: more than two consecutive redirection operators
+			// Skip whitespace
+			while (*ptr && ft_isspace(*ptr))
+				ptr++;
+			// Check if there's a filename or another token
+			if (*ptr == '\0' || *ptr == '>' || *ptr == '<' || *ptr == '|')
+				return 0;  // Invalid: redirection not followed by a filename
+			// Skip the filename or token
+			while (*ptr && !ft_isspace(*ptr) && *ptr != '>' && *ptr != '<' && *ptr != '|')
+				ptr++;
+		}
+		else if (*ptr == '|')
+		{
+			ptr++;
+			// Skip whitespace after pipe
+			while (*ptr && ft_isspace(*ptr))
+				ptr++;
+			// Check if pipe is at the end
+		   /* if (*ptr == '\0')
+				return 0;  */
+		}
+		else
+			ptr++;
 	}
-	return (1);
+	return 1;
 }
 
-static int	if_end(t_tok *current, t_tok *tokens, t_ctx *ctx)
+int check_syntax(t_tok *tokens)
 {
-	if (current->type == END && tokens->pipe_count >= tokens->cmd_count)
-	{
-		write(STDERR_FILENO, "syntax error: unexpected end of file\n", 37);
-		ctx->syntax_error = 1;
-		return (0);
-	}
-	return (1);
-}
+	t_tok *current = tokens;
+	int valid_before_pipe = 0;
+	int pipe_allowed = 0;
 
-static int	check_token_type(t_tok *current, t_tok *tokens,
-	t_ctx *ctx)
-{
 	while (current)
 	{
-		if (!if_pipe(current, tokens, ctx))
-			return (0);
-		else if (current->type == CMD)
+		// Check for >>> error
+		if (current->type == APPEND && current->next && current->next->type == TRUNC)
+			return 0;
+
+		// Check if a redirection (except HEREDOC) is followed by a filename
+		if ((current->type == TRUNC || current->type == APPEND || current->type == INPUT)
+			&& (!current->next || current->next->type != FILENAME))
+			return 0;
+
+		// Check if HEREDOC is followed by a delimiter
+		if (current->type == HEREDOC && !current->next)
+			return 0;
+
+		// Check if two redirections follow each other
+		if ((current->type == TRUNC || current->type == APPEND || current->type == INPUT || current->type == HEREDOC)
+			&& current->next && (current->next->type == TRUNC || current->next->type == APPEND || current->next->type == INPUT || current->next->type == HEREDOC))
+			return 0;
+
+		// Check pipe rules
+		if (current->type == PIPE)
 		{
-			tokens->cmd_count++;
-			tokens->redir_count = 0;
-			tokens->cmd_flag = 1;
+			if (!valid_before_pipe || !current->next)
+				return 0;
+			valid_before_pipe = 0;
+			pipe_allowed = 0;
 		}
-		else if (!if_redir(current, tokens, ctx))
-			return (0);
-		else if (current->type == ARG)
+		else if (current->type == CMD || current->type == ARG || current->type == FILENAME)
 		{
-			tokens->redir_count = 0;
-			tokens->cmd_flag = 1;
+			valid_before_pipe = 1;
+			pipe_allowed = 1;
 		}
-		else if (!if_end(current, tokens, ctx))
-			return (0);
+
+		// Check for empty commands between pipes
+		if (current->type == PIPE && current->next && current->next->type == PIPE)
+			return 0;
+
 		current = current->next;
 	}
-	return (1);
-}
 
-int	check_syntax(t_tok *tokens, t_ctx *ctx)
-{
-	t_tok	*current;
+	// Check if the last token is a pipe
+	if (current && current->type == PIPE)
+		return 0;
 
-	current = tokens;
-	tokens->pipe_count = 0;
-	tokens->cmd_count = 0;
-	tokens->redir_count = 0;
-	tokens->cmd_flag = 0;
-	if (!tokens)
-		return (0);
-	if (check_token_type(current, tokens, ctx) == 0)
-		return (0);
-	if (tokens->pipe_count >= tokens->cmd_count && tokens->cmd_count > 0)
-	{
-		write(STDERR_FILENO, "syntax error near unexpected token '|'\n", 39);
-		ctx->syntax_error = 1;
-		return (0);
-	}
-	return (1);
+	return 1;
 }

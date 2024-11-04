@@ -6,14 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:06:11 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:25:12 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 15:26:19 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	setup_cmd_fds(t_cmd *cmd, t_tok *start, t_tok *end,
-	t_ctx *ctx)
+int	setup_cmd_fds(t_cmd *cmd, t_tok *start, t_tok *end, t_ctx *ctx)
 {
 	int	status;
 
@@ -58,9 +57,9 @@ static int	is_redir(char *cmd)
 
 int	handle_cmd(t_tok *current, t_tok *cmd_end, t_ctx *ctx)
 {
-	int	status;
-	int	fd_in;
-	int	fd_out;
+	int		status;
+	int		fd_in;
+	int		fd_out;
 
 	status = 0;
 	if (current == NULL || current->str == NULL)

@@ -6,127 +6,11 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 18:01:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:31:12 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 15:33:10 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static void	errmsg_if_no_line(char *line, char *delimiter)
-{
-	if (!line)
-	{
-		printf("minishell: warning: here-document at line ");
-		printf("delimited by end-of-file (wanted '%s')\n", delimiter);
-	}
-}
-
-static void	heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count, t_tok *current, t_ctx *ctx)
-{
-	char	*line;
-	int		current_delimiter;
-
-	current_delimiter = 0;
-	signal(SIGINT, child_sigint_handler);
-	close(pipe_fd[0]);
-	while (current_delimiter < delimiter_count)
-	{
-		while (1)
-		{
-			line = readline("> ");
-			if (!line || ft_strcmp(line, delimiters[current_delimiter]) == 0)
-			{
-				errmsg_if_no_line(line, delimiters[current_delimiter]);
-				free(line);
-				break ;
-			}
-			if (write(pipe_fd[1], line, ft_strlen(line)) == -1
-				|| write(pipe_fd[1], "\n", 1) == -1)
-			{
-				perror("write to pipe");
-				free(line);
-				free_tokens(current);
-				free_context(ctx);
-				exit(EXIT_FAILURE);
-			}
-			free(line);
-		}
-		current_delimiter++;
-	}
-	close(pipe_fd[1]);
-	free_tokens(current);
-	free_context(ctx);
-	exit(EXIT_SUCCESS);
-}
-
-static void	heredoc_wait(int *pipe_fd, int *fd_in, pid_t pid)
-{
-	int	status;
-
-	signal(SIGINT, SIG_DFL);
-	close(pipe_fd[1]);
-	waitpid(pid, &status, 0);
-	if (*fd_in != STDIN_FILENO)
-		close(*fd_in);
-	*fd_in = pipe_fd[0];
-	setup_signal();
-	if (WIFEXITED(status))
-		g_signal = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-		g_signal = 128 + WTERMSIG(status);
-}
-
-static void	recursive_heredoc(t_tok *current, char **delimiters, int *delimiter_count)
-{
-	if (current == NULL || current->type != HEREDOC)
-		return ;
-	delimiters[*delimiter_count] = current->next->str;
-	(*delimiter_count)++;
-}
-
-void	execute_redir_heredoc(t_tok *current, int *fd_in, t_ctx *ctx)
-{
-	int		pipe_fd[2];
-	char	*delimiters[100];
-	int		delimiter_count;
-	pid_t	pid;
-
-	delimiter_count = 0;
-	recursive_heredoc(current, delimiters, &delimiter_count);
-	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
-		exit(EXIT_FAILURE);
-	}
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		exit(EXIT_FAILURE);
-	}
-	if (pid == 0)
-		heredoc_input(pipe_fd, delimiters, delimiter_count, current, ctx);
-	else
-		heredoc_wait(pipe_fd, fd_in, pid);
-}
-
-int	execute_redir_input(t_tok *current, int *fd_in)
-{
-	if (*fd_in != STDIN_FILENO)
-		close(*fd_in);
-	*fd_in = open(current->next->str, O_RDONLY);
-	if (*fd_in == -1)
-	{
-		write(2, "minishell: ", 11);
-		write(2, current->next->str, ft_strlen(current->next->str));
-		write(2, ": No such file or directory\n", 28);
-		g_signal = 1;
-		return (1);
-	}
-	return (0);
-}
 
 int	execute_redir_trunc(t_tok *current, int *fd_out)
 {
@@ -157,6 +41,73 @@ int	execute_redir_append(t_tok *current, int *fd_out)
 	}
 	return (0);
 }
+
+int	execute_redir_input(t_tok *current, int *fd_in)
+{
+	if (*fd_in != STDIN_FILENO)
+		close(*fd_in);
+	*fd_in = open(current->next->str, O_RDONLY);
+	if (*fd_in == -1)
+	{
+		write(2, "minishell: ", 11);
+		write(2, current->next->str, ft_strlen(current->next->str));
+		write(2, ": No such file or directory\n", 28);
+		g_signal = 1;
+		return (1);
+	}
+	return (0);
+}
+
+/*void	execute_redir_heredoc(t_tok *current, int *fd_in, t_ctx *ctx)
+{
+	int		pipe_fd[2];
+	char	*delims[100];
+	int		delim_count;
+	pid_t	pid;
+
+	delim_count = 0;
+	recursive_heredoc(current, delims, &delim_count);
+	if (pipe(pipe_fd) == -1)
+	{
+		perror("pipe");
+		exit(EXIT_FAILURE);
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+		exit(EXIT_FAILURE);
+	}
+	if (pid == 0)
+		heredoc_input(pipe_fd, delims, delim_count, current, ctx);
+	else
+		heredoc_wait(pipe_fd, fd_in, pid);
+}*/
+
+/*int	setup_redir(t_tok *start, t_tok *end, t_cmd *cmd, t_ctx *ctx)
+{
+	t_tok	*current;
+	int		status;
+
+	current = start;
+	while (current != end && current != NULL)
+	{
+		if (current->type == TRUNC)
+			status = execute_redir_trunc(current, &cmd->fd_out);
+		else if (current->type == APPEND)
+			status = execute_redir_append(current, &cmd->fd_out);
+		else if (current->type == INPUT)
+			status = execute_redir_input(current, &cmd->fd_in);
+		else if (current->type == HEREDOC)
+			execute_redir_heredoc(current, &cmd->fd_in, ctx);
+		if (status == 1)
+			return (1);
+		current = current->next;
+	}
+	return (0);
+}*/
 
 int	setup_redir(t_tok *start, t_tok *end, int *fd_in, int *fd_out, t_ctx *ctx)
 {

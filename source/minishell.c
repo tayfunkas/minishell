@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:23:05 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:25:34 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 16:49:21 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,29 @@ static void	run_minishell(char *input, t_ctx *ctx)
 		g_signal = 0;
 	}
 	status = 0;
+	if (!check_invalid_sequences(input))
+	{
+		write(2, "minishell: syntax error\n", 25);
+		update_last_status(ctx, 2);
+		return ;
+	}
 	tokens = tokenize_inputs(input, 20);
 	if (tokens)
 	{
 		expand_tokens(tokens, ctx);
 		assign_token_types(tokens);
-		signal(SIGINT, SIG_IGN);
-		status = handle_tokens(tokens, ctx);
-		setup_signal();
-		update_last_status(ctx, status);
+		if (check_syntax(tokens))
+		{
+			signal(SIGINT, SIG_IGN);
+			status = handle_tokens(tokens, ctx);
+			setup_signal();
+			update_last_status(ctx, status);
+		}
+		else
+		{
+			write(2, "minishell: syntax error\n", 25);
+			update_last_status(ctx, 2);
+		}
 	}
 }
 
