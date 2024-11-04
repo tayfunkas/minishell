@@ -6,13 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:41:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 15:01:41 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:25:30 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	if_pipe(t_token *current, t_token *tokens, t_exec_context *ctx)
+static int	if_pipe(t_tok *current, t_tok *tokens, t_ctx *ctx)
 {
 	if (current->type == PIPE)
 	{
@@ -29,7 +29,7 @@ static int	if_pipe(t_token *current, t_token *tokens, t_exec_context *ctx)
 	return (1);
 }
 
-static int	if_redir(t_token *current, t_token *tokens, t_exec_context *ctx)
+static int	if_redir(t_tok *current, t_tok *tokens, t_ctx *ctx)
 {
 	if (current->type == TRUNC || current->type == APPEND
 		|| current->type == INPUT || current->type == HEREDOC)
@@ -47,7 +47,7 @@ static int	if_redir(t_token *current, t_token *tokens, t_exec_context *ctx)
 	return (1);
 }
 
-static int	if_end(t_token *current, t_token *tokens, t_exec_context *ctx)
+static int	if_end(t_tok *current, t_tok *tokens, t_ctx *ctx)
 {
 	if (current->type == END && tokens->pipe_count >= tokens->cmd_count)
 	{
@@ -58,8 +58,8 @@ static int	if_end(t_token *current, t_token *tokens, t_exec_context *ctx)
 	return (1);
 }
 
-static int	check_token_type(t_token *current, t_token *tokens,
-	t_exec_context *ctx)
+static int	check_token_type(t_tok *current, t_tok *tokens,
+	t_ctx *ctx)
 {
 	while (current)
 	{
@@ -85,9 +85,9 @@ static int	check_token_type(t_token *current, t_token *tokens,
 	return (1);
 }
 
-int	check_syntax(t_token *tokens, t_exec_context *ctx)
+int	check_syntax(t_tok *tokens, t_ctx *ctx)
 {
-	t_token	*current;
+	t_tok	*current;
 
 	current = tokens;
 	tokens->pipe_count = 0;

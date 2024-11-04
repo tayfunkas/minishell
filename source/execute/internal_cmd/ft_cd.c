@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:05:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 18:39:32 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:24:25 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	handle_path(char *path, char ***env, char *home)
 	return (0);
 }
 
-int	ft_cd(t_command *cmd, char *path, char ***env, t_exec_context *ctx)
+int	ft_cd(t_cmd *cmd, char *path, char ***env, t_ctx *ctx)
 {
 	char	current_dir[1024];
 	char	new_dir[1024];

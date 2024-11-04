@@ -1,36 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/17 16:03:47 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:24:29 by kyukang          ###   ########.fr       */
+/*   Created: 2024/11/04 13:30:11 by kyukang           #+#    #+#             */
+/*   Updated: 2024/11/04 13:30:30 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_env(char **env, t_cmd *cmd)
+int	ft_strcmp(char *s1, char *s2)
 {
-	int	i;
+	int	result;
 
-	i = 0;
-	if (cmd->argc > 1)
+	while (*s1 && *s2 && *s1 == *s2)
 	{
-		write(2, "env: no such file or directory\n", 32);
-		return (127);
+		s1++;
+		s2++;
 	}
-	if (env == NULL)
+	result = *s1 - *s2;
+	return (result);
+}
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	if (n == 0)
+		return (0);
+	n--;
+	while (n-- && *s1 && *s2 && *s1 == *s2)
 	{
-		write(2, "env: no environment variables\n", 31);
-		return (1);
+		s1++;
+		s2++;
 	}
-	while (env[i] != NULL)
-	{
-		printf("%s\n", env[i]);
-		i++;
-	}
-	return (0);
+	return ((unsigned char)*s1 - (unsigned char)*s2);
 }

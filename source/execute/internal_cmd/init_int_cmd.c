@@ -6,17 +6,17 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:54:29 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 20:07:18 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:30:57 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_command	*init_command(void)
+static t_cmd	*init_cmd(void)
 {
-	t_command	*cmd;
+	t_cmd	*cmd;
 
-	cmd = (t_command *)malloc(sizeof(t_command));
+	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
 	{
 		perror("malloc failed.\n");
@@ -30,14 +30,15 @@ static t_command	*init_command(void)
 	return (cmd);
 }
 
-static int	count_command_args(t_token *current)
+static int	count_cmd_args(t_tok *current)
 {
 	int	count;
 
 	count = 0;
 	while (current && current->type != PIPE)
 	{
-		if (current->type == INPUT || current->type == TRUNC || current->type == APPEND)
+		if (current->type == INPUT || current->type == TRUNC
+			|| current->type == APPEND)
 		{
 			if (current->next->next && current->next->next->type != PIPE)
 				current = current->next->next;
@@ -53,20 +54,28 @@ static int	count_command_args(t_token *current)
 	return (count);
 }
 
-static int	allocate_command_argv(t_command *cmd, t_token *current)
+static int	if_type_is_redir(t_tok *current)
+{
+	if (current->type == INPUT || current->type == TRUNC
+		|| current->type == APPEND)
+	{
+		if (current->next->next)
+			current = current->next->next;
+		else
+			return (0);
+	}
+	return (1);
+}
+
+static int	allocate_command_argv(t_cmd *cmd, t_tok *current)
 {
 	int		index;
 
 	index = 0;
 	while (current && index < cmd->argc && current->type != PIPE)
 	{
-		if (current->type == INPUT || current->type == TRUNC || current->type == APPEND)
-		{
-			if (current->next->next)
-				current = current->next->next;
-			else
-				break ;
-		}
+		if (!if_type_is_redir(current))
+			break ;
 		if (current->type == CMD || current->type == ARG)
 		{
 			cmd->argv[index] = ft_strdup(current->str);
@@ -83,14 +92,14 @@ static int	allocate_command_argv(t_command *cmd, t_token *current)
 	return (1);
 }
 
-t_command	*init_internal_cmd(t_token *current)
+t_cmd	*init_internal_cmd(t_tok *current)
 {
-	t_command	*cmd;
+	t_cmd	*cmd;
 
-	cmd = init_command();
+	cmd = init_cmd();
 	if (!cmd)
 		return (NULL);
-	cmd->argc = count_command_args(current);
+	cmd->argc = count_cmd_args(current);
 	cmd->argv = (char **)malloc(sizeof(char *) * (cmd->argc + 1));
 	if (!cmd->argv)
 	{

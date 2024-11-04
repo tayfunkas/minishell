@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:32:05 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 14:32:13 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:24:13 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	restore_fds(int parent_in, int parent_out)
 	close(parent_out);
 }
 
-void	check_fds(t_command *cmd)
+void	check_fds(t_cmd *cmd)
 {
 	if (cmd->fd_in != STDIN_FILENO)
 		close(cmd->fd_in);

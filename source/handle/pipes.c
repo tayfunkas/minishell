@@ -6,29 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:03:39 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 21:36:47 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:25:15 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	setup_cmd_fds(t_command *cmd, t_token *start, t_token *end, t_exec_context *ctx)
-{
-	int	status;
-
-	cmd->fd_in = STDIN_FILENO;
-	cmd->fd_out = STDOUT_FILENO;
-	status = setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx);
-	if (status == 1)
-		return (status);
-	if (ctx->current_index > 0 && cmd->fd_in == STDIN_FILENO)
-		cmd->fd_in = ctx->pipe_fds[ctx->current_index - 1][0];
-	if (ctx->current_index < ctx->pipe_count && cmd->fd_out == STDOUT_FILENO)
-		cmd->fd_out = ctx->pipe_fds[ctx->current_index][1];
-	return (status);
-}
-
-void	setup_child_pipes(t_exec_context *ctx)
+void	setup_child_pipes(t_ctx *ctx)
 {
 	if (ctx->current_index > 0)
 	{
@@ -94,10 +78,10 @@ int	create_pipes(int **pipe_fds, int pipe_count)
 	return (1);
 }
 
-int	count_pipes(t_token *tokens)
+int	count_pipes(t_tok *tokens)
 {
 	int		pipe_count;
-	t_token	*current;
+	t_tok	*current;
 
 	pipe_count = 0;
 	current = tokens;

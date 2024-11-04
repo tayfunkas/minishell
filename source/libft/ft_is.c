@@ -1,36 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_is.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/17 16:03:47 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:24:29 by kyukang          ###   ########.fr       */
+/*   Created: 2024/11/04 13:30:47 by kyukang           #+#    #+#             */
+/*   Updated: 2024/11/04 13:31:26 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_env(char **env, t_cmd *cmd)
+int	ft_isspace(int c)
+{
+	if (c == ' ' || c == '\t' || c == '\n' || c == '\v'
+		|| c == '\f' || c == '\r')
+		return (1);
+	return (0);
+}
+
+int	ft_isalnum(int c)
+{
+	if ((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122))
+		return (1);
+	return (0);
+}
+
+int	ft_isdigit_str(char *c)
 {
 	int	i;
 
 	i = 0;
-	if (cmd->argc > 1)
+	while (c[i] != '\0')
 	{
-		write(2, "env: no such file or directory\n", 32);
-		return (127);
+		if ((c[i] >= '0' && c[i] <= '9') || (c[i] == '-' || c[i] == '+'))
+			i++;
+		else
+			return (0);
 	}
-	if (env == NULL)
-	{
-		write(2, "env: no environment variables\n", 31);
-		return (1);
-	}
-	while (env[i] != NULL)
-	{
-		printf("%s\n", env[i]);
-		i++;
-	}
-	return (0);
+	return (1);
 }

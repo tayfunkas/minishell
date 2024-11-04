@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:27:54 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 21:50:34 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:24:07 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	check_cmd_in_paths(char *cmd, char **paths)
 	return (0);
 }
 
-static int	if_path_is_null(char **cmd_path, t_token *start, struct stat st)
+static int	if_path_is_null(char **cmd_path, t_tok *start, struct stat st)
 {
 	if (*cmd_path == NULL)
 	{
@@ -74,7 +74,7 @@ static int	if_path_is_null(char **cmd_path, t_token *start, struct stat st)
 	return (0);
 }
 
-int	check_cmd_path(char **cmd_path, t_token *start, t_exec_context *ctx)
+int	check_cmd_path(char **cmd_path, t_tok *start, t_ctx *ctx)
 {
 	struct stat	st;
 	int			status;

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 17:54:49 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 15:22:39 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:31:01 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static char	*create_env_var(const char *name, const char *value)
 	return (new_var);
 }
 
-static int	extend_env(char ***env, char *new_var, t_exec_context *ctx)
+static int	extend_env(char ***env, char *new_var, t_ctx *ctx)
 {
 	char	**new_env;
 	int		env_size;
@@ -77,7 +77,7 @@ static int	check_env(char ***env, const char *name, const char *value)
 }
 
 int	set_env(char ***env, const char *name, const char *value,
-	t_exec_context *ctx)
+	t_ctx *ctx)
 {
 	int		i;
 	int		len;

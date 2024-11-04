@@ -6,15 +6,15 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:05 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 20:05:58 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:24:18 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	prep_args(t_token *tokens, int token_count, char **args, t_exec_context *ctx)
+void	prep_args(t_tok *tokens, int token_count, char **args, t_ctx *ctx)
 {
-	t_token	*current;
+	t_tok	*current;
 	int		i;
 
 	current = tokens;
@@ -55,10 +55,10 @@ char	**allocate_args(int token_count)
 	return (args);
 }
 
-int	count_args(t_token *tokens)
+int	count_args(t_tok *tokens)
 {
 	int		count;
-	t_token	*current;
+	t_tok	*current;
 
 	count = 0;
 	current = tokens;

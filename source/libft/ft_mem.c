@@ -1,36 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   ft_mem.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/17 16:03:47 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:24:29 by kyukang          ###   ########.fr       */
+/*   Created: 2024/11/04 13:26:21 by kyukang           #+#    #+#             */
+/*   Updated: 2024/11/04 13:33:51 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_env(char **env, t_cmd *cmd)
+void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	int	i;
+	size_t			i;
+	unsigned char	*p;
+	unsigned char	*q;
 
 	i = 0;
-	if (cmd->argc > 1)
+	p = (unsigned char *)dst;
+	q = (unsigned char *)src;
+	while (i < n)
 	{
-		write(2, "env: no such file or directory\n", 32);
-		return (127);
-	}
-	if (env == NULL)
-	{
-		write(2, "env: no environment variables\n", 31);
-		return (1);
-	}
-	while (env[i] != NULL)
-	{
-		printf("%s\n", env[i]);
+		p[i] = q[i];
 		i++;
 	}
-	return (0);
+	return (dst);
+}
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	unsigned char	*p;
+
+	p = (unsigned char *)s;
+	while (n--)
+		*p++ = (unsigned char)c;
+	return (s);
 }

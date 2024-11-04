@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:00:55 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/21 17:29:57 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:24:36 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	remove_env_key(char ***env, const char *key)
 	}
 }
 
-int	ft_unset(t_command *cmd, char ***env)
+int	ft_unset(t_cmd *cmd, char ***env)
 {
 	char	*key;
 

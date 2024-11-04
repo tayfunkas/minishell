@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:02:40 by kyukang           #+#    #+#             */
-/*   Updated: 2024/10/28 19:40:08 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:24:34 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static int	parse_key_value(char *key_value, char **key, char **value)
 }
 
 static int	add_single_env(char *key, char *value, char ***env,
-	t_exec_context *ctx)
+	t_ctx *ctx)
 {
 	if (!is_valid_env_var_name(key))
 	{
@@ -66,7 +66,7 @@ static int	add_single_env(char *key, char *value, char ***env,
 	return (0);
 }
 
-static int	add_new_env(t_command *cmd, char ***env, t_exec_context *ctx)
+static int	add_new_env(t_cmd *cmd, char ***env, t_ctx *ctx)
 {
 	char	*key;
 	char	*value;
@@ -91,7 +91,7 @@ static int	add_new_env(t_command *cmd, char ***env, t_exec_context *ctx)
 	return (0);
 }
 
-int	ft_export(t_command *cmd, char ***env, t_exec_context *ctx)
+int	ft_export(t_cmd *cmd, char ***env, t_ctx *ctx)
 {
 	if (cmd->argc < 2)
 	{

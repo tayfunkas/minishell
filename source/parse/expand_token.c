@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:37:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 20:09:12 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:25:20 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	expand_result_buffer(t_expand *exp, char *static_buffer)
 	return (0);
 }
 
-static int	process_token_loop(char *token, t_expand *exp, t_exec_context *ctx)
+static int	process_token_loop(char *token, t_expand *exp, t_ctx *ctx)
 {
 	static char	static_buffer[1024];
 
@@ -50,7 +50,7 @@ static int	process_token_loop(char *token, t_expand *exp, t_exec_context *ctx)
 	return (0);
 }
 
-char	*expand_var(char *token, t_exec_context *ctx)
+char	*expand_var(char *token, t_ctx *ctx)
 {
 	static char	static_buffer[1024];
 	t_expand	exp;
@@ -79,9 +79,9 @@ char	*expand_var(char *token, t_exec_context *ctx)
 	return (exp.result);
 }
 
-void	expand_tokens(t_token *head, t_exec_context *ctx)
+void	expand_tokens(t_tok *head, t_ctx *ctx)
 {
-	t_token	*current;
+	t_tok	*current;
 	char	*expanded;
 
 	current = head;

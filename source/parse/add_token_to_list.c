@@ -6,17 +6,17 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:34:54 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 20:08:21 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:25:16 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_token	*init_new_token(char *cleaned_str, char quote, t_token *current)
+static t_tok	*init_new_token(char *cleaned_str, char quote, t_tok *current)
 {
-	t_token	*new_token;
+	t_tok	*new_token;
 
-	new_token = (t_token *)malloc(sizeof(t_token));
+	new_token = (t_tok *)malloc(sizeof(t_tok));
 	if (!new_token)
 		return (NULL);
 	new_token->str = cleaned_str;
@@ -77,9 +77,9 @@ static char	*clean_token_str(char *start, int len)
 	return (cleaned_str);
 }
 
-t_token	*add_token_to_list(char *start, int len, char quote, t_token *current)
+t_tok	*add_token_to_list(char *start, int len, char quote, t_tok *current)
 {
-	t_token	*new_token;
+	t_tok	*new_token;
 	char	*cleaned_str;
 
 	cleaned_str = clean_token_str(start, len);

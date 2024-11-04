@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:09:54 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 20:06:50 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:24:26 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	check_n_option(char *arg)
 	return (arg[j] == '\0');
 }
 
-static void	print_args(char **args, int start_index, t_token *tokens)
+static void	print_args(char **args, int start_index, t_tok *tokens)
 {
 	while (args[start_index] != NULL)
 	{
@@ -34,7 +34,7 @@ static void	print_args(char **args, int start_index, t_token *tokens)
 	}
 }
 
-int	ft_echo(char **args, t_token *tokens)
+int	ft_echo(char **args, t_tok *tokens)
 {
 	int	newline;
 	int	i;

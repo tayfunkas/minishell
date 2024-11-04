@@ -6,11 +6,18 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:24:42 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 20:11:02 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:27:35 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	free_all(t_ctx *ctx, t_tok *tokens, t_cmd *cmdlist)
+{
+	free_context(ctx);
+	free_tokens(tokens);
+	free_command_list(cmdlist);
+}
 
 void	free_environment(char **env)
 {
@@ -27,7 +34,7 @@ void	free_environment(char **env)
 	free(env);
 }
 
-void	free_context(t_exec_context *ctx)
+void	free_context(t_ctx *ctx)
 {
 	int	i;
 
@@ -71,10 +78,10 @@ void	free_expand(t_expand *exp)
 	exp->env_value = NULL;
 }
 
-void	free_command_list(t_command *head)
+void	free_command_list(t_cmd *head)
 {
-	t_command	*current;
-	t_command	*next;
+	t_cmd	*current;
+	t_cmd	*next;
 
 	current = head;
 	while (current)
@@ -85,10 +92,10 @@ void	free_command_list(t_command *head)
 	}
 }
 
-void	free_tokens(t_token *tokens)
+void	free_tokens(t_tok *tokens)
 {
-	t_token	*current;
-	t_token	*next;
+	t_tok	*current;
+	t_tok	*next;
 
 	if (!tokens)
 		return ;
@@ -102,7 +109,7 @@ void	free_tokens(t_token *tokens)
 	}
 }
 
-void	free_command(t_command *cmd)
+void	free_command(t_cmd *cmd)
 {
 	int	i;
 

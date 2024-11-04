@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:29:13 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/01 13:30:07 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:25:32 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static char	*create_status_str(int status)
 	return (new_status);
 }
 
-static int	update_existing_status(t_exec_context *ctx, char *new_status)
+static int	update_existing_status(t_ctx *ctx, char *new_status)
 {
 	int	i;
 
@@ -56,7 +56,7 @@ static int	update_existing_status(t_exec_context *ctx, char *new_status)
 	return (0);
 }
 
-static int	add_new_status(t_exec_context *ctx, char *new_status)
+static int	add_new_status(t_ctx *ctx, char *new_status)
 {
 	char	**new_env;
 	int		i;
@@ -84,7 +84,7 @@ static int	add_new_status(t_exec_context *ctx, char *new_status)
 	return (1);
 }
 
-void	update_last_status(t_exec_context *ctx, int status)
+void	update_last_status(t_ctx *ctx, int status)
 {
 	char	*new_status;
 
@@ -101,7 +101,7 @@ void	update_last_status(t_exec_context *ctx, int status)
 	}
 }
 
-int	initialize_exit_status(t_exec_context *ctx)
+int	initialize_exit_status(t_ctx *ctx)
 {
 	char	*initial_status;
 

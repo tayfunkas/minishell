@@ -6,14 +6,14 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:30 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 20:20:59 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:24:15 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	handle_child_process(t_command *cmd, char *cmd_path, char **args,
-	t_exec_context *ctx)
+static int	handle_child_process(t_cmd *cmd, char *cmd_path, char **args,
+	t_ctx *ctx)
 {
 	int	exec_result;
 
@@ -46,8 +46,7 @@ static void	child_signal_for_wait(void)
 	signal(SIGQUIT, child_sigquit_handler);
 }
 
-int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
-	t_exec_context *ctx, t_token *start, t_token *end)
+int	fork_and_execute(t_cmd *cmd, char **args, t_ctx *ctx, t_tok *start, t_tok *end)
 {
 	pid_t	pid;
 	int		parent_in;
@@ -62,7 +61,7 @@ int	fork_and_execute(t_command *cmd, char *cmd_path, char **args,
 	{
 		if (setup_cmd_fds(cmd, start, end, ctx))
 			exit(1);
-		status = handle_child_process(cmd, cmd_path, args, ctx);
+		status = handle_child_process(cmd, cmd->cmd_path, args, ctx);
 		exit(status);
 	}
 	else if (pid > 0)

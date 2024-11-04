@@ -6,11 +6,28 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:06:11 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 20:18:50 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:25:12 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	setup_cmd_fds(t_cmd *cmd, t_tok *start, t_tok *end,
+	t_ctx *ctx)
+{
+	int	status;
+
+	cmd->fd_in = STDIN_FILENO;
+	cmd->fd_out = STDOUT_FILENO;
+	status = setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx);
+	if (status == 1)
+		return (status);
+	if (ctx->current_index > 0 && cmd->fd_in == STDIN_FILENO)
+		cmd->fd_in = ctx->pipe_fds[ctx->current_index - 1][0];
+	if (ctx->current_index < ctx->pipe_count && cmd->fd_out == STDOUT_FILENO)
+		cmd->fd_out = ctx->pipe_fds[ctx->current_index][1];
+	return (status);
+}
 
 static int	is_internal_cmd(char *cmd)
 {
@@ -39,7 +56,7 @@ static int	is_redir(char *cmd)
 	return (0);
 }
 
-int	handle_cmd(t_token *current, t_token *cmd_end, t_exec_context *ctx)
+int	handle_cmd(t_tok *current, t_tok *cmd_end, t_ctx *ctx)
 {
 	int	status;
 	int	fd_in;
@@ -54,7 +71,7 @@ int	handle_cmd(t_token *current, t_token *cmd_end, t_exec_context *ctx)
 			return (0);
 	}
 	if (is_internal_cmd(current->str))
-		status = execute_internal_cmd(ctx, current, cmd_end, current);
+		status = execute_internal_cmd(ctx, current, cmd_end);
 	else if (is_redir(current->str))
 	{
 		fd_in = STDIN_FILENO;

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:32:37 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 20:10:45 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:25:25 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ static char	*skip_whitespace(char *start)
 	return (start);
 }
 
-static t_token	*handle_special_characters(t_parser *parser, int *i,
-	t_token *current)
+static t_tok	*handle_special_characters(t_parser *parser, int *i,
+	t_tok *current)
 {
-	t_token	*new_token;
-	t_token	*arg_token;
+	t_tok	*new_token;
+	t_tok	*arg_token;
 
 	if ((*parser->end == '<' && *(parser->end + 1) == '<')
 		|| (*parser->end == '>' && *(parser->end + 1) == '>'))
@@ -78,9 +78,9 @@ static void	init_parsers(t_parser *parser)
 	parser->len = 0;
 }
 
-t_token	*process_token(t_parser *parser, int *i, t_token *current)
+t_tok	*process_token(t_parser *parser, int *i, t_tok *current)
 {
-	t_token	*new_token;
+	t_tok	*new_token;
 	int		entirely_in_single_quotes;
 	char	initial_quote;
 
@@ -136,10 +136,10 @@ t_token	*process_token(t_parser *parser, int *i, t_token *current)
 	return (new_token);
 }
 
-t_token	*tokenize_inputs(char *input, int max_args)
+t_tok	*tokenize_inputs(char *input, int max_args)
 {
-	t_token		*head;
-	t_token		*current;
+	t_tok		*head;
+	t_tok		*current;
 	int			i;
 	t_parser	parser;
 

@@ -6,15 +6,15 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:23:05 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 21:14:21 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:25:34 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	run_minishell(char *input, t_exec_context *ctx)
+static void	run_minishell(char *input, t_ctx *ctx)
 {
-	t_token	*tokens;
+	t_tok	*tokens;
 	int		status;
 
 	if (g_signal == 2)
@@ -33,19 +33,14 @@ static void	run_minishell(char *input, t_exec_context *ctx)
 	{
 		expand_tokens(tokens, ctx);
 		assign_token_types(tokens);
-		//if (check_syntax(tokens, ctx))
-		//{
-			signal(SIGINT, SIG_IGN);
-			status = handle_tokens(tokens, ctx);
-			setup_signal();
-			update_last_status(ctx, status);
-		//}
-		//else
-		//	update_last_status(ctx, 2);
+		signal(SIGINT, SIG_IGN);
+		status = handle_tokens(tokens, ctx);
+		setup_signal();
+		update_last_status(ctx, status);
 	}
 }
 
-static void	minishell(t_exec_context *ctx)
+static void	minishell(t_ctx *ctx)
 {
 	char	*input;
 
@@ -73,7 +68,7 @@ static void	minishell(t_exec_context *ctx)
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_exec_context	ctx;
+	t_ctx	ctx;
 
 	(void)argc;
 	(void)argv;

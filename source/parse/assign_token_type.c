@@ -6,13 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:39:00 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 20:09:05 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:25:18 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	type_tokens(t_token *token)
+static void	type_tokens(t_tok *token)
 {
 	if (token->prev && (token->prev->type == TRUNC
 			|| token->prev->type == APPEND || token->prev->type == INPUT))
@@ -38,9 +38,9 @@ static void	type_tokens(t_token *token)
 		token->type = ARG;
 }
 
-void	assign_token_types(t_token *tokens)
+void	assign_token_types(t_tok *tokens)
 {
-	t_token	*current;
+	t_tok	*current;
 
 	current = tokens;
 	while (current)

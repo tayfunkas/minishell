@@ -6,13 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:00:40 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 17:10:49 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:25:13 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	init_context(t_exec_context *ctx, t_token *tokens)
+static int	init_ctx(t_ctx *ctx, t_tok *tokens)
 {
 	int	pipe_count;
 
@@ -36,9 +36,9 @@ static int	init_context(t_exec_context *ctx, t_token *tokens)
 	return (1);
 }
 
-static t_token	*find_cmd_end(t_token *current)
+static t_tok	*find_cmd_end(t_tok *current)
 {
-	t_token	*cmd_end;
+	t_tok	*cmd_end;
 
 	cmd_end = current;
 	while (cmd_end && cmd_end->type != PIPE)
@@ -46,10 +46,10 @@ static t_token	*find_cmd_end(t_token *current)
 	return (cmd_end);
 }
 
-static int	handle_tokens_loop(t_token *tokens, t_exec_context *ctx)
+static int	handle_tokens_loop(t_tok *tokens, t_ctx *ctx)
 {
-	t_token	*current;
-	t_token	*cmd_end;
+	t_tok	*current;
+	t_tok	*cmd_end;
 	int		status;
 
 	status = 0;
@@ -73,11 +73,11 @@ static int	handle_tokens_loop(t_token *tokens, t_exec_context *ctx)
 	return (status);
 }
 
-int	handle_tokens(t_token *tokens, t_exec_context *ctx)
+int	handle_tokens(t_tok *tokens, t_ctx *ctx)
 {
 	int		status;
 
-	if (!init_context(ctx, tokens))
+	if (!init_ctx(ctx, tokens))
 		return (-1);
 	status = handle_tokens_loop(tokens, ctx);
 	close_pipes(ctx->pipe_fds, ctx->pipe_count);

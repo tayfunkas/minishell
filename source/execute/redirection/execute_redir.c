@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 18:01:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/03 21:34:00 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 14:31:12 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	errmsg_if_no_line(char *line, char *delimiter)
 	}
 }
 
-static void	heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count, t_token *current, t_exec_context *ctx)
+static void	heredoc_input(int *pipe_fd, char **delimiters, int delimiter_count, t_tok *current, t_ctx *ctx)
 {
 	char	*line;
 	int		current_delimiter;
@@ -76,7 +76,7 @@ static void	heredoc_wait(int *pipe_fd, int *fd_in, pid_t pid)
 		g_signal = 128 + WTERMSIG(status);
 }
 
-static void	recursive_heredoc(t_token *current, char **delimiters, int *delimiter_count)
+static void	recursive_heredoc(t_tok *current, char **delimiters, int *delimiter_count)
 {
 	if (current == NULL || current->type != HEREDOC)
 		return ;
@@ -84,7 +84,7 @@ static void	recursive_heredoc(t_token *current, char **delimiters, int *delimite
 	(*delimiter_count)++;
 }
 
-void	execute_redir_heredoc(t_token *current, int *fd_in, t_exec_context *ctx)
+void	execute_redir_heredoc(t_tok *current, int *fd_in, t_ctx *ctx)
 {
 	int		pipe_fd[2];
 	char	*delimiters[100];
@@ -112,7 +112,7 @@ void	execute_redir_heredoc(t_token *current, int *fd_in, t_exec_context *ctx)
 		heredoc_wait(pipe_fd, fd_in, pid);
 }
 
-int	execute_redir_input(t_token *current, int *fd_in)
+int	execute_redir_input(t_tok *current, int *fd_in)
 {
 	if (*fd_in != STDIN_FILENO)
 		close(*fd_in);
@@ -128,7 +128,7 @@ int	execute_redir_input(t_token *current, int *fd_in)
 	return (0);
 }
 
-int	execute_redir_trunc(t_token *current, int *fd_out)
+int	execute_redir_trunc(t_tok *current, int *fd_out)
 {
 	if (*fd_out != STDOUT_FILENO)
 		close(*fd_out);
@@ -142,7 +142,7 @@ int	execute_redir_trunc(t_token *current, int *fd_out)
 	return (0);
 }
 
-int	execute_redir_append(t_token *current, int *fd_out)
+int	execute_redir_append(t_tok *current, int *fd_out)
 {
 	if (*fd_out != STDOUT_FILENO)
 		close(*fd_out);
@@ -158,9 +158,9 @@ int	execute_redir_append(t_token *current, int *fd_out)
 	return (0);
 }
 
-int	setup_redir(t_token *start, t_token *end, int *fd_in, int *fd_out, t_exec_context *ctx)
+int	setup_redir(t_tok *start, t_tok *end, int *fd_in, int *fd_out, t_ctx *ctx)
 {
-	t_token	*current;
+	t_tok	*current;
 	int		status;
 
 	current = start;
