@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:37:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:25:20 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 17:58:21 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,4 +106,20 @@ void	expand_tokens(t_tok *head, t_ctx *ctx)
 		}
 		current = current->next;
 	}
+}
+
+void	free_expand(t_expand *exp)
+{
+	if (exp == NULL)
+		return ;
+	if (exp->result != NULL)
+		free(exp->result);
+	if (exp->new_result != NULL)
+		free(exp->new_result);
+	if (exp->env_var != NULL)
+		free(exp->env_var);
+	exp->result = NULL;
+	exp->new_result = NULL;
+	exp->env_var = NULL;
+	exp->env_value = NULL;
 }

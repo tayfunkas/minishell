@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 13:26:59 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 13:27:50 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 17:57:45 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,17 @@ char	**ft_split(char const *s, char c)
 	}
 	result[i] = NULL;
 	return (result);
+}
+
+void	free_split(char **paths)
+{
+	int	i;
+
+	i = 0;
+	while (paths[i])
+	{
+		free(paths[i]);
+		i++;
+	}
+	free(paths);
 }

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:15:21 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:24:10 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 17:33:46 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,20 +42,19 @@ int	execute_external_cmd(t_ctx *ctx, t_tok *start, t_tok *end)
 	t_cmd	cmd;
 	int		status;
 	int		token_count;
-	char	**args;
 
 	token_count = count_toks_until(start, end);
 	status = check_cmd_path(&cmd.cmd_path, start, ctx);
 	if (status != 0)
 		return (status);
-	args = allocate_args(token_count);
-	if (args == NULL)
+	cmd.argv = allocate_args(token_count);
+	if (cmd.argv == NULL)
 	{
 		free(cmd.cmd_path);
 		return (-1);
 	}
-	prep_args(start, token_count, args, ctx);
-	status = fork_and_execute(&cmd, args, ctx, start, end);
-	free_external_c(cmd.cmd_path, args, token_count);
+	prep_args(start, token_count, cmd.argv, ctx);
+	status = fork_and_execute(&cmd, ctx, start, end);
+	free_external_c(cmd.cmd_path, cmd.argv, token_count);
 	return (status);
 }

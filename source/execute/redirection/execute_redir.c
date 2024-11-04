@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 18:01:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 15:33:10 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 17:02:49 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ int	setup_redir(t_tok *start, t_tok *end, int *fd_in, int *fd_out, t_ctx *ctx)
 	int		status;
 
 	current = start;
+	status = 0;
 	while (current != end && current != NULL)
 	{
 		if (current->type == INPUT)

@@ -159,7 +159,8 @@ void	prep_args(t_tok *tokens, int token_count, char **args, t_ctx *ctx);
 char	**allocate_args(int token_count);
 
 //fork + utils
-int		fork_and_execute(t_cmd *cmd, char **args, t_ctx *ctx, t_tok *start, t_tok *end);
+int		fork_and_execute(t_cmd *cmd, t_ctx *ctx, t_tok *start, t_tok *end);
+//int		fork_and_execute(t_cmd *cmd, char **args, t_ctx *ctx, t_tok *start, t_tok *end);
 void	duplicate_fds(int fd_in, int fd_out);
 void	restore_fds(int parent_in, int parent_out);
 void	check_fds(t_cmd *cmd);

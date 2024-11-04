@@ -6,11 +6,19 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:05 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 15:46:36 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 17:40:40 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	dup_or_expand(t_tok *current, char **args, int i, t_ctx *ctx)
+{
+	if (current->in_single_quotes)
+		args[i] = ft_strdup(current->str);
+	else
+		args[i] = expand_var(current->str, ctx);
+}
 
 void	prep_args(t_tok *tokens, int token_count, char **args, t_ctx *ctx)
 {
@@ -23,13 +31,11 @@ void	prep_args(t_tok *tokens, int token_count, char **args, t_ctx *ctx)
 	{
 		if (current->type == CMD || current->type == ARG)
 		{
-			if (current->in_single_quotes)
-				args[i] = ft_strdup(current->str);
-			else
-				args[i] = expand_var(current->str, ctx);
+			dup_or_expand(current, args, i, ctx);
 			i++;
 		}
-		else if (current->type == TRUNC || current->type == APPEND || current->type == INPUT || current->type == HEREDOC)
+		else if (current->type == TRUNC || current->type == APPEND
+			|| current->type == INPUT || current->type == HEREDOC)
 		{
 			current = current->next;
 			if (current)
@@ -38,44 +44,10 @@ void	prep_args(t_tok *tokens, int token_count, char **args, t_ctx *ctx)
 		}
 		else if (current->type == PIPE)
 			break ;
-		if (current)
-			current = current->next;
+		current = current->next;
 	}
 	args[i] = NULL;
 }
-
-/*void	prep_args(t_tok *tokens, int token_count, char **args, t_ctx *ctx)
-{
-	t_tok	*current;
-	int		i;
-
-	current = tokens;
-	i = 0;
-	while (current && i < token_count)
-	{
-		if (current->type == CMD || current->type == ARG)
-		{
-			if (current->in_single_quotes)
-				args[i] = strdup(current->str);
-			else
-				args[i] = expand_var(current->str, ctx);
-			i++;
-		}
-		else if (current->type == TRUNC || current->type == APPEND || current->type == INPUT || current->type == HEREDOC)
-		{
-			current = current->next;
-			if (current)
-				current = current->next;
-			continue ;
-		}
-		else if (current->type == PIPE)
-			break ;
-		if (current)
-			current = current->next;
-	}
-	args[i] = NULL;
-}
-*/
 
 char	**allocate_args(int token_count)
 {

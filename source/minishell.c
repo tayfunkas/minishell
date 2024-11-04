@@ -6,17 +6,14 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:23:05 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 16:49:21 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 17:59:44 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	run_minishell(char *input, t_ctx *ctx)
+static void	when_signals(t_ctx *ctx)
 {
-	t_tok	*tokens;
-	int		status;
-
 	if (g_signal == 2)
 	{
 		set_env(&(ctx->our_env), "?", "130", ctx);
@@ -27,7 +24,34 @@ static void	run_minishell(char *input, t_ctx *ctx)
 		set_env(&(ctx->our_env), "?", "1", ctx);
 		g_signal = 0;
 	}
+}
+
+static void	run_tokens(t_tok *tokens, t_ctx *ctx)
+{
+	int	status;
+
 	status = 0;
+	expand_tokens(tokens, ctx);
+	assign_token_types(tokens);
+	if (check_syntax(tokens))
+	{
+		signal(SIGINT, SIG_IGN);
+		status = handle_tokens(tokens, ctx);
+		setup_signal();
+		update_last_status(ctx, status);
+	}
+	else
+	{
+		write(2, "minishell: syntax error\n", 25);
+		update_last_status(ctx, 2);
+	}
+}
+
+static void	run_minishell(char *input, t_ctx *ctx)
+{
+	t_tok	*tokens;
+
+	when_signals(ctx);
 	if (!check_invalid_sequences(input))
 	{
 		write(2, "minishell: syntax error\n", 25);
@@ -36,22 +60,7 @@ static void	run_minishell(char *input, t_ctx *ctx)
 	}
 	tokens = tokenize_inputs(input, 20);
 	if (tokens)
-	{
-		expand_tokens(tokens, ctx);
-		assign_token_types(tokens);
-		if (check_syntax(tokens))
-		{
-			signal(SIGINT, SIG_IGN);
-			status = handle_tokens(tokens, ctx);
-			setup_signal();
-			update_last_status(ctx, status);
-		}
-		else
-		{
-			write(2, "minishell: syntax error\n", 25);
-			update_last_status(ctx, 2);
-		}
-	}
+		run_tokens(tokens, ctx);
 }
 
 static void	minishell(t_ctx *ctx)

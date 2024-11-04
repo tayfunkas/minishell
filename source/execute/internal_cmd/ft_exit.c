@@ -6,11 +6,18 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 16:00:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:30:32 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 17:58:53 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	free_all(t_ctx *ctx, t_tok *tokens, t_cmd *cmdlist)
+{
+	free_context(ctx);
+	free_tokens(tokens);
+	free_command_list(cmdlist);
+}
 
 int	ft_exit(char **args, t_ctx *ctx, t_tok *tokens, t_cmd *cmdlist)
 {

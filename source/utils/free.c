@@ -6,18 +6,11 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:24:42 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:27:35 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 17:58:35 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	free_all(t_ctx *ctx, t_tok *tokens, t_cmd *cmdlist)
-{
-	free_context(ctx);
-	free_tokens(tokens);
-	free_command_list(cmdlist);
-}
 
 void	free_environment(char **env)
 {
@@ -60,22 +53,6 @@ void	free_context(t_ctx *ctx)
 		free_environment(ctx->our_env);
 		ctx->our_env = NULL;
 	}
-}
-
-void	free_expand(t_expand *exp)
-{
-	if (exp == NULL)
-		return ;
-	if (exp->result != NULL)
-		free(exp->result);
-	if (exp->new_result != NULL)
-		free(exp->new_result);
-	if (exp->env_var != NULL)
-		free(exp->env_var);
-	exp->result = NULL;
-	exp->new_result = NULL;
-	exp->env_var = NULL;
-	exp->env_value = NULL;
 }
 
 void	free_command_list(t_cmd *head)
@@ -121,17 +98,4 @@ void	free_command(t_cmd *cmd)
 	}
 	free(cmd->argv);
 	free(cmd);
-}
-
-void	free_split(char **paths)
-{
-	int	i;
-
-	i = 0;
-	while (paths[i])
-	{
-		free(paths[i]);
-		i++;
-	}
-	free(paths);
 }
