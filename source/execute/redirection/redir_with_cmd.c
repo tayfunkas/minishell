@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 01:20:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/05 02:01:49 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 06:47:45 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,24 @@ int	delim_or_pipe_issue(char *delim, int *pipe_fd)
 		return (0);
 	}
 	return (1);
+}
+
+void	handle_heredoc_parent(int *pipe_fd, int *fd_in, pid_t pid, char *delim)
+{
+	int	status;
+
+	signal(SIGINT, SIG_DFL);
+	close(pipe_fd[1]);
+	waitpid(pid, &status, 0);
+	if (*fd_in != STDIN_FILENO)
+		close(*fd_in);
+	*fd_in = pipe_fd[0];
+	free(delim);
+	setup_signal();
+	if (WIFEXITED(status))
+		g_signal = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		g_signal = 128 + WTERMSIG(status);
 }
 
 static void	execute_redir_heredoc(t_tok *start, t_tok *end, t_ctx *ctx,

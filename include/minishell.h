@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 19:43:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/05 03:17:57 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 06:48:17 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,8 +126,8 @@ typedef struct s_heredoc
 //init_token.c
 t_tok	*tokenize_inputs(char *input, int max_args);
 //process_token.c
-int		process_token(t_parser *pars, int *i, t_tok **current, t_tok **head);
-//t_tok	*process_token(t_parser *pars, int *i, t_tok *current);
+//int		process_token(t_parser *pars, int *i, t_tok **current, t_tok **head);
+t_tok	*process_token(t_parser *pars, int *i, t_tok *current);
 //process_operators.c
 t_tok	*process_initial_operators(t_parser *pars, int *i, t_tok *current);
 //assign_token_type.c
@@ -202,7 +202,7 @@ int		setup_redir(t_tok *start, t_tok *end, t_ctx *ctx, t_cmd *cmd);
 //redir_without_cmd.c
 int		setup_redir_only(t_tok *start, t_tok *end, t_ctx *ctx);
 //redir_heredoc.c
-void	handle_heredoc_parent(int *pipe_fd, int *fd_in, pid_t pid, char *delim);
+//void	handle_heredoc_parent(int *pipe_fd, int *fd_in, pid_t pid, char *delim);
 void	collect_heredoc_delimiters(t_tok *start, t_tok *end, char **delim);
 int		line_or_delim(char *delim, char *line);
 void	heredoc_pid_error(int *pipe_fd, char *delim);

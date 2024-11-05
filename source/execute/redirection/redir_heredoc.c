@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 01:22:59 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/05 03:18:22 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 06:48:26 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,18 +60,21 @@ void	collect_heredoc_delimiters(t_tok *start, t_tok *end, char **delim)
 	*delim = NULL;
 }
 
-void	handle_heredoc_parent(int *pipe_fd, int *fd_in, pid_t pid, char *delim)
+/*void	handle_heredoc_parent(int *pipe_fd, int *fd_in, pid_t pid, char *delim)
 {
 	int	status;
 
+	signal(SIGINT, SIG_DFL);
 	close(pipe_fd[1]);
 	waitpid(pid, &status, 0);
 	if (*fd_in != STDIN_FILENO)
 		close(*fd_in);
 	*fd_in = pipe_fd[0];
-	if (WIFSIGNALED(status))
-		g_signal = 128 + WTERMSIG(status);
-	else
-		g_signal = WEXITSTATUS(status);
 	free(delim);
+	setup_signal();
+	if (WIFEXITED(status))
+		g_signal = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		g_signal = 128 + WTERMSIG(status);
 }
+*/

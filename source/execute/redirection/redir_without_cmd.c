@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 23:33:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/05 02:01:35 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 06:50:18 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,24 @@ static void	handle_heredoc_child(int *pipe_fd, char *delim, t_ctx *ctx,
 	close(pipe_fd[1]);
 	free_heredoc_child(start, ctx, delim);
 	exit(EXIT_SUCCESS);
+}
+
+static void	handle_heredoc_parent(int *pipe_fd, int *fd_in, pid_t pid, char *delim)
+{
+	int	status;
+
+	signal(SIGINT, SIG_DFL);
+	close(pipe_fd[1]);
+	waitpid(pid, &status, 0);
+	if (*fd_in != STDIN_FILENO)
+		close(*fd_in);
+	*fd_in = pipe_fd[0];
+	free(delim);
+	setup_signal();
+	if (WIFEXITED(status))
+		g_signal = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		g_signal = 128 + WTERMSIG(status);
 }
 
 static void	execute_redir_heredoc_only(t_tok *start, t_tok *end, int *fd_in,
