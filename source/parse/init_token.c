@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:15:34 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 18:43:44 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 20:55:16 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,17 @@ static int	process_next_token(t_parser *pars, int *i, t_tok **current,
 	pars->start = skip_whitespace(pars->start);
 	if (*pars->start == '\0')
 		return (0);
-	*current = process_token(pars, i, *current);
-	if (!*current)
+	//*current = process_token(pars, i, *current);
+	if (!process_token(pars, i, current, head))
+	{
+		if (pars->unclosed)
+			write(2, "Unclosed quotes aren't handled\n", 31);
+		free_tokens(*head);
+		*head = NULL;
+		*current = NULL;
+		return (0);
+	}
+	/*if (!*current)
 	{
 		if (pars->unclosed)
 		{
@@ -35,7 +44,7 @@ static int	process_next_token(t_parser *pars, int *i, t_tok **current,
 		}
 		free_tokens(*head);
 		return (0);
-	}
+	}*/
 	if (!*head)
 		*head = *current;
 	return (1);
@@ -55,7 +64,12 @@ t_tok	*tokenize_inputs(char *input, int max_args)
 	while (*pars.start && i < max_args)
 	{
 		if (!process_next_token(&pars, &i, &current, &head))
+		{
+			free_tokens(head);
 			return (NULL);
+		}
+		if (!head)
+			head = current;
 	}
 	return (head);
 }

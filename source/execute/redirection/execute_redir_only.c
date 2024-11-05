@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_redir_heredoc.c                            :+:      :+:    :+:   */
+/*   execute_redir_only.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/04 14:45:21 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 23:38:45 by kyukang          ###   ########.fr       */
+/*   Created: 2024/11/04 23:33:46 by kyukang           #+#    #+#             */
+/*   Updated: 2024/11/05 00:06:10 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ static void	collect_heredoc_delimiters(t_tok *start, t_tok *end, char **delim)
 				perror("Memory allocation failed");
 				return ;
 			}
-			printf("Delimiter added: %s\n", *delim);
 			current = current->next->next;
 			return ;
 		}
@@ -49,7 +48,7 @@ static void	collect_heredoc_delimiters(t_tok *start, t_tok *end, char **delim)
 	*delim = NULL;
 }
 
-static void	handle_heredoc_child(int *pipe_fd, char *delim, t_ctx *ctx, t_tok *start, t_cmd *cmd)
+static void	handle_heredoc_child(int *pipe_fd, char *delim, t_ctx *ctx, t_tok *start)
 {
 	char	*line;
 
@@ -75,10 +74,6 @@ static void	handle_heredoc_child(int *pipe_fd, char *delim, t_ctx *ctx, t_tok *s
 	close(pipe_fd[1]);
 	free_tokens(start);
 	free_context(ctx);
-	if (cmd->cmd_path)
-		free(cmd->cmd_path);
-	if (cmd->argv)
-		free(cmd->argv);
 	free(delim);
 	exit(EXIT_SUCCESS);
 }
@@ -98,7 +93,7 @@ static void	handle_heredoc_parent(int *pipe_fd, int *fd_in, pid_t pid)
 		g_signal = WEXITSTATUS(status);
 }
 
-void	execute_redir_heredoc(t_tok *start, t_tok *end, int *fd_in, t_ctx *ctx, t_cmd *cmd)
+static void	execute_redir_heredoc_only(t_tok *start, t_tok *end, int *fd_in, t_ctx *ctx)
 {
 	int		pipe_fd[2];
 	char	*delim;
@@ -124,10 +119,38 @@ void	execute_redir_heredoc(t_tok *start, t_tok *end, int *fd_in, t_ctx *ctx, t_c
 		return ;
 	}
 	if (pid == 0)
-		handle_heredoc_child(pipe_fd, delim, ctx, start, cmd);
+		handle_heredoc_child(pipe_fd, delim, ctx, start);
 	else
 	{
 		handle_heredoc_parent(pipe_fd, fd_in, pid);
 		free(delim);
 	}
+}
+
+int	setup_redir_only(t_tok *start, t_tok *end, t_ctx *ctx)
+{
+	t_tok	*current;
+	int		status;
+	int		fd_in;
+	int		fd_out;
+
+	fd_in = STDIN_FILENO;
+	fd_out = STDOUT_FILENO;
+	current = start;
+	status = 0;
+	while (current != end && current != NULL)
+	{
+		if (current->type == INPUT)
+			status = execute_redir_input(current, &fd_in);
+		else if (current->type == TRUNC)
+			status = execute_redir_trunc(current, &fd_out);
+		else if (current->type == APPEND)
+			status = execute_redir_append(current, &fd_out);
+		else if (current->type == HEREDOC)
+			execute_redir_heredoc_only(start, end, &fd_in, ctx);
+		if (status == 1)
+			return (1);
+		current = current->next;
+	}
+	return (0);
 }

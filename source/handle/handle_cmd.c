@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:06:11 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 15:26:19 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 00:41:22 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	setup_cmd_fds(t_cmd *cmd, t_tok *start, t_tok *end, t_ctx *ctx)
 
 	cmd->fd_in = STDIN_FILENO;
 	cmd->fd_out = STDOUT_FILENO;
-	status = setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx);
+	status = setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx, cmd);
 	if (status == 1)
 		return (status);
 	if (ctx->current_index > 0 && cmd->fd_in == STDIN_FILENO)
@@ -58,8 +58,6 @@ static int	is_redir(char *cmd)
 int	handle_cmd(t_tok *current, t_tok *cmd_end, t_ctx *ctx)
 {
 	int		status;
-	int		fd_in;
-	int		fd_out;
 
 	status = 0;
 	if (current == NULL || current->str == NULL)
@@ -72,11 +70,7 @@ int	handle_cmd(t_tok *current, t_tok *cmd_end, t_ctx *ctx)
 	if (is_internal_cmd(current->str))
 		status = execute_internal_cmd(ctx, current, cmd_end);
 	else if (is_redir(current->str))
-	{
-		fd_in = STDIN_FILENO;
-		fd_out = STDOUT_FILENO;
-		status = setup_redir(current, cmd_end, &fd_in, &fd_out, ctx);
-	}
+		status = setup_redir_only(current, cmd_end, ctx);
 	else
 		status = execute_external_cmd(ctx, current, cmd_end);
 	return (status);

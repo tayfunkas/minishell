@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:03:39 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 14:25:15 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 23:50:07 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,29 @@ void	free_pipe_fds(int **pipe_fds, int pipe_count)
 	int	i;
 
 	if (!pipe_fds)
+		return;
+	i = 0;
+	while (i < pipe_count)
+	{
+		if (pipe_fds[i])
+		{
+			// Close each pipe's read and write ends if they were opened
+			close(pipe_fds[i][0]);
+			close(pipe_fds[i][1]);
+			free(pipe_fds[i]);
+			pipe_fds[i] = NULL;
+		}
+		i++;
+	}
+	free(pipe_fds);
+	pipe_fds = NULL;
+}
+
+/* void	free_pipe_fds(int **pipe_fds, int pipe_count)
+{
+	int	i;
+
+	if (!pipe_fds)
 		return ;
 	i = 0;
 	while (i < pipe_count)
@@ -58,7 +81,7 @@ void	free_pipe_fds(int **pipe_fds, int pipe_count)
 		i++;
 	}
 	free(pipe_fds);
-}
+} */
 
 int	create_pipes(int **pipe_fds, int pipe_count)
 {

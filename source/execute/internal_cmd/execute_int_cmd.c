@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:52:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 15:25:33 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 01:01:41 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ static int	intcmd_pipe_child(t_cmd *cmd, t_tok *start, t_tok *end, t_ctx *ctx)
 		close(cmd->fd_out);
 	}
 	status = check_internal_c(cmd, &ctx->our_env, ctx, start);
+	free_tokens(start);
+	free_command_list(cmd);
+	free_context(ctx);
 	exit(status);
 }
 
@@ -92,7 +95,7 @@ static int	intcmd_no_pipe(t_cmd *cmd, t_tok *start, t_tok *end, t_ctx *ctx)
 	status = 0;
 	fd_in = dup(STDIN_FILENO);
 	fd_out = dup(STDOUT_FILENO);
-	if (setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx) != 0)
+	if (setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx, cmd) != 0)
 	{
 		restore_fds(fd_in, fd_out);
 		return (1);
@@ -122,9 +125,11 @@ int	execute_internal_cmd(t_ctx *ctx, t_tok *start, t_tok *end)
 	if (!cmd)
 		return (1);
 	if (ctx->pipe_count != 0)
+	{
 		status = intcmd_pipe(cmd, start, end, ctx);
+	}
 	else
 		status = intcmd_no_pipe(cmd, start, end, ctx);
-	free_command(cmd);
+	free_command_list(cmd);
 	return (status);
 }

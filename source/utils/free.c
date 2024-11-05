@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:24:42 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 17:58:35 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 01:11:39 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,24 +69,31 @@ void	free_command_list(t_cmd *head)
 	}
 }
 
-void	free_tokens(t_tok *tokens)
+void	free_command(t_cmd *cmd)
 {
-	t_tok	*current;
-	t_tok	*next;
+	int	i;
 
-	if (!tokens)
+	if (!cmd)
 		return ;
-	current = tokens;
-	while (current)
+	i = 0;
+	if (cmd->argv)
 	{
-		next = current->next;
-		free(current->str);
-		free(current);
-		current = next;
+		while (i < cmd->argc)
+		{
+			if (cmd->argv[i])
+			{
+				free(cmd->argv[i]);
+				cmd->argv[i] = NULL;
+			}
+			i++;
+		}
+		free(cmd->argv);
+		cmd->argv = NULL;
 	}
+	free(cmd);
 }
 
-void	free_command(t_cmd *cmd)
+/* void	free_command(t_cmd *cmd)
 {
 	int	i;
 
@@ -98,4 +105,25 @@ void	free_command(t_cmd *cmd)
 	}
 	free(cmd->argv);
 	free(cmd);
+} */
+
+void	free_tokens(t_tok *tokens)
+{
+	t_tok	*current;
+	t_tok	*next;
+
+	if (!tokens)
+		return ;
+	current = tokens;
+	while (current)
+	{
+		next = current->next;
+		if (current->str)
+		{
+			free(current->str);
+			current->str = NULL;
+		}
+		free(current);
+		current = next;
+	}
 }

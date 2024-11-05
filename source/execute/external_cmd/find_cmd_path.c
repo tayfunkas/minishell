@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 17:01:23 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 17:01:34 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 21:06:35 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,10 @@ char	*find_cmd_path(char *cmd, char **our_env)
 	path_env = get_path_env(our_env);
 	if (!path_env)
 		return (NULL);
-	cmd_path = NULL;
 	paths = ft_split(path_env, ':');
+	if (!paths)
+		return (NULL);
+	cmd_path = NULL;
 	i = 0;
 	while (paths[i])
 	{

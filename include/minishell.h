@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/04 19:43:16 by kyukang           #+#    #+#             */
+/*   Updated: 2024/11/04 23:36:50 by kyukang          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
@@ -41,12 +52,7 @@ typedef struct s_tok
 	int				type;
 	int				flag;
 	char			quote;
-	int				quo_info;
 	int				in_single_quotes;
-	int				pipe_count;
-	int				cmd_count;
-	int				redir_count;
-	int				cmd_flag;
 	struct s_tok	*prev;
 	struct s_tok	*next;
 }	t_tok;
@@ -114,7 +120,8 @@ void	free_external_c(char *cmd_path, char **args, int token_count);
 //--------------------------------parse--------------------------------
 //init_toks.c
 t_tok	*tokenize_inputs(char *input, int max_args);
-t_tok	*process_token(t_parser *parser, int *i, t_tok *current);
+//t_tok	*process_token(t_parser *parser, int *i, t_tok *current);
+int		process_token(t_parser *pars, int *i, t_tok **current, t_tok **head);
 
 //add_token_to_list.c
 t_tok	*tok_to_list(char *start, int len, char quote, t_tok *current);
@@ -168,7 +175,6 @@ char	**allocate_args(int token_count);
 
 //fork + utils
 int		fork_and_execute(t_cmd *cmd, t_ctx *ctx, t_tok *start, t_tok *end);
-//int		fork_and_execute(t_cmd *cmd, char **args, t_ctx *ctx, t_tok *start, t_tok *end);
 void	duplicate_fds(int fd_in, int fd_out);
 void	restore_fds(int parent_in, int parent_out);
 void	check_fds(t_cmd *cmd);
@@ -196,17 +202,19 @@ void	expand_tilde(char **path, char *home);
 void	update_env(char ***env, char *current_dir, char *new_dir, t_ctx *ctx);
 
 //--------------------------------execute_redir--------------------------------
-//int		setup_redir(t_tok *start, t_tok *end, t_cmd *cmd, t_ctx *ctx);
-int		setup_redir(t_tok *start, t_tok *end, int *fd_in, int *fd_out, t_ctx *ctx);
+//int		setup_redir(t_tok *start, t_tok *end, int *fd_in, int *fd_out, t_ctx *ctx);
+int	setup_redir(t_tok *start, t_tok *end, int *fd_in, int *fd_out, t_ctx *ctx, t_cmd *cmd);
 int		execute_redir_input(t_tok *current, int *fd_in);
 int		execute_redir_trunc(t_tok *current, int *fd_out);
 int		execute_redir_append(t_tok *current, int *fd_out);
-void	execute_redir_heredoc(t_tok *current, int *fd_in, t_ctx *ctx);
+int	setup_redir_only(t_tok *start, t_tok *end, t_ctx *ctx);
+//int		execute_redir_heredoc(t_tok *current, int *fd_in, t_ctx *ctx);
+//void execute_redir_heredoc(t_tok *start, t_tok *end, int *fd_in, t_ctx *ctx);
+void	execute_redir_heredoc(t_tok *start, t_tok *end, int *fd_in, t_ctx *ctx, t_cmd *cmd);
 
 //heredoc
 void	errmsg_if_no_line(char *line, char *delimiter);
 void	heredoc_input(int *pipe_fd, char **delims, int delim_count, t_tok *current, t_ctx *ctx);
-//void	heredoc_input(int *pipe_fd, t_delim *delim, t_tok *current, t_ctx *ctx);
 void	heredoc_wait(int *pipe_fd, int *fd_in, pid_t pid);
 void	recursive_heredoc(t_tok *current, char **delims, int *delim_count);
 

@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:34:54 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 18:25:20 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 20:56:34 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,10 @@ static char	*clean_token_str(char *start, int len)
 
 	cleaned_str = malloc(len + 1);
 	if (!cleaned_str)
+	{
+		write(2, "Memory allocation failed\n", 25);
 		return (NULL);
+	}
 	quote.outer = 0;
 	quote.inner = 0;
 	quote.i = 0;

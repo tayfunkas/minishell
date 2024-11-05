@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:37:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 18:17:52 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 20:47:16 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ char	*expand_var(char *token, t_ctx *ctx)
 	final_result = exp.result;
 	exp.result = NULL;
 	free_expand(&exp);
-	return (exp.result);
+	return (final_result);
 }
 
 void	expand_tokens(t_tok *head, t_ctx *ctx)
@@ -102,6 +102,11 @@ void	expand_tokens(t_tok *head, t_ctx *ctx)
 			{
 				free(current->str);
 				current->str = ft_strdup("");
+				if (!current->str)
+				{
+					perror("strdup");
+					return ;
+				}
 			}
 		}
 		current = current->next;

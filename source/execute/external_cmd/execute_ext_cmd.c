@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:15:21 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 17:33:46 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/04 23:31:03 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,11 @@
 
 void	free_external_c(char *cmd_path, char **args, int token_count)
 {
-	int	i;
-
 	(void)token_count;
-	free(cmd_path);
-	i = 0;
-	free(args);
+	if (cmd_path)
+		free(cmd_path);
+	if (args)
+		free(args);
 }
 
 static int	count_toks_until(t_tok *start, t_tok *end)
