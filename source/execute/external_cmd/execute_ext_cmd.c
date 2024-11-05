@@ -6,13 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:15:21 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 23:31:03 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 02:16:25 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_external_c(char *cmd_path, char **args, int token_count)
+static void	free_external_c(char *cmd_path, char **args, int token_count)
 {
 	(void)token_count;
 	if (cmd_path)

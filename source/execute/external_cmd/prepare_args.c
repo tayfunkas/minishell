@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:31:05 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 17:40:40 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 02:19:06 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	**allocate_args(int token_count)
 	return (args);
 }
 
-int	count_args(t_tok *tokens)
+/*int	count_args(t_tok *tokens)
 {
 	int		count;
 	t_tok	*current;
@@ -81,3 +81,4 @@ int	count_args(t_tok *tokens)
 	}
 	return (count);
 }
+*/

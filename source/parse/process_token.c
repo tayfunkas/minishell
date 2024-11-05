@@ -6,13 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:18:57 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 21:16:00 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 04:02:40 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	init_parsers(t_parser *parser)
+static void	init_parsers(t_parser *parser)
 {
 	parser->end = parser->start;
 	parser->outer = 0;
@@ -20,7 +20,7 @@ void	init_parsers(t_parser *parser)
 	parser->len = 0;
 }
 
-void	advance_to_token_end(t_parser *pars)
+static void	advance_to_token_end(t_parser *pars)
 {
 	while (*pars->end)
 	{
@@ -42,13 +42,10 @@ void	advance_to_token_end(t_parser *pars)
 	}
 }
 
-int	process_token(t_parser *pars, int *i, t_tok **current, t_tok **head)
+int	process_initial_token(t_parser *pars, int *i, t_tok **current, t_tok **head)
 {
 	t_tok	*new_token;
-	int		entirely_in_single_quotes;
 
-	entirely_in_single_quotes = 0;
-	init_parsers(pars);
 	new_token = process_initial_operators(pars, i, *current);
 	if (new_token != NULL)
 	{
@@ -57,6 +54,17 @@ int	process_token(t_parser *pars, int *i, t_tok **current, t_tok **head)
 			*head = new_token;
 		return (1);
 	}
+	return (0);
+}
+
+int	process_token(t_parser *pars, int *i, t_tok **current, t_tok **head)
+{
+	t_tok	*new_token;
+	int		entirely_in_single_quotes;
+
+	init_parsers(pars);
+	if (process_initial_token(pars, i, current, head))
+		return (1);
 	entirely_in_single_quotes = (*pars->end == '\'');
 	advance_to_token_end(pars);
 	pars->len = pars->end - pars->start;
@@ -76,31 +84,3 @@ int	process_token(t_parser *pars, int *i, t_tok **current, t_tok **head)
 	(*i)++;
 	return (1);
 }
-
-/*t_tok	*process_token(t_parser *pars, int *i, t_tok *current)
-{
-	t_tok	*new_token;
-	int		entirely_in_single_quotes;
-
-	entirely_in_single_quotes = 0;
-	init_parsers(pars);
-	new_token = process_initial_operators(pars, i, current);
-	if (new_token != NULL)
-		return (new_token);
-	entirely_in_single_quotes = (*pars->end == '\'');
-	advance_to_token_end(pars);
-	pars->len = pars->end - pars->start;
-	if (pars->outer)
-	{
-		pars->unclosed = pars->outer;
-		return (NULL);
-	}
-	new_token = tok_to_list(pars->start, pars->len, pars->outer, current);
-	if (!new_token)
-		return (NULL);
-	new_token->in_single_quotes = entirely_in_single_quotes;
-	pars->start = pars->end;
-	(*i)++;
-	return (new_token);
-}
-*/

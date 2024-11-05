@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:03:39 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 23:50:07 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 02:02:34 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,12 @@ void	free_pipe_fds(int **pipe_fds, int pipe_count)
 	int	i;
 
 	if (!pipe_fds)
-		return;
+		return ;
 	i = 0;
 	while (i < pipe_count)
 	{
 		if (pipe_fds[i])
 		{
-			// Close each pipe's read and write ends if they were opened
 			close(pipe_fds[i][0]);
 			close(pipe_fds[i][1]);
 			free(pipe_fds[i]);

@@ -6,13 +6,13 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 17:01:23 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/04 21:06:35 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 02:16:59 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_path_env(char **our_env)
+static char	*get_path_env(char **our_env)
 {
 	int	i;
 

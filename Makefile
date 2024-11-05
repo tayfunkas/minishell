@@ -10,7 +10,7 @@ SRCS = $(addprefix source/, \
 		$(addprefix handle/, handle.c pipes.c handle_cmd.c) \
 		$(addprefix execute/external_cmd/, execute_ext_cmd.c check_ext_path.c find_cmd_path.c prepare_args.c fork.c fork_utils.c) \
 		$(addprefix execute/internal_cmd/, init_int_cmd.c execute_int_cmd.c ft_cd.c ft_cd_helpers.c ft_echo.c ft_env.c ft_exit.c ft_export.c ft_pwd.c ft_unset.c set_env.c) \
-		$(addprefix execute/redirection/, execute_redir.c execute_redir_heredoc.c execute_redir_only.c) \
+		$(addprefix execute/redirection/, redir_with_cmd.c redir_without_cmd.c redir_heredoc.c redir_others.c ) \
 		$(addprefix utils/, free.c check_sequence.c signal.c status.c check_syntax.c utils.c ) \
 		$(addprefix libft/, ft_atoi.c ft_calloc.c ft_is.c ft_mem.c ft_split.c ft_str.c ft_strcmp.c ft_strcpy.c ft_strdup.c) \
 		minishell.c)

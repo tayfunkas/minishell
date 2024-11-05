@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:24:42 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/05 01:11:39 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 03:15:09 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,20 +92,6 @@ void	free_command(t_cmd *cmd)
 	}
 	free(cmd);
 }
-
-/* void	free_command(t_cmd *cmd)
-{
-	int	i;
-
-	i = 0;
-	while (i < cmd->argc)
-	{
-		free(cmd->argv[i]);
-		i++;
-	}
-	free(cmd->argv);
-	free(cmd);
-} */
 
 void	free_tokens(t_tok *tokens)
 {

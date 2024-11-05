@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:06:11 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/05 00:41:22 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 01:39:36 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	setup_cmd_fds(t_cmd *cmd, t_tok *start, t_tok *end, t_ctx *ctx)
 
 	cmd->fd_in = STDIN_FILENO;
 	cmd->fd_out = STDOUT_FILENO;
-	status = setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx, cmd);
+	status = setup_redir(start, end, ctx, cmd);
 	if (status == 1)
 		return (status);
 	if (ctx->current_index > 0 && cmd->fd_in == STDIN_FILENO)

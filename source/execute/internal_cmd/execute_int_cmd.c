@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 14:52:35 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/05 01:01:41 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 01:40:01 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ static int	intcmd_no_pipe(t_cmd *cmd, t_tok *start, t_tok *end, t_ctx *ctx)
 	status = 0;
 	fd_in = dup(STDIN_FILENO);
 	fd_out = dup(STDOUT_FILENO);
-	if (setup_redir(start, end, &cmd->fd_in, &cmd->fd_out, ctx, cmd) != 0)
+	if (setup_redir(start, end, ctx, cmd) != 0)
 	{
 		restore_fds(fd_in, fd_out);
 		return (1);
