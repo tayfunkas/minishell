@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 19:43:16 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/05 06:48:17 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 07:47:11 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,6 @@ typedef struct s_heredoc
 //init_token.c
 t_tok	*tokenize_inputs(char *input, int max_args);
 //process_token.c
-//int		process_token(t_parser *pars, int *i, t_tok **current, t_tok **head);
 t_tok	*process_token(t_parser *pars, int *i, t_tok *current);
 //process_operators.c
 t_tok	*process_initial_operators(t_parser *pars, int *i, t_tok *current);

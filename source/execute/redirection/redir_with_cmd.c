@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 01:20:51 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/05 06:47:45 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 07:46:22 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,19 +45,6 @@ void	handle_heredoc_child(t_heredoc *heredoc, t_ctx *ctx, t_tok *start,
 	exit(EXIT_SUCCESS);
 }
 
-int	delim_or_pipe_issue(char *delim, int *pipe_fd)
-{
-	if (!delim)
-		return (0);
-	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
-		free(delim);
-		return (0);
-	}
-	return (1);
-}
-
 void	handle_heredoc_parent(int *pipe_fd, int *fd_in, pid_t pid, char *delim)
 {
 	int	status;
@@ -84,8 +71,14 @@ static void	execute_redir_heredoc(t_tok *start, t_tok *end, t_ctx *ctx,
 
 	heredoc.delim = NULL;
 	collect_heredoc_delimiters(start, end, &heredoc.delim);
-	if (!delim_or_pipe_issue(heredoc.delim, heredoc.pipe_fd))
+	if (!heredoc.delim)
 		return ;
+	if (pipe(heredoc.pipe_fd) == -1)
+	{
+		perror("pipe");
+		free(heredoc.delim);
+		return ;
+	}
 	pid = fork();
 	if (pid == -1)
 	{

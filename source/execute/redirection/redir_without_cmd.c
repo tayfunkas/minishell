@@ -6,7 +6,7 @@
 /*   By: kyukang <kyukang@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 23:33:46 by kyukang           #+#    #+#             */
-/*   Updated: 2024/11/05 06:50:18 by kyukang          ###   ########.fr       */
+/*   Updated: 2024/11/05 07:46:45 by kyukang          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ static void	handle_heredoc_child(int *pipe_fd, char *delim, t_ctx *ctx,
 	exit(EXIT_SUCCESS);
 }
 
-static void	handle_heredoc_parent(int *pipe_fd, int *fd_in, pid_t pid, char *delim)
+static void	handle_heredoc_parent(int *pipe_fd, int *fd_in, pid_t pid,
+	char *delim)
 {
 	int	status;
 
