@@ -2,7 +2,7 @@
 
 **Minishell** is a minimalistic shell implementation created as part of the 42 programming school curriculum. This project aims to provide a deep understanding of Unix shell behavior by building a functional shell from scratch. The shell supports command execution, environment variable management, and pipeline operations, mimicking the behavior of Bash.
 
-This project was developed collaboratively by **[Tayfunkas]** and **[	kyla-kang]**, highlighting the importance of teamwork and shared problem-solving in software development.
+This project was developed collaboratively by **[Tayfunkas](https://github.com/tayfunkas)** and **[kyla-kang](https://github.com/kyla-kang)**, highlighting the importance of teamwork and shared problem-solving in software development.
 
 ---
 
@@ -24,3 +24,6 @@ This project was developed collaboratively by **[Tayfunkas]** and **[	kyla-kang]
 - **Process Management**: Creating, managing, and synchronizing child processes.
 - **Shell Behavior**: Understanding and implementing the core functionality of a Unix shell.
 - **Team Collaboration**: Working effectively with a partner to design, implement, and debug a complex program.
+
+![minishell](https://github.com/user-attachments/assets/eba6ad1d-1fd5-4671-8a79-f6bece8f382e)
+
